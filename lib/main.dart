@@ -2,20 +2,23 @@ import 'package:flutter/material.dart';
 
 // Import the firebase_core plugin
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
+import 'package:skillcraft/main_state.dart';
+import 'package:skillcraft/profile/profile.dart';
 import 'package:skillcraft/routes.dart';
+import 'package:skillcraft/shared/shared.dart';
+import 'package:skillcraft/skills/skills.dart';
 import 'package:skillcraft/theme.dart';
 import 'package:skillcraft/services/auth.dart';
+import 'package:skillcraft/todo/todo.dart';
 
+// Main entry point of the app
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(App());
 }
 
-/// We are using a StatefulWidget such that we only create the [Future] once,
-/// no matter how many times our widget rebuild.
-/// If we used a [StatelessWidget], in the event where [App] is rebuilt, that
-/// would re-initialize FlutterFire and make our application re-enter loading state,
-/// which is undesired.
+// Main App StatefulWidget to initialize Firebase and hold state
 class App extends StatefulWidget {
   const App({super.key});
 
@@ -24,33 +27,51 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  /// The future is part of the state of our widget. We should not call `initializeApp`
-  /// directly inside [build].
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      // Initialize FlutterFire:
       future: _initialization,
       builder: (context, snapshot) {
-        // Check for errors
         if (snapshot.hasError) {
-          return Text('error');
+          return const Center(child: Text('Error initializing Firebase'));
         }
 
-        // Once complete, show your application
         if (snapshot.connectionState == ConnectionState.done) {
-          //AuthService().signOut();
-          return MaterialApp(
-            routes: appRoutes,
-            theme: appTheme,
+          return ChangeNotifierProvider<MainState>(
+            create: (_) => MainState(),
+            child: MaterialApp(
+              home: Scaffold(
+                body: MainContent(),  // MainContent now depends on MainState
+                bottomNavigationBar: const BottomNavBar(), // BottomNavBar depends on MainState
+              ),
+              theme: appTheme,
+            ),
           );
         }
 
-        // Otherwise, show something whilst waiting for initialization to complete
-        return Text('loading');
+        return const Center(child: Text('Loading...'));
       },
     );
+  }
+}
+
+// MainContent widget that depends on MainState
+class MainContent extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    var state = Provider.of<MainState>(context);
+    var page = state.page;
+
+    if (page == 0) {
+      return ToDoScreen();
+    } else if (page == 1) {
+      return SkillsScreen();
+    } else if (page == 2) {
+      return ProfileScreen();
+    }
+
+    return Center(child: Text("ERROR: Page number $page not found."));
   }
 }

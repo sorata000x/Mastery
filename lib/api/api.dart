@@ -81,8 +81,6 @@ Future<Set<String>?> callChatGPT(futureMessages, functions) async {
     'Authorization': 'Bearer $apiKey',
   };
 
-  print(messages);
-
   final Map<String, dynamic> body = {
     "model": "gpt-4o-mini", // Use "gpt-4-0613" if you have access
     "messages": messages,

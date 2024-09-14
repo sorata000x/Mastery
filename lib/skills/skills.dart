@@ -25,8 +25,7 @@ class SkillsScreen extends StatelessWidget {
               appBar: AppBar(
                 title: Text("Skills"),
               ),
-              body: buildSkillSection(skills),
-              bottomNavigationBar: const BottomNavBar(),
+              body: buildSkillSection(skills)
             );
           } else {
             return const Text('No skill found in Firestore. Check database');

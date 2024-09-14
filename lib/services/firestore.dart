@@ -10,12 +10,34 @@ class FirestoreService {
 
   // Task
 
+  Stream<List<Task>> getTasksStream() {
+  return FirebaseFirestore.instance
+      .collection('tasks')
+      .snapshots()
+      .map((snapshot) => snapshot.docs.map((doc) => Task.fromJson(doc.data())).toList());
+  }
+
   Future<List<Task>> getTasks() async {
     var ref = _db.collection('tasks');
     var snapshot = await ref.get();
     var data = snapshot.docs.map((s) => s.data());
     var tasks = data.map((d) => Task.fromJson(d));
     return tasks.toList();
+  }
+
+  Future setTask(Task task) {
+    CollectionReference tasks = FirebaseFirestore.instance.collection('tasks');
+
+    // Set data with a custom ID
+    return tasks
+        .doc(task.id)
+        .set({
+          'id': task.id,
+          'title': task.title,
+          'isCompleted': task.isCompleted,
+        })
+        .then((value) => print("User Set"))
+        .catchError((error) => print("Failed to set user: $error"));
   }
 
   Future setTaskInFirestore(String id, String title, bool completed) {
