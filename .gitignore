@@ -13,3 +13,66 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Dart/Pub related
+.dart_tool/
+.packages
+.pub-cache/
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# Flutter build output
+build/
+
+# iOS related
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Flutter/.last_build_id
+ios/.symlinks/
+ios/Pods/
+ios/Runner.xcworkspace/
+ios/Runner.xcodeproj/project.xcworkspace/
+ios/Runner.xcodeproj/xcuserdata/
+ios/Runner.xcworkspace/xcuserdata/
+
+# Android related
+android/.gradle/
+android/app/build/
+android/app/key.properties
+android/local.properties
+
+# MacOS related
+macos/Flutter/ephemeral/
+macos/Pods/
+macos/Flutter/Flutter.podspec
+
+# Linux related
+linux/flutter/ephemeral/
+
+# Windows related
+windows/flutter/ephemeral/
+
+# Web related
+web/manifest.json
+
+# IntelliJ related
+.idea/
+*.iml
+
+# VSCode related
+.vscode/
+
+# Generated files
+*.lock
+*.log
+*.pyc
+*.class
+
+# Coverage
+coverage/
+
+# Flutter output (files generated during builds or tests)
+*.dill
+*.swp
+*.swo
+*.tmp
