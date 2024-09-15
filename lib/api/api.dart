@@ -9,7 +9,7 @@ final Map<String, dynamic> skillProperties = {
   "newSkill": {
     "type": "string",
     "description":
-        "The name of a new skill user acquires from doing their task. Avoid adding existing user skill."
+        "The name of a new skill user acquires from doing their task."
   },
   "levelUpSkillNames": {
     "type": "array",
@@ -70,7 +70,7 @@ Future<List<Map<String, dynamic>>> getTaskCompletionMessages(
   ];
 }
 
-Future<Set<String>?> callChatGPT(futureMessages, functions) async {
+Future<Set<String>?> callChatGPT(state, futureMessages, functions) async {
   final messages = await futureMessages;
   final String apiKey =
       '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'; // Replace with your API key
@@ -96,15 +96,15 @@ Future<Set<String>?> callChatGPT(futureMessages, functions) async {
 
   if (response.statusCode == 200) {
     final Map<String, dynamic> responseData = json.decode(response.body);
-    return await handleResponse(responseData);
     print('Response body: ${response.body}');
+    return await handleResponse(state, responseData);
   } else {
     print('Request failed with status: ${response.statusCode}.');
     print('Response body: ${response.body}');
   }
 }
 
-Future<Set<String>>? handleResponse(Map<String, dynamic> responseData) {
+Set<String>? handleResponse(state, Map<String, dynamic> responseData) {
   final List<dynamic> choices = responseData['choices'];
   if (choices.isNotEmpty) {
     final Map<String, dynamic> message = choices[0]['message'];
@@ -120,7 +120,7 @@ Future<Set<String>>? handleResponse(Map<String, dynamic> responseData) {
         final levelUpSkillNames = arguments['levelUpSkillNames'];
         final levelUpSkillEXPs = arguments['levelUpSkillEXPs'];
         var message =
-            generateSkillMessage(newSkill, levelUpSkillNames, levelUpSkillEXPs);
+            generateSkillMessage(state, newSkill, levelUpSkillNames, levelUpSkillEXPs);
         return message;
       }
     } else {
@@ -131,29 +131,29 @@ Future<Set<String>>? handleResponse(Map<String, dynamic> responseData) {
   }
 }
 
-Future<Set<String>> generateSkillMessage(
-    newSkill, levelUpSkillNames, levelUpSkillEXPs) async {
+Set<String> generateSkillMessage(
+    state, newSkill, levelUpSkillNames, levelUpSkillEXPs) {
   var messages = Set<String>();
 
-  if (!newSkill.isEmpty) {
-    FirestoreService().addSkillToFirestore(newSkill);
+  if (!newSkill.isEmpty && !state.containSkillTitle(newSkill)) {
+    state.addSkill(newSkill);
     messages.add("New Skill Acquired: $newSkill");
   }
 
   for (var i = 0; i < levelUpSkillNames.length; i++) {
     var name = levelUpSkillNames[i];
     int exp = levelUpSkillEXPs[i];
-    var skill = await FirestoreService().getSkillByTitle(name);
+    var skill = state.getSkillByTitle(name);
     if (skill == null) return {"ERROR: Cannot find skill $name"};
     int newExp = skill.exp + exp;
-    int cap = 100 * (skill.level ^ 2);
+    int cap = (100 * (skill.level ^ 2)).toInt();
     int newLevel = skill.level;
     while (newExp > cap) {
       newExp -= cap;
       newLevel++;
       cap = 100 * (newLevel ^ 2);
     }
-    FirestoreService().setSkillInFirestore(skill.id, name, newExp, newLevel);
+    state.setSkill(skill.id, name, newExp, newLevel);
     messages.add("$name + $exp");
   }
 

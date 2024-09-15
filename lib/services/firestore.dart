@@ -92,17 +92,6 @@ class FirestoreService {
     return skills.toList();
   }
 
-  Future<Skill?> getSkillByTitle(title) async {
-    var ref = _db.collection('skills');
-    var snapshot = await ref.get();
-    var data = snapshot.docs.map((s) => s.data());
-    var skills = data.map((d) => Skill.fromJson(d));
-    for (var skill in skills) {
-      if (skill.title == title) return skill;
-    }
-    return null;
-  }
-
   Future setSkillInFirestore(String id, String title, int exp, int level) {
     CollectionReference skills =
         FirebaseFirestore.instance.collection('skills');

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:skillcraft/main_state.dart';
 import 'package:skillcraft/services/services.dart';
 import 'package:skillcraft/shared/bottom_nav.dart';
 import 'package:skillcraft/shared/error.dart';
@@ -9,28 +11,14 @@ class SkillsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: FirestoreService().getSkills(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const LoadingScreen();
-          } else if (snapshot.hasError) {
-            return Center(
-              child: ErrorMessage(message: snapshot.error.toString()),
-            );
-          } else if (snapshot.hasData) {
-            var skills = snapshot.data!;
+    final state = Provider.of<MainState>(context);
 
-            return Scaffold(
-              appBar: AppBar(
-                title: Text("Skills"),
-              ),
-              body: buildSkillSection(skills)
-            );
-          } else {
-            return const Text('No skill found in Firestore. Check database');
-          }
-        });
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Skills"),
+      ),
+      body: buildSkillSection(state.skills)
+    );
   }
 
   Widget buildSkillSection(List skills) {

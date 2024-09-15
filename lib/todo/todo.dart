@@ -1,7 +1,9 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:skillcraft/api/api.dart';
+import 'package:skillcraft/main_state.dart';
 import 'package:skillcraft/services/firestore.dart';
 import 'package:skillcraft/services/models.dart';
 import 'package:skillcraft/shared/shared.dart';
@@ -20,24 +22,11 @@ class _ToDoScreenState extends State<ToDoScreen> {
   TextEditingController taskController = TextEditingController();
   List<String> evaluatingTasks =
       []; // List of tasks that are currently getting responses from
-  List<Task> tasks = [];
-
-  // Load tasks once from Firestore
-  Future<void> _loadTasksFromFirestore() async {
-    tasks = await FirestoreService().getTasks(); // Fetch tasks once
-    setState(() {}); // Update the UI after loading the tasks
-    print("task ahhhhhhhhhh");
-    print(tasks.toList().toString());
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _loadTasksFromFirestore(); // Load tasks once when the screen is initialized
-  }
 
   @override
   Widget build(BuildContext context) {
+    final state = Provider.of<MainState>(context);
+
     return GestureDetector(
         onTap: () {
           if (isAddingTask) {
@@ -49,7 +38,7 @@ class _ToDoScreenState extends State<ToDoScreen> {
         },
         child: Stack(
           children: [
-            ToDoList(tasks),
+            ToDoList(state.tasks),
             SystemMessages(),
           ],
         ));
@@ -110,6 +99,8 @@ class _ToDoScreenState extends State<ToDoScreen> {
   }
 
   Widget taskCard(task) {
+    final state = Provider.of<MainState>(context);
+
     return Slidable(
       key: Key(task.id),
       endActionPane: ActionPane(
@@ -134,7 +125,7 @@ class _ToDoScreenState extends State<ToDoScreen> {
                     TextButton(
                       onPressed: () {
                         // Delete the task from Firestore
-                        removeTask(task);
+                        state.removeTask(task);
                         Navigator.of(context).pop(); // Close the dialog
                         // Optionally, show a snackbar notification
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -186,12 +177,12 @@ class _ToDoScreenState extends State<ToDoScreen> {
                     });
                     var messages = getTaskCompletionMessages(
                         FirestoreService().getSkills(), task.title);
-                    var response = callChatGPT(messages, functions);
+                    var response = callChatGPT(state, messages, functions);
                     _parseAssistantResponse(response, task);
                   } else {
                     // Directly toggle tasks of no need to wait for response
                     setState(() {
-                      toggleTask(task);
+                      state.toggleTask(task);
                     });
                   }
                 },
@@ -210,33 +201,6 @@ class _ToDoScreenState extends State<ToDoScreen> {
         ),
       ),
     );
-  }
-
-  void toggleTask(Task target) {
-    // Set local
-    Task? task = tasks.firstWhere((task) => task.id == target.id);
-    task.isCompleted = !task.isCompleted;
-    // Set firestore
-    FirestoreService().setTask(task);
-    setState(() {});
-  }
-
-  void addTask(title) {
-    Task task = Task(
-      id: Uuid().v4(),
-      title: title,
-      isCompleted: false,
-    );
-    tasks.add(task);
-    setState(() {});
-    // Add to firestore
-    FirestoreService().addTaskToFirestore(title);
-  }
-
-  void removeTask(task) {
-    tasks.remove(task);
-    setState(() {});
-    FirestoreService().deleteTaskFromFirestore(task.id);
   }
 
   Widget taskEvaluatingCard() {
@@ -264,11 +228,13 @@ class _ToDoScreenState extends State<ToDoScreen> {
   }
 
   void _parseAssistantResponse(Future<Set?> futureResponse, Task task) async {
+
+  final state = Provider.of<MainState>(context, listen: false);    
     var response = await futureResponse;
-    toggleTask(task);
-    setState(() {
-      evaluatingTasks.remove(task.id);
-    });
+
+    state.toggleTask(task);
+    evaluatingTasks.remove(task.id);
+    setState(() {});
     if (response == null) return;
     for (var item in response) {
       _addHintMessage(item);
@@ -282,7 +248,7 @@ class _ToDoScreenState extends State<ToDoScreen> {
   // This method creates the overlay entry
   Widget SystemMessages() {
     return Positioned(
-        bottom: 140,
+        bottom: 10,
         width: MediaQuery.of(context).size.width,
         child: Column(
           children: hintMessages
@@ -396,6 +362,8 @@ class _ToDoScreenState extends State<ToDoScreen> {
 
   // This widget builds the input field and add button for new task
   Widget buildTaskInputField() {
+    final state = Provider.of<MainState>(context);
+
     return SizedBox(
       height: 50,
       child: Row(
@@ -421,7 +389,7 @@ class _ToDoScreenState extends State<ToDoScreen> {
             icon: Icon(Icons.check, color: Colors.blue),
             onPressed: () {
               setState(() {
-                addTask(taskController.text);
+                state.addTask(taskController.text);
                 taskController.clear();
                 isAddingTask = false; // Switch back to "+ Add a Task" button
               });
