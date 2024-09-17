@@ -1,5 +1,6 @@
 import 'dart:core';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:skillcraft/services/auth.dart';
 import 'package:skillcraft/services/models.dart';
 import 'package:rxdart/rxdart.dart';
@@ -7,17 +8,15 @@ import 'package:uuid/uuid.dart';
 
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final String? user = FirebaseAuth.instance.currentUser?.uid;
 
   // Task
 
-  Stream<List<Task>> getTasksStream() {
-    return FirebaseFirestore.instance.collection('tasks').snapshots().map(
-        (snapshot) =>
-            snapshot.docs.map((doc) => Task.fromJson(doc.data())).toList());
-  }
-
   Future<List<Task>> getTasks() async {
-    var ref = _db.collection('tasks');
+    var ref = _db
+        .collection('users') // User collection
+        .doc(user) // Specific user document
+        .collection('tasks'); // Tasks subcollection
     var snapshot = await ref.get();
     var data = snapshot.docs.map((s) => s.data());
     var tasks = data.map((d) => Task.fromJson(d));
@@ -25,7 +24,10 @@ class FirestoreService {
   }
 
   Future setTask(Task task) {
-    CollectionReference tasks = FirebaseFirestore.instance.collection('tasks');
+    CollectionReference tasks = _db
+        .collection('users') // User collection
+        .doc(user) // Specific user document
+        .collection('tasks'); // Tasks subcollection
 
     // Set data with a custom ID
     return tasks
@@ -35,12 +37,15 @@ class FirestoreService {
           'title': task.title,
           'isCompleted': task.isCompleted,
         })
-        .then((value) => print("User Set"))
-        .catchError((error) => print("Failed to set user: $error"));
+        .then((value) => print("Task Set"))
+        .catchError((error) => print("Failed to set task: $error"));
   }
 
   Future setTaskInFirestore(String id, String title, bool completed) {
-    CollectionReference tasks = FirebaseFirestore.instance.collection('tasks');
+    CollectionReference tasks = _db
+        .collection('users') // User collection
+        .doc(user) // Specific user document
+        .collection('tasks'); // Tasks subcollection
 
     // Set data with a custom ID
     return tasks
@@ -63,7 +68,10 @@ class FirestoreService {
   }
 
   Future addTaskToFirestore(String title) {
-    CollectionReference tasks = FirebaseFirestore.instance.collection('tasks');
+    CollectionReference tasks = _db
+        .collection('users') // User collection
+        .doc(user) // Specific user document
+        .collection('tasks'); // Tasks subcollection
     var id = const Uuid().v4();
 
     return tasks
@@ -73,18 +81,25 @@ class FirestoreService {
           'title': title,
           'isCompleted': false,
         })
-        .then((value) => print("User Set"))
-        .catchError((error) => print("Failed to set user: $error"));
+        .then((value) => print("Task Set"))
+        .catchError((error) => print("Failed to set task: $error"));
   }
 
   Future<void> deleteTaskFromFirestore(String taskId) async {
-    await FirebaseFirestore.instance.collection('tasks').doc(taskId).delete();
+    CollectionReference tasks = _db
+        .collection('users') // User collection
+        .doc(user) // Specific user document
+        .collection('tasks'); // Tasks subcollection
+    await tasks.doc(taskId).delete();
   }
 
   // Skills
 
   Future<List<Skill>> getSkills() async {
-    var ref = _db.collection('skills');
+    var ref = _db
+        .collection('users')
+        .doc(user)
+        .collection('skills');
     var snapshot = await ref.get();
     var data = snapshot.docs.map((s) => s.data());
     var skills = data.map((d) => Skill.fromJson(d));
@@ -92,8 +107,10 @@ class FirestoreService {
   }
 
   Future setSkillInFirestore(String id, String title, int exp, int level) {
-    CollectionReference skills =
-        FirebaseFirestore.instance.collection('skills');
+    CollectionReference skills = _db
+        .collection('users') // User collection
+        .doc(user) // Specific user document
+        .collection('skills'); // Tasks subcollection
 
     // Set data with a custom ID
     return skills
@@ -104,8 +121,10 @@ class FirestoreService {
   }
 
   Future addSkillToFirestore(String title) {
-    CollectionReference skills =
-        FirebaseFirestore.instance.collection('skills');
+    CollectionReference skills = _db
+        .collection('users') // User collection
+        .doc(user) // Specific user document
+        .collection('skills'); // Tasks subcollection
     var id = const Uuid().v4();
 
     return skills
@@ -118,14 +137,13 @@ class FirestoreService {
   // Task-Skills
 
   Future addTaskSkills(String taskTitle, List<Map<String, dynamic>> skills) {
-    CollectionReference taskSkills =
-        FirebaseFirestore.instance.collection('task-skills');
+    CollectionReference taskSkills = _db.collection('task-skills');
 
     return taskSkills
         .doc(taskTitle)
         .set({'title': taskTitle, 'skills': skills})
-        .then((value) => print("User Set"))
-        .catchError((error) => print("Failed to set user: $error"));
+        .then((value) => print("Task-Skills Set"))
+        .catchError((error) => print("Failed to set Task-Skills: $error"));
   }
 
   Future<List<Map<String, dynamic>>?> getSkillsFromTask(taskTitle) async {

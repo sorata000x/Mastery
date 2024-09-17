@@ -15,7 +15,8 @@ final Map<String, dynamic> skillProperties = {
           "type": "string",
           "description": "Skill name",
         },
-        "exp": {"type": "number", "description": "Skill experience point"}
+        "exp": {"type": "number", "description": "Skill experience point"},
+        "probability": {"type": "number", "description": "Probability of getting the skill (0-1)"}
       }
     },
     "description": "List of skills names and exps associate with task.",
@@ -54,9 +55,7 @@ Future<String?> callChatGPT(state, futureMessages, functions) async {
     "model": "gpt-4o-mini", // Use "gpt-4-0613" if you have access
     "messages": messages,
     "functions": functions,
-    "function_call": {
-      "name": "parseSkills"
-    },
+    "function_call": {"name": "parseSkills"},
   };
 
   final http.Response response = await http.post(
@@ -85,11 +84,11 @@ String? handleResponse(state, Map<String, dynamic> responseData) {
       final Map<String, dynamic> arguments =
           json.decode(functionCall['arguments']);
 
-    // Execute the corresponding function
-    if (functionName == "parseSkills") {
-      String skills = jsonEncode(arguments["skills"]);
-      return skills;
-    }
+      // Execute the corresponding function
+      if (functionName == "parseSkills") {
+        String skills = jsonEncode(arguments["skills"]);
+        return skills;
+      }
     } else {
       // Handle regular assistant messages
       final String content = message['content'];

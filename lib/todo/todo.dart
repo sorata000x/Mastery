@@ -212,7 +212,8 @@ class _ToDoScreenState extends State<ToDoScreen> {
       var result = await callChatGPT(state, messages, functions);
       if (result == null) return [];
       // Decode string to List<Map<String, dynamic>>
-      List<Map<String, dynamic>> skills = List<Map<String, dynamic>>.from(json.decode(result));
+      List<Map<String, dynamic>> skills =
+          List<Map<String, dynamic>>.from(json.decode(result));
 
       // Add the new instance of task-skills to database
       FirestoreService().addTaskSkills(taskTitle, skills);
@@ -222,7 +223,7 @@ class _ToDoScreenState extends State<ToDoScreen> {
 
     /// Level up & add new skills
     void parseSkills(skills) async {
-      var newSkills = [];
+      List<Map<String, dynamic>> newSkills = [];
       var messages = [];
 
       for (var s1 in skills) {
@@ -238,13 +239,23 @@ class _ToDoScreenState extends State<ToDoScreen> {
         }
       }
 
+      Map<String, dynamic>? getRandomSkill(List<Map<String, dynamic>> skills) {
+        Random random = Random();
+        int rIndex = random.nextInt(skills.length);
+        double chance = random.nextDouble();
+
+        return chance < skills[rIndex]['probability']
+            ? skills[rIndex]
+            : null; // Fallback in case rounding errors occur
+      }
+
       if (newSkills.isNotEmpty) {
         // Randomly pick 1 skill to give to user
-        Random random = Random();
-        int rindex = random.nextInt(newSkills.length);
-        var newSkill = newSkills[rindex];
-        state.addSkill(newSkill['skill'], newSkill['exp']);
-        messages.add("New Skill: ${newSkill['skill']} + ${newSkill['exp']}");
+        var newSkill = getRandomSkill(newSkills);
+        if (newSkill != null) {
+          state.addSkill(newSkill['skill'], newSkill['exp']);
+          messages.add("New Skill: ${newSkill['skill']} + ${newSkill['exp']}");
+        }
       }
 
       for (var message in messages) {
