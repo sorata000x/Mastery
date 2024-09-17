@@ -11,10 +11,9 @@ class FirestoreService {
   // Task
 
   Stream<List<Task>> getTasksStream() {
-  return FirebaseFirestore.instance
-      .collection('tasks')
-      .snapshots()
-      .map((snapshot) => snapshot.docs.map((doc) => Task.fromJson(doc.data())).toList());
+    return FirebaseFirestore.instance.collection('tasks').snapshots().map(
+        (snapshot) =>
+            snapshot.docs.map((doc) => Task.fromJson(doc.data())).toList());
   }
 
   Future<List<Task>> getTasks() async {
@@ -114,5 +113,30 @@ class FirestoreService {
         .set({'id': id, 'title': title, 'exp': 0, 'level': 1})
         .then((value) => print("User Set"))
         .catchError((error) => print("Failed to set user: $error"));
+  }
+
+  // Task-Skills
+
+  Future addTaskSkills(String taskTitle, List<Map<String, dynamic>> skills) {
+    CollectionReference taskSkills =
+        FirebaseFirestore.instance.collection('task-skills');
+
+    return taskSkills
+        .doc(taskTitle)
+        .set({'title': taskTitle, 'skills': skills})
+        .then((value) => print("User Set"))
+        .catchError((error) => print("Failed to set user: $error"));
+  }
+
+  Future<List<Map<String, dynamic>>?> getSkillsFromTask(taskTitle) async {
+    var ref = _db.collection('task-skills');
+    var snapshot = await ref.get();
+    var data = snapshot.docs.map((s) => s.data());
+    var taskSkillsList = data.map((d) => TaskSkills.fromJson(d));
+    taskSkillsList = taskSkillsList.toList();
+    for (var ts in taskSkillsList) {
+      if (ts.title == taskTitle) return ts.skills;
+    }
+    return null;
   }
 }

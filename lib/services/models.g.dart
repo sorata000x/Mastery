@@ -32,12 +32,15 @@ Map<String, dynamic> _$SkillToJson(Skill instance) => <String, dynamic>{
       'level': instance.level,
     };
 
-Report _$ReportFromJson(Map<String, dynamic> json) => Report(
-      uid: json['uid'] as String? ?? '',
-      tasks: json['tasks'] as Map<String, dynamic>? ?? const {},
+TaskSkills _$TaskSkillsFromJson(Map<String, dynamic> json) => TaskSkills(
+      title: json['title'] as String? ?? '',
+      skills: (json['skills'] as List<dynamic>?)
+          ?.map((e) => e as Map<String, dynamic>)
+          .toList(),
     );
 
-Map<String, dynamic> _$ReportToJson(Report instance) => <String, dynamic>{
-      'uid': instance.uid,
-      'tasks': instance.tasks,
+Map<String, dynamic> _$TaskSkillsToJson(TaskSkills instance) =>
+    <String, dynamic>{
+      'title': instance.title,
+      'skills': instance.skills,
     };

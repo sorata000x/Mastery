@@ -60,6 +60,24 @@ class MainState with ChangeNotifier {
     notifyListeners();
   }
 
+  void levelUpSkill(Skill target, int gain) {
+    int cap = (100 * (target.level ^ 2)).toInt();
+    var exp = (target.exp + gain);
+    var level = target.level + (exp ~/ cap);
+    exp = exp % cap;
+    var newSkill = Skill(
+      id: target.id,
+      title: target.title,
+      exp: exp,
+      level: level,
+    );
+    for (var skill in skills) {
+      if (skill.id == target.id) skill = newSkill;
+    }
+    FirestoreService().setSkillInFirestore(target.id, target.title, exp, level);
+    notifyListeners();
+  }
+
   Skill? getSkillByTitle(title) {
     for (var skill in skills) {
       if (skill.title == title) return skill;
@@ -85,9 +103,13 @@ class MainState with ChangeNotifier {
     notifyListeners();
   }
 
-  void addSkill(String title) {
+  void addSkill(String title, int gain) {
+    var cap = 100;
+    var exp = gain;
+    var level = 1 + (exp ~/ cap);
+    exp = exp % cap;
     final newSkill =
-        Skill(id: const Uuid().v4(), title: title, exp: 0, level: 1);
+        Skill(id: const Uuid().v4(), title: title, exp: exp, level: level);
     _skills.add(newSkill);
     FirestoreService().addSkillToFirestore(title);
     notifyListeners();

@@ -1,4 +1,6 @@
 import 'dart:collection';
+import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -172,13 +174,7 @@ class _ToDoScreenState extends State<ToDoScreen> {
                 shape: const CircleBorder(),
                 onChanged: (bool? value) {
                   if (value == true) {
-                    setState(() {
-                      evaluatingTasks.add(task.id);
-                    });
-                    var messages = getTaskCompletionMessages(
-                        FirestoreService().getSkills(), task.title);
-                    var response = callChatGPT(state, messages, functions);
-                    _parseAssistantResponse(response, task);
+                    taskToSkills(task);
                   } else {
                     // Directly toggle tasks of no need to wait for response
                     setState(() {
@@ -203,6 +199,76 @@ class _ToDoScreenState extends State<ToDoScreen> {
     );
   }
 
+  Future taskToSkills(task) async {
+    final state = Provider.of<MainState>(context, listen: false);
+    var skills = await FirestoreService().getSkillsFromTask(task.title);
+
+    /// Generate new skills from task title with OpenAI api
+    Future<List<Map<String, dynamic>>?> generateSkillsFromTaskTitle(
+        taskTitle) async {
+      // Get skill as a string of List<Map<String, int>>
+      var messages =
+          getTaskCompletionMessages(FirestoreService().getSkills(), taskTitle);
+      var result = await callChatGPT(state, messages, functions);
+      if (result == null) return [];
+      // Decode string to List<Map<String, dynamic>>
+      List<Map<String, dynamic>> skills = List<Map<String, dynamic>>.from(json.decode(result));
+
+      // Add the new instance of task-skills to database
+      FirestoreService().addTaskSkills(taskTitle, skills);
+      // Return skills
+      return skills;
+    }
+
+    /// Level up & add new skills
+    void parseSkills(skills) async {
+      var newSkills = [];
+      var messages = [];
+
+      for (var s1 in skills) {
+        Skill? s2;
+        if (state.skills.any((s) => s.title == s1['skill'])) {
+          s2 = state.skills.firstWhere((s) => s.title == s1['skill']);
+        }
+        if (s2 != null) {
+          state.levelUpSkill(s2, s1['exp']);
+          messages.add("${s1['skill']} + ${s1['exp']}");
+        } else {
+          newSkills.add(s1);
+        }
+      }
+
+      if (newSkills.isNotEmpty) {
+        // Randomly pick 1 skill to give to user
+        Random random = Random();
+        int rindex = random.nextInt(newSkills.length);
+        var newSkill = newSkills[rindex];
+        state.addSkill(newSkill['skill'], newSkill['exp']);
+        messages.add("New Skill: ${newSkill['skill']} + ${newSkill['exp']}");
+      }
+
+      for (var message in messages) {
+        _addHintMessage(message);
+        // Add a delay of 0.2 seconds
+        await Future.delayed(Duration(milliseconds: 500));
+      }
+    }
+
+    if (skills == null) {
+      // If task not found in database, create new skills
+      setState(() {
+        evaluatingTasks.add(task.id);
+      });
+      skills = await generateSkillsFromTaskTitle(task.title);
+      setState(() {
+        evaluatingTasks.remove(task.id);
+      });
+    }
+
+    parseSkills(skills);
+    state.toggleTask(task);
+  }
+
   Widget taskEvaluatingCard() {
     return Container(
       decoration: BoxDecoration(
@@ -225,22 +291,6 @@ class _ToDoScreenState extends State<ToDoScreen> {
         ],
       ),
     );
-  }
-
-  void _parseAssistantResponse(Future<Set?> futureResponse, Task task) async {
-
-  final state = Provider.of<MainState>(context, listen: false);    
-    var response = await futureResponse;
-
-    state.toggleTask(task);
-    evaluatingTasks.remove(task.id);
-    setState(() {});
-    if (response == null) return;
-    for (var item in response) {
-      _addHintMessage(item);
-      // Add a delay of 0.2 seconds
-      await Future.delayed(Duration(milliseconds: 500));
-    }
   }
 
   Queue<String> hintMessages = Queue();

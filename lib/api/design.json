@@ -1,0 +1,16 @@
+{
+  "title": "Run for 1 mile",
+  "skills": [
+    {
+      "title": "Endurance",
+      "exp": 100
+    },
+    {
+      "title": "Stamina",
+      "exp": 50
+    }
+  ]
+}
+
+=>
+

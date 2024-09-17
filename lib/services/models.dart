@@ -25,11 +25,12 @@ class Skill {
 }
 
 @JsonSerializable()
-class Report {
-  String uid;
-  Map tasks;
+class TaskSkills {
+  String title;
+  List<Map<String, dynamic>> skills;
 
-  Report({this.uid = '', this.tasks = const {}});
-  factory Report.fromJson(Map<String, dynamic> json) => _$ReportFromJson(json);
-  Map<String, dynamic> toJson() => _$ReportToJson(this);
+  TaskSkills({this.title = '', List<Map<String, dynamic>>? skills})
+      : skills = skills ?? [];
+  factory TaskSkills.fromJson(Map<String, dynamic> json) => _$TaskSkillsFromJson(json);
+  Map<String, dynamic> toJson() => _$TaskSkillsToJson(this);
 }
