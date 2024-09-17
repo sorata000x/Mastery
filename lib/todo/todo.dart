@@ -309,22 +309,30 @@ class _ToDoScreenState extends State<ToDoScreen> {
   // This method creates the overlay entry
   Widget SystemMessages() {
     return Positioned(
-        bottom: 10,
+        bottom: 56,
         width: MediaQuery.of(context).size.width,
-        child: Column(
-          children: hintMessages
-              .map((m) => Column(
-                    children: [
-                      HintCard(m),
-                      const Divider(
-                        // This creates a horizontal line between tasks
-                        height: 5,
-                        thickness: 5,
-                        color: Colors.transparent,
-                      ),
-                    ],
-                  ))
-              .toList(),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(5.0),   // Radius for bottom-left corner
+              bottomRight: Radius.circular(5.0),  // Radius for bottom-right corner
+            ),
+            child: Column(
+              children: hintMessages
+                  .map((m) => Column(
+                        children: [
+                          HintCard(m),
+                          const Divider(
+                            height: 5,
+                            thickness: 5,
+                            color: Colors.transparent,
+                          ),
+                        ],
+                      ))
+                  .toList(),
+            ),
+          ),
         ));
   }
 
@@ -332,17 +340,21 @@ class _ToDoScreenState extends State<ToDoScreen> {
     return Material(
       color: Colors.transparent,
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 16.0),
         width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.all(16.0),
+        height: 52,
+        padding: EdgeInsets.symmetric(horizontal: 16.0),
         decoration: BoxDecoration(
-          color: Colors.grey,
-          borderRadius: BorderRadius.circular(12),
+          color: Color.fromRGBO(50, 50, 50, 1),
+          // Color.fromRGBO(45, 45, 45, 1)
+          borderRadius: BorderRadius.circular(5.0),
         ),
-        child: Text(
-          text,
-          style: TextStyle(color: Colors.white, fontSize: 16),
-          textAlign: TextAlign.start,
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            text,
+            style: TextStyle(color: Colors.white, fontSize: 16),
+            textAlign: TextAlign.start,
+          ),
         ),
       ),
     );
@@ -387,7 +399,7 @@ class _ToDoScreenState extends State<ToDoScreen> {
   // This function handles the display of the "Add a Task" button or the input field
   Widget buildAddTaskButtonOrInput() {
     return Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 4.0),
         child: isAddingTask
             ? buildTaskInputField() // Show input field if the user clicked the "+ Add a Task" button
             : buildInputButton());
@@ -406,7 +418,7 @@ class _ToDoScreenState extends State<ToDoScreen> {
         style: ElevatedButton.styleFrom(
           backgroundColor: Color.fromRGBO(45, 45, 45, 1),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(6),
+            borderRadius: BorderRadius.circular(5),
           ),
         ),
         child: const Row(
