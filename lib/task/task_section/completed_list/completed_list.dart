@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:skillcraft/main_state.dart';
-import 'package:skillcraft/services/models.dart';
 import 'package:skillcraft/task/task_section/shared/task_card.dart';
+import 'package:skillcraft/task/task_section/shared/task_evaluration_card.dart';
 import 'package:skillcraft/task/task_state.dart';
-import 'package:skillcraft/todo/todo_list/task_section/components/task_evaluration_card.dart';
 
 class CompletedList extends StatelessWidget {
 
@@ -26,7 +25,7 @@ class CompletedList extends StatelessWidget {
         children: [
           ReorderableListView.builder(
               shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               itemCount: completed.length,
               onReorder: mainState.reorderTask,
               itemBuilder: (context, index) {
@@ -35,7 +34,7 @@ class CompletedList extends StatelessWidget {
                     child: Column(
                       children: [
                         taskState.evaluatingTasks.contains(completed[index].id)
-                            ? TaskEvalurationCard()
+                            ? const TaskEvalurationCard()
                             : TaskCard(task: completed[index]),
                         const Divider(
                           // This creates a horizontal line between tasks

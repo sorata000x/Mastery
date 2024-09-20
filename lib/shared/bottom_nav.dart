@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:skillcraft/main_state.dart';
-import 'package:skillcraft/skills/skills.dart';
-import 'package:skillcraft/task/task.dart';
 
 class BottomNavBar extends StatelessWidget {
   const BottomNavBar({super.key});

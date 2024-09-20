@@ -22,7 +22,7 @@ class TaskInputField extends StatelessWidget {
               decoration: InputDecoration(
                 hintText: "Enter task name",
                 filled: true,
-                fillColor: Color.fromRGBO(45, 45, 45, 1),
+                fillColor: const Color.fromRGBO(45, 45, 45, 1),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(5),
                 ),
@@ -33,7 +33,7 @@ class TaskInputField extends StatelessWidget {
             ),
           ),
           IconButton(
-            icon: Icon(Icons.check, color: Colors.blue),
+            icon: const Icon(Icons.check, color: Colors.blue),
             onPressed: () {
               mainState.addTask(taskState.taskController.text);
               taskState.taskController.clear();

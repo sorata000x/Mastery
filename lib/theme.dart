@@ -27,11 +27,11 @@ var appTheme = ThemeData(
         color: Colors.grey,
       ),
     ),
-    colorScheme: ColorScheme(
+    colorScheme: const ColorScheme(
       brightness: Brightness.dark,  // Set brightness here
       primary: Colors.white,
       onPrimary: Colors.white,
-      secondary: const Color.fromARGB(255, 50, 50, 50),
+      secondary: Color.fromARGB(255, 50, 50, 50),
       onSecondary: Colors.white,
       error: Colors.red,
       onError: Colors.white,
@@ -39,13 +39,13 @@ var appTheme = ThemeData(
       onSurface: Colors.white,
     ),
     checkboxTheme: CheckboxThemeData(
-      fillColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
-        if (states.contains(MaterialState.selected)) {
+      fillColor: WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
+        if (states.contains(WidgetState.selected)) {
           return Colors.grey; // Checkbox is checked
         }
         return Colors.transparent; // Checkbox is unchecked
       }),
-      checkColor: MaterialStateProperty.all(Colors.white), // Check mark color
-      side: BorderSide(color: Colors.grey), // The border color for the checkbox
+      checkColor: WidgetStateProperty.all(Colors.white), // Check mark color
+      side: const BorderSide(color: Colors.grey), // The border color for the checkbox
     ),
 );

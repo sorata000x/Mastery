@@ -1,7 +1,5 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:skillcraft/services/firestore.dart';
-import 'package:skillcraft/services/models.dart';
 
 // Generate skill messages
 
@@ -116,7 +114,7 @@ Future<List<Map<String, dynamic>>> getTaskCompletionMessages(
 
 Future<String?> callChatGPT(state, futureMessages, functions) async {
   final messages = await futureMessages;
-  final String apiKey =
+  const String apiKey =
       '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'; // Replace with your API key
   final Uri url = Uri.parse('https://api.openai.com/v1/chat/completions');
 
@@ -141,11 +139,12 @@ Future<String?> callChatGPT(state, futureMessages, functions) async {
   if (response.statusCode == 200) {
     final Map<String, dynamic> responseData = json.decode(response.body);
     print('Response body: ${response.body}');
-    return await handleResponse(state, responseData);
+    return handleResponse(state, responseData);
   } else {
     print('Request failed with status: ${response.statusCode}.');
     print('Response body: ${response.body}');
   }
+  return null;
 }
 
 String? handleResponse(state, Map<String, dynamic> responseData) {
@@ -170,13 +169,14 @@ String? handleResponse(state, Map<String, dynamic> responseData) {
       print('Assistant: $content');
     }
   }
+  return null;
 }
 
 // Deprecate
 
 Set<String> generateSkillMessage(
     state, newSkill, levelUpSkillNames, levelUpSkillEXPs) {
-  var messages = Set<String>();
+  var messages = <String>{};
 
   if (!newSkill.isEmpty && !state.containSkillTitle(newSkill)) {
     state.addSkill(newSkill);

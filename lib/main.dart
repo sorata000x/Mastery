@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 // Import the firebase_core plugin
@@ -7,18 +6,16 @@ import 'package:provider/provider.dart';
 import 'package:skillcraft/login/login.dart';
 import 'package:skillcraft/main_state.dart';
 import 'package:skillcraft/profile/profile.dart';
-import 'package:skillcraft/services/firestore.dart';
 import 'package:skillcraft/shared/shared.dart';
 import 'package:skillcraft/skills/skills.dart';
 import 'package:skillcraft/theme.dart';
-import 'package:skillcraft/services/auth.dart';
 import 'package:skillcraft/task/task.dart';
 import 'package:skillcraft/task/task_state.dart';
 
 // Main entry point of the app
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(App());
+  runApp(const App());
 }
 
 // Main App StatefulWidget to initialize Firebase and hold state
@@ -43,7 +40,7 @@ class _AppState extends State<App> {
         if (snapshot.connectionState == ConnectionState.done) {
           return ChangeNotifierProvider<MainState>(
             create: (_) => MainState(),
-            child: MainContent(),
+            child: const MainContent(),
           );
         }
 
@@ -76,10 +73,10 @@ class _MainContentState extends State<MainContent> {
     }
 
     return MaterialApp(
-      home: Scaffold(
+      home: const Scaffold(
         body: MainContentBody(), // MainContent now depends on MainState
         bottomNavigationBar:
-            const BottomNavBar(), // BottomNavBar depends on MainState
+            BottomNavBar(), // BottomNavBar depends on MainState
       ),
       theme: appTheme,
     );
@@ -88,20 +85,22 @@ class _MainContentState extends State<MainContent> {
 
 // MainContent widget that depends on MainState
 class MainContentBody extends StatelessWidget {
+  const MainContentBody({super.key});
+
   @override
   Widget build(BuildContext context) {
     var state = Provider.of<MainState>(context);
     var page = state.page;
 
     if (page == 0) {
-      return ChangeNotifierProvider<MainState>(
+      return ChangeNotifierProvider(
               create: (_) => TaskState(),
-              child: TaskScreen(),
+              child: const TaskScreen(),
             );
     } else if (page == 1) {
-      return SkillsScreen();
+      return const SkillsScreen();
     } else if (page == 2) {
-      return ProfileScreen();
+      return const ProfileScreen();
     }
 
     return Center(child: Text("ERROR: Page number $page not found."));

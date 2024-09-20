@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class HintCard extends StatelessWidget {
   final String message;
 
-  const HintCard({required this.message});
+  const HintCard({super.key, required this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -12,9 +13,9 @@ class HintCard extends StatelessWidget {
       child: Container(
         width: MediaQuery.of(context).size.width,
         height: 52,
-        padding: EdgeInsets.symmetric(horizontal: 19.0),
+        padding: const EdgeInsets.symmetric(horizontal: 19.0),
         decoration: BoxDecoration(
-          color: Color.fromRGBO(50, 50, 50, 1),
+          color: const Color.fromRGBO(50, 50, 50, 1),
           // Color.fromRGBO(45, 45, 45, 1)
           borderRadius: BorderRadius.circular(5.0),
         ),
@@ -27,10 +28,10 @@ class HintCard extends StatelessWidget {
                 size: 20.0,
                 color: Colors.white,
               ),
-              SizedBox(width: 18),
+              const SizedBox(width: 18),
               Text(
                 message,
-                style: TextStyle(color: Colors.white, fontSize: 16),
+                style: const TextStyle(color: Colors.white, fontSize: 16),
                 textAlign: TextAlign.start,
               ),
             ],

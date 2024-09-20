@@ -11,13 +11,13 @@ class ProfileScreen extends StatelessWidget {
     final state = Provider.of<MainState>(context);
     return Scaffold(
         appBar: AppBar(
-          title: Text('Profile'),
+          title: const Text('Profile'),
         ),
         body: ElevatedButton(
           onPressed: () async {
             await AuthService().signOut();
           },
-          child: Text('signout'),
+          child: const Text('signout'),
         ));
   }
 }

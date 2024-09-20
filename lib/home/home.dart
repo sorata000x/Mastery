@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:skillcraft/login/login.dart';
 import 'package:skillcraft/services/auth.dart';
-import 'package:skillcraft/task/task.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});

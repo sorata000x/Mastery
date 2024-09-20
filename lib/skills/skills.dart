@@ -2,10 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:skillcraft/main_state.dart';
-import 'package:skillcraft/services/services.dart';
-import 'package:skillcraft/shared/bottom_nav.dart';
-import 'package:skillcraft/shared/error.dart';
-import 'package:skillcraft/shared/loading.dart';
 
 class SkillsScreen extends StatelessWidget {
   const SkillsScreen({super.key});
@@ -16,7 +12,7 @@ class SkillsScreen extends StatelessWidget {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text("Skills"),
+          title: const Text("Skills"),
         ),
         body: buildSkillSection(state, state.skills));
   }
@@ -89,7 +85,7 @@ class SkillsScreen extends StatelessWidget {
     }
     return Container(
       child: Padding(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: SizedBox(
           height: 34,
           width: 34,
@@ -108,12 +104,12 @@ class SkillsScreen extends StatelessWidget {
 
   Widget skillCard(skill) {
     return Container(
-      padding: EdgeInsets.fromLTRB(10, 10, 20, 10),
+      padding: const EdgeInsets.fromLTRB(10, 10, 20, 10),
       child: Expanded(
         child: Row(
           children: [
             SkillIcon(skill.type),
-            SizedBox(width: 5),
+            const SizedBox(width: 5),
             Expanded(   
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,12 +125,12 @@ class SkillsScreen extends StatelessWidget {
                     children: [
                       Text(
                         "EXP ${skill.exp} / ${100 * (skill.level ^ 2)}",
-                        style: TextStyle(fontSize: 14),
+                        style: const TextStyle(fontSize: 14),
                       ),
-                      Spacer(),
+                      const Spacer(),
                       Text(
                         "LV.${skill.level}",
-                        style: TextStyle(fontSize: 14),
+                        style: const TextStyle(fontSize: 14),
                       ),
                     ],
                   ),

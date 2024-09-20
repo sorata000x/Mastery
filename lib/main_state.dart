@@ -49,7 +49,7 @@ class MainState with ChangeNotifier {
 
   void addTask(String title) {
     final newTask = Task(
-      id: Uuid().v4(),
+      id: const Uuid().v4(),
       title: title,
       index: _tasks.length,
       isCompleted: false,
@@ -129,7 +129,6 @@ class MainState with ChangeNotifier {
         skill.exp = newSkill.exp;
         skill.level = newSkill.level;
       }
-      ;
     }
     FirestoreService().setSkillInFirestore(newSkill.id, newSkill.index, newSkill.title,
         newSkill.exp, newSkill.level, newSkill.type);

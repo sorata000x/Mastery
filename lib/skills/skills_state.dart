@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:skillcraft/services/models.dart';
 
 class QuizState with ChangeNotifier {
   double _progress = 0;

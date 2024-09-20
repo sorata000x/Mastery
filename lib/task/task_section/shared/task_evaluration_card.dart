@@ -13,7 +13,7 @@ class TaskEvalurationCard extends StatelessWidget {
       height: 52,
       alignment: Alignment.centerLeft,
       padding: const EdgeInsets.only(left: 16.0),
-      child: Row(
+      child: const Row(
         children: [
           SizedBox(height: 20, width: 20, child: CircularProgressIndicator()),
           SizedBox(width: 16),

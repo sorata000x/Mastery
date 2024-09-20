@@ -17,8 +17,8 @@ class AddTaskButton extends StatelessWidget {
           state.setIsAddingTask(true);
         },
         style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.symmetric(horizontal: 14),
-          backgroundColor: Color.fromRGBO(45, 45, 45, 1),
+          padding: const EdgeInsets.symmetric(horizontal: 14),
+          backgroundColor: const Color.fromRGBO(45, 45, 45, 1),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(5),
           ),

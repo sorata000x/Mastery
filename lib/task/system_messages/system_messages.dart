@@ -14,9 +14,9 @@ class SystemMessages extends StatelessWidget {
         bottom: 56,
         width: MediaQuery.of(context).size.width,
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: ClipRRect(
-            borderRadius: BorderRadius.only(
+            borderRadius: const BorderRadius.only(
               bottomLeft: Radius.circular(5.0), // Radius for bottom-left corner
               bottomRight:
                   Radius.circular(5.0), // Radius for bottom-right corner

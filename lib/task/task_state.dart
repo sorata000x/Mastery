@@ -1,14 +1,13 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
-import 'package:skillcraft/main_state.dart';
 
-class TaskState extends MainState {
+class TaskState extends ChangeNotifier {
   bool _isAddingTask = false; // Track if user is in 'Add Task' mode
-  List<String> _evaluatingTasks =
+  final List<String> _evaluatingTasks =
       []; // List of tasks that are currently getting responses from
   TextEditingController taskController = TextEditingController();
-  Queue<String> _hintMessages = Queue();
+  final Queue<String> _hintMessages = Queue();
 
   bool get isAddingTask => _isAddingTask;
   List<String> get evaluatingTasks => _evaluatingTasks;
@@ -33,7 +32,7 @@ class TaskState extends MainState {
     if (_hintMessages.length == 3) _hintMessages.removeFirst();
     _hintMessages.add(message);
     notifyListeners();
-    Future.delayed(Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 3), () {
       _hintMessages.remove(message);
       notifyListeners();
     });

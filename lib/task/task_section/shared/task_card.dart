@@ -30,14 +30,14 @@ class TaskCard extends StatelessWidget {
               showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
-                  title: Text('Delete Task'),
+                  title: const Text('Delete Task'),
                   content:
                       Text('Are you sure you want to delete "${task.title}"?'),
                   actions: [
                     TextButton(
                       onPressed: () =>
                           Navigator.of(context).pop(), // Cancel deletion
-                      child: Text('Cancel'),
+                      child: const Text('Cancel'),
                     ),
                     TextButton(
                       onPressed: () {
@@ -50,7 +50,7 @@ class TaskCard extends StatelessWidget {
                               content: Text('Task "${task.title}" deleted')),
                         );
                       },
-                      child: Text('Delete'),
+                      child: const Text('Delete'),
                     ),
                   ],
                 ),
@@ -59,8 +59,8 @@ class TaskCard extends StatelessWidget {
             backgroundColor: Colors.red,
             foregroundColor: Colors.white,
             icon: Icons.delete,
-            padding: EdgeInsets.all(0.0),
-            borderRadius: BorderRadius.only(
+            padding: const EdgeInsets.all(0.0),
+            borderRadius: const BorderRadius.only(
               topRight:
                   Radius.circular(5.0), // Apply border radius to top right
               bottomRight:
@@ -71,7 +71,7 @@ class TaskCard extends StatelessWidget {
       ),
       child: Container(
         decoration: BoxDecoration(
-          color: Color.fromRGBO(45, 45, 45, 1), // Background color
+          color: const Color.fromRGBO(45, 45, 45, 1), // Background color
           borderRadius: BorderRadius.circular(5), // Circular radius
         ),
         height: 52,
@@ -109,7 +109,8 @@ class TaskCard extends StatelessWidget {
   }
 
   Future onTaskComplete(context, task) async {
-    final state = Provider.of<TaskState>(context, listen: false);
+    final mainState = Provider.of<MainState>(context, listen: false);
+    final taskState = Provider.of<TaskState>(context, listen: false);
     var skills = await FirestoreService().getSkillsFromTask(task.title);
 
     /// Generate new skills from task title with OpenAI api
@@ -118,7 +119,7 @@ class TaskCard extends StatelessWidget {
       // Get skill as a string of List<Map<String, int>>
       var messages =
           getTaskCompletionMessages(FirestoreService().getSkills(), taskTitle);
-      var result = await callChatGPT(state, messages, functions);
+      var result = await callChatGPT(mainState, messages, functions);
       if (result == null) return [];
       // Decode string to List<Map<String, dynamic>>
       List<Map<String, dynamic>> skills =
@@ -137,11 +138,11 @@ class TaskCard extends StatelessWidget {
 
       for (var s1 in skills) {
         Skill? s2;
-        if (state.skills.any((s) => s.title == s1['skill'])) {
-          s2 = state.skills.firstWhere((s) => s.title == s1['skill']);
+        if (mainState.skills.any((s) => s.title == s1['skill'])) {
+          s2 = mainState.skills.firstWhere((s) => s.title == s1['skill']);
         }
         if (s2 != null) {
-          state.levelUpSkill(s2, s1['exp']);
+          mainState.levelUpSkill(s2, s1['exp']);
           messages.add("${s1['skill']} + ${s1['exp']}");
         } else {
           newSkills.add(s1);
@@ -165,26 +166,26 @@ class TaskCard extends StatelessWidget {
         // Randomly pick 1 skill to give to user
         var newSkill = getNewSkill(newSkills);
         if (newSkill != null) {
-          state.addSkill(newSkill['skill'], newSkill['exp'], newSkill['type']);
+          mainState.addSkill(newSkill['skill'], newSkill['exp'], newSkill['type']);
           messages.add("New Skill: ${newSkill['skill']} + ${newSkill['exp']}");
         }
       }
 
       for (var message in messages) {
-        state.addHintMessage(message);
+        taskState.addHintMessage(message);
         // Add a delay of 0.2 seconds
-        await Future.delayed(Duration(milliseconds: 500));
+        await Future.delayed(const Duration(milliseconds: 500));
       }
     }
 
     if (skills == null) {
       // If task not found in database, create new skills
-      state.addEvaluatingTask(task.id);
+      taskState.addEvaluatingTask(task.id);
       skills = await generateSkillsFromTaskTitle(task.title);
-      state.removeEvaluatingTask(task.id);
+      taskState.removeEvaluatingTask(task.id);
     }
 
     parseSkills(skills);
-    state.toggleTask(task);
+    mainState.toggleTask(task);
   }
 }
