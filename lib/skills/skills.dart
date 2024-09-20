@@ -22,25 +22,25 @@ class SkillsScreen extends StatelessWidget {
   }
 
   Widget buildSkillSection(state, List skills) {
-    return (ReorderableListView.builder(
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        itemCount: skills.length,
-        onReorder: state.reorderSkill,
-        itemBuilder: (context, index) {
-          return Flexible(
-              key: ValueKey(skills[index].id),
-              child: Column(
-                children: [
-                  skillCard(skills[index]),
-                  const Divider(
-                    height: 5,
-                    thickness: 5,
-                    color: Colors.transparent,
-                  ),
-                ],
-              ));
-        }));
+    return Container(
+      child: (ReorderableListView.builder(
+          itemCount: skills.length,
+          onReorder: state.reorderSkill,
+          itemBuilder: (context, index) {
+            return Container(
+                key: ValueKey(skills[index].id),
+                child: Column(
+                  children: [
+                    skillCard(skills[index]),
+                    const Divider(
+                      height: 5,
+                      thickness: 5,
+                      color: Colors.transparent,
+                    ),
+                  ],
+                ));
+          })),
+    );
   }
 
   Widget SkillIcon(type) {
@@ -114,7 +114,7 @@ class SkillsScreen extends StatelessWidget {
           children: [
             SkillIcon(skill.type),
             SizedBox(width: 5),
-            Expanded(
+            Expanded(   
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

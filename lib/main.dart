@@ -7,13 +7,13 @@ import 'package:provider/provider.dart';
 import 'package:skillcraft/login/login.dart';
 import 'package:skillcraft/main_state.dart';
 import 'package:skillcraft/profile/profile.dart';
-import 'package:skillcraft/routes.dart';
 import 'package:skillcraft/services/firestore.dart';
 import 'package:skillcraft/shared/shared.dart';
 import 'package:skillcraft/skills/skills.dart';
 import 'package:skillcraft/theme.dart';
 import 'package:skillcraft/services/auth.dart';
-import 'package:skillcraft/todo/todo.dart';
+import 'package:skillcraft/task/task.dart';
+import 'package:skillcraft/task/task_state.dart';
 
 // Main entry point of the app
 void main() {
@@ -94,7 +94,10 @@ class MainContentBody extends StatelessWidget {
     var page = state.page;
 
     if (page == 0) {
-      return ToDoScreen();
+      return ChangeNotifierProvider<MainState>(
+              create: (_) => TaskState(),
+              child: TaskScreen(),
+            );
     } else if (page == 1) {
       return SkillsScreen();
     } else if (page == 2) {
