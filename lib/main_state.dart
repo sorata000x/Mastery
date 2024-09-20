@@ -78,10 +78,15 @@ class MainState with ChangeNotifier {
     if (newIndex > oldIndex) {
       newIndex -= 1;
     }
+    for (int i = 0; i < _tasks.length; i++) {
+      _tasks[i].index = i;
+    }
     final Task task = _tasks.removeAt(oldIndex);
-    task.index = newIndex;
     _tasks.insert(newIndex, task);
-    FirestoreService().setTask(task);
+    for (int i = 0; i < _tasks.length; i++) {
+      _tasks[i].index = i;
+    }
+    FirestoreService().setTasks(_tasks);
     notifyListeners();
   }
 
@@ -97,7 +102,8 @@ class MainState with ChangeNotifier {
     notifyListeners();
   }
 
-  void setSkill(String id, int index, String title, int exp, int level, String type) {
+  void setSkill(
+      String id, int index, String title, int exp, int level, String type) {
     var newSkill = Skill(
       id: id,
       title: title,
@@ -130,8 +136,8 @@ class MainState with ChangeNotifier {
         skill.level = newSkill.level;
       }
     }
-    FirestoreService().setSkillInFirestore(newSkill.id, newSkill.index, newSkill.title,
-        newSkill.exp, newSkill.level, newSkill.type);
+    FirestoreService().setSkillInFirestore(newSkill.id, newSkill.index,
+        newSkill.title, newSkill.exp, newSkill.level, newSkill.type);
     notifyListeners();
   }
 
@@ -169,10 +175,15 @@ class MainState with ChangeNotifier {
     if (newIndex > oldIndex) {
       newIndex -= 1;
     }
+    for (int i = 0; i < _skills.length; i++) {
+      _skills[i].index = i;
+    }
     final Skill skill = _skills.removeAt(oldIndex);
-    skill.index = newIndex;
     _skills.insert(newIndex, skill);
-    FirestoreService().setSkill(skill);
+    for (int i = 0; i < _skills.length; i++) {
+      _skills[i].index = i;
+    }
+    FirestoreService().setSkills(_skills);
     notifyListeners();
   }
 }

@@ -76,6 +76,31 @@ class FirestoreService {
         .catchError((error) => print("Failed to set user: $error"));
   }
 
+  Future setTasks(List<Task> newTasks) async {
+    CollectionReference tasks = _db
+        .collection('users') // User collection
+        .doc(user) // Specific user document
+        .collection('tasks'); // Tasks subcollection
+    try {
+      // Replace all tasks with new tasks
+      for (var task in newTasks) {
+        await tasks
+            .doc(task.id)
+            .set({
+              'id': task.id,
+              'title': task.title,
+              'index': task.index,
+              'isCompleted': task.isCompleted,
+            })
+            .then((value) => print("Task Set"))
+            .catchError((error) => print("Failed to set task: $error"));
+      }
+      print("Tasks collection successfully replaced.");
+    } catch (e) {
+      print("Error replacing tasks collection: $e");
+    }
+  }
+
   Future toggleTask(Task task) {
     return setTaskInFirestore(
       task.id,
@@ -164,16 +189,50 @@ class FirestoreService {
         .catchError((error) => print("Failed to set user: $error"));
   }
 
+  Future setSkills(List<Skill> newSkills) async {
+    CollectionReference skills = _db
+        .collection('users') // User collection
+        .doc(user) // Specific user document
+        .collection('skills'); // Skills subcollection
+    try {
+      // Replace all skills with new skills
+      for (var skill in newSkills) {
+        await skills
+            .doc(skill.id)
+            .set({
+              'id': skill.id,
+              'index': skill.index,
+              'title': skill.title,
+              'exp': skill.exp,
+              'level': skill.level,
+              'type': skill.type
+            })
+            .then((value) => print("Skill Set"))
+            .catchError((error) => print("Failed to set skill: $error"));
+      }
+      print("Skills collection successfully replaced.");
+    } catch (e) {
+      print("Error replacing skills collection: $e");
+    }
+  }
+
   Future addSkillToFirestore(String title, String type) {
     CollectionReference skills = _db
         .collection('users') // User collection
         .doc(user) // Specific user document
-        .collection('skills'); // Tasks subcollection
+        .collection('skills'); // Skills subcollection
     var id = const Uuid().v4();
 
     return skills
         .doc(id)
-        .set({'id': id, 'index': 0, 'title': title, 'exp': 0, 'level': 1, 'type': type})
+        .set({
+          'id': id,
+          'index': 0,
+          'title': title,
+          'exp': 0,
+          'level': 1,
+          'type': type
+        })
         .then((value) => print("User Set"))
         .catchError((error) => print("Failed to set user: $error"));
   }
