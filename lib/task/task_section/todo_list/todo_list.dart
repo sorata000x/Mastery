@@ -14,29 +14,27 @@ class TodoList extends StatelessWidget {
     final taskState = Provider.of<TaskState>(context);
     var todos = mainState.tasks.where((task) => !task.isCompleted).toList();
 
-    return Flexible(
-      child: ReorderableListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: todos.length,
-          onReorder: mainState.reorderTask,
-          itemBuilder: (context, index) {
-            return Expanded(
-                key: ValueKey(todos[index].id),
-                child: Column(
-                  children: [
-                    taskState.evaluatingTasks.contains(todos[index].id)
-                        ? const TaskEvalurationCard()
-                        : TaskCard(task: todos[index]),
-                    const Divider(
-                      // This creates a horizontal line between tasks
-                      height: 5,
-                      thickness: 5,
-                      color: Colors.transparent,
-                    ),
-                  ],
-                ));
-          }),
-    );
+    return ReorderableListView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: todos.length,
+        onReorder: mainState.reorderTask,
+        itemBuilder: (context, index) {
+          return Container(
+              key: ValueKey(todos[index].id),
+              child: Column(
+                children: [
+                  taskState.evaluatingTasks.contains(todos[index].id)
+                      ? const TaskEvalurationCard()
+                      : TaskCard(task: todos[index]),
+                  const Divider(
+                    // This creates a horizontal line between tasks
+                    height: 5,
+                    thickness: 5,
+                    color: Colors.transparent,
+                  ),
+                ],
+              ));
+        });
   }
 }

@@ -29,7 +29,7 @@ class CompletedList extends StatelessWidget {
               itemCount: completed.length,
               onReorder: mainState.reorderTask,
               itemBuilder: (context, index) {
-                return Expanded(
+                return Container(
                     key: ValueKey(completed[index].id),
                     child: Column(
                       children: [

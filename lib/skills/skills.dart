@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:skillcraft/main_state.dart';
+import 'package:skillcraft/skills/skil_card.dart';
 
 class SkillsScreen extends StatelessWidget {
   const SkillsScreen({super.key});
@@ -27,7 +28,7 @@ class SkillsScreen extends StatelessWidget {
                 key: ValueKey(skills[index].id),
                 child: Column(
                   children: [
-                    skillCard(skills[index]),
+                    SkillCard(skill: skills[index]),
                     const Divider(
                       height: 5,
                       thickness: 5,
@@ -36,110 +37,6 @@ class SkillsScreen extends StatelessWidget {
                   ],
                 ));
           })),
-    );
-  }
-
-  Widget SkillIcon(type) {
-    var iconName = 'star';
-    if (type == 'fitness') {
-      iconName = 'run';
-    }
-    if (type == 'sports') {
-      iconName = 'star';
-    }
-    if (type == 'strength') {
-      iconName = 'muscle_up';
-    }
-    if (type == 'chores') {
-      iconName = 'broom';
-    }
-    if (type == 'thinking') {
-      iconName = 'brain';
-    }
-    if (type == 'memory') {
-      iconName = 'brain';
-    }
-    if (type == 'focus') {
-      iconName = 'focus';
-    }
-    if (type == 'learning') {
-      iconName = 'open_book';
-    }
-    if (type == 'emotion') {
-      iconName = 'emotion';
-    }
-    if (type == 'creative') {
-      iconName = 'lightbulb';
-    }
-    if (type == 'social') {
-      iconName = 'handshake';
-    }
-    if (type == 'software') {
-      iconName = 'code';
-    }
-    if (type == 'hardware') {
-      iconName = 'gear';
-    }
-    if (type == 'cook') {
-      iconName = 'cook';
-    }
-    return Container(
-      child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: SizedBox(
-          height: 34,
-          width: 34,
-          child: SvgPicture.asset(
-            'lib/assets/icons/$iconName.svg',
-            colorFilter: const ColorFilter.mode(
-              Colors.white, // Replace with your desired color
-              BlendMode
-                  .srcIn, // This blend mode ensures the color is applied to the SVG
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget skillCard(skill) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(10, 10, 20, 10),
-      child: Expanded(
-        child: Row(
-          children: [
-            SkillIcon(skill.type),
-            const SizedBox(width: 5),
-            Expanded(   
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(skill.title),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 3, bottom: 3),
-                    child: LinearProgressIndicator(
-                      value: skill.exp / (100 * (skill.level ^ 2)),
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        "EXP ${skill.exp} / ${100 * (skill.level ^ 2)}",
-                        style: const TextStyle(fontSize: 14),
-                      ),
-                      const Spacer(),
-                      Text(
-                        "LV.${skill.level}",
-                        style: const TextStyle(fontSize: 14),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
