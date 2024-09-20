@@ -18,26 +18,29 @@ class SkillsScreen extends StatelessWidget {
         appBar: AppBar(
           title: Text("Skills"),
         ),
-        body: buildSkillSection(state.skills));
+        body: buildSkillSection(state, state.skills));
   }
 
-  Widget buildSkillSection(List skills) {
-    return SingleChildScrollView(
-      child: Column(
-        children: skills.map<Widget>((skill) {
-          return Column(
-            children: [
-              skillCard(skill),
-              const Divider(
-                height: 5,
-                thickness: 5,
-                color: Colors.transparent,
-              ),
-            ],
-          );
-        }).toList(),
-      ),
-    );
+  Widget buildSkillSection(state, List skills) {
+    return (ReorderableListView.builder(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        itemCount: skills.length,
+        onReorder: state.reorderSkill,
+        itemBuilder: (context, index) {
+          return Flexible(
+              key: ValueKey(skills[index].id),
+              child: Column(
+                children: [
+                  skillCard(skills[index]),
+                  const Divider(
+                    height: 5,
+                    thickness: 5,
+                    color: Colors.transparent,
+                  ),
+                ],
+              ));
+        }));
   }
 
   Widget SkillIcon(type) {
@@ -104,7 +107,6 @@ class SkillsScreen extends StatelessWidget {
   }
 
   Widget skillCard(skill) {
-    print("skillCard: ${skill.toJson()}");
     return Container(
       padding: EdgeInsets.fromLTRB(10, 10, 20, 10),
       child: Expanded(

@@ -82,14 +82,14 @@ class _ToDoScreenState extends State<ToDoScreen> {
   Widget buildToDoSection(tasks) {
     final state = Provider.of<MainState>(context);
     var todos = tasks.where((task) => !task.isCompleted).toList();
-    return Container(
+    return Flexible(
       child: ReorderableListView.builder(
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
           itemCount: todos.length,
           onReorder: state.reorderTask,
           itemBuilder: (context, index) {
-              return Flexible(
+            return Flexible(
                 key: ValueKey(todos[index].id),
                 child: Column(
                   children: [
@@ -103,8 +103,7 @@ class _ToDoScreenState extends State<ToDoScreen> {
                       color: Colors.transparent,
                     ),
                   ],
-                )
-              );
+                ));
           }),
     );
   }
@@ -394,26 +393,39 @@ class _ToDoScreenState extends State<ToDoScreen> {
   }
 
   Widget buildCompletedSection(tasks) {
+    var completed = tasks.where((task) => task.isCompleted == true).toList();
+    final state = Provider.of<MainState>(context);
+
     return ExpansionTile(
-      title: const Text(
-        'Completed',
-        style: TextStyle(fontSize: 14, color: Colors.grey),
-      ),
-      initiallyExpanded: true,
-      children:
-          tasks.where((task) => task.isCompleted == true).map<Widget>((task) {
-        return Column(
-          children: [
-            taskCard(task),
-            const Divider(
-              // This creates a horizontal line between tasks
-              height: 5,
-              thickness: 5,
-              color: Colors.transparent,
-            ),
-          ],
-        );
-      }).toList(),
+        title: const Text(
+          'Completed',
+          style: TextStyle(fontSize: 14, color: Colors.grey),
+        ),
+        initiallyExpanded: true,
+        children: [
+              ReorderableListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: completed.length,
+                  onReorder: state.reorderTask,
+                  itemBuilder: (context, index) {
+                    return Flexible(
+                      key: ValueKey(completed[index].id),
+                      child: Column(
+                        children: [
+                          evaluatingTasks.contains(completed[index].id)
+                              ? taskEvaluatingCard()
+                              : taskCard(completed[index]),
+                          const Divider(
+                            // This creates a horizontal line between tasks
+                            height: 5,
+                            thickness: 5,
+                            color: Colors.transparent,
+                          ),
+                        ],
+                      ));
+                  })
+        ]
     );
   }
 

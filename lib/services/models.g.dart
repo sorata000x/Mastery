@@ -22,6 +22,7 @@ Map<String, dynamic> _$TaskToJson(Task instance) => <String, dynamic>{
 
 Skill _$SkillFromJson(Map<String, dynamic> json) => Skill(
       id: json['id'] as String? ?? '',
+      index: (json['index'] as num?)?.toInt() ?? 0,
       title: json['title'] as String? ?? '',
       exp: (json['exp'] as num?)?.toInt() ?? 0,
       level: (json['level'] as num?)?.toInt() ?? 1,
@@ -30,6 +31,7 @@ Skill _$SkillFromJson(Map<String, dynamic> json) => Skill(
 
 Map<String, dynamic> _$SkillToJson(Skill instance) => <String, dynamic>{
       'id': instance.id,
+      'index': instance.index,
       'title': instance.title,
       'exp': instance.exp,
       'level': instance.level,

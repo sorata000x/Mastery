@@ -97,17 +97,19 @@ class MainState with ChangeNotifier {
     notifyListeners();
   }
 
-  void setSkill(String id, String title, int exp, int level, String type) {
+  void setSkill(String id, int index, String title, int exp, int level, String type) {
     var newSkill = Skill(
       id: id,
       title: title,
+      index: index,
       exp: exp,
       level: level,
+      type: type,
     );
     for (var skill in skills) {
       if (skill.id == id) skill = newSkill;
     }
-    FirestoreService().setSkillInFirestore(id, title, exp, level, type);
+    FirestoreService().setSkillInFirestore(id, index, title, exp, level, type);
     notifyListeners();
   }
 
@@ -129,7 +131,7 @@ class MainState with ChangeNotifier {
       }
       ;
     }
-    FirestoreService().setSkillInFirestore(newSkill.id, newSkill.title,
+    FirestoreService().setSkillInFirestore(newSkill.id, newSkill.index, newSkill.title,
         newSkill.exp, newSkill.level, newSkill.type);
     notifyListeners();
   }
@@ -161,6 +163,17 @@ class MainState with ChangeNotifier {
         type: type);
     _skills.add(newSkill);
     FirestoreService().addSkillToFirestore(title, type);
+    notifyListeners();
+  }
+
+  void reorderSkill(oldIndex, newIndex) {
+    if (newIndex > oldIndex) {
+      newIndex -= 1;
+    }
+    final Skill skill = _skills.removeAt(oldIndex);
+    skill.index = newIndex;
+    _skills.insert(newIndex, skill);
+    FirestoreService().setSkill(skill);
     notifyListeners();
   }
 }

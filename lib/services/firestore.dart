@@ -123,8 +123,29 @@ class FirestoreService {
     return skills.toList();
   }
 
+  Future setSkill(Skill skill) {
+    CollectionReference skills = _db
+        .collection('users') // User collection
+        .doc(user) // Specific user document
+        .collection('skills'); // Tasks subcollection
+
+    // Set data with a custom ID
+    return skills
+        .doc(skill.id)
+        .set({
+          'id': skill.id,
+          'title': skill.title,
+          'index': skill.index,
+          'exp': skill.exp,
+          'level': skill.level,
+          'type': skill.type,
+        })
+        .then((value) => print("Task Set"))
+        .catchError((error) => print("Failed to set task: $error"));
+  }
+
   Future setSkillInFirestore(
-      String id, String title, int exp, int level, String type) {
+      String id, int index, String title, int exp, int level, String type) {
     CollectionReference skills = _db
         .collection('users') // User collection
         .doc(user) // Specific user document
@@ -135,6 +156,7 @@ class FirestoreService {
         .doc(id)
         .set({
           'id': id,
+          'index': index,
           'title': title,
           'exp': exp,
           'level': level,
@@ -153,7 +175,7 @@ class FirestoreService {
 
     return skills
         .doc(id)
-        .set({'id': id, 'title': title, 'exp': 0, 'level': 1, 'type': type})
+        .set({'id': id, 'index': 0, 'title': title, 'exp': 0, 'level': 1, 'type': type})
         .then((value) => print("User Set"))
         .catchError((error) => print("Failed to set user: $error"));
   }

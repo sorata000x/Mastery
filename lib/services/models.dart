@@ -9,7 +9,11 @@ class Task {
   String title;
   int index;
   bool isCompleted;
-  Task({this.id = '', this.title = '', this.index = 0, this.isCompleted = false});
+  Task(
+      {this.id = '',
+      this.title = '',
+      this.index = 0,
+      this.isCompleted = false});
   factory Task.fromJson(Map<String, dynamic> json) => _$TaskFromJson(json);
   Map<String, dynamic> toJson() => _$TaskToJson(this);
 }
@@ -17,12 +21,14 @@ class Task {
 @JsonSerializable()
 class Skill {
   String id;
+  int index;
   String title;
   int exp;
   int level;
   String type;
   Skill(
       {this.id = '',
+      this.index = 0,
       this.title = '',
       this.exp = 0,
       this.level = 1,
