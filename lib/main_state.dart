@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:skillcraft/services/firestore.dart';
 import 'package:skillcraft/services/models.dart';
@@ -7,37 +8,87 @@ class MainState with ChangeNotifier {
   int _page = 0;
   List<Task> _tasks = [];
   List<Skill> _skills = [];
+  String? _user;
 
   int get page => _page;
   List<Task> get tasks => _tasks;
   List<Skill> get skills => _skills;
+  String? get user => _user;
 
   MainState() {
     initTask();
     initSkill();
+    updateUser();
+    FirebaseAuth.instance.authStateChanges().listen((User? currentUser) {
+      _user = currentUser?.uid;
+      notifyListeners();
+    });
   }
 
-  // Init
+  // User
 
-  void initTask() async {
-    _tasks = await FirestoreService().getTasks();
+  void updateUser() {
+    _user = FirebaseAuth.instance.currentUser?.uid;
     notifyListeners();
   }
 
-  void initSkill() async {
-    _skills = await FirestoreService().getSkills();
-    notifyListeners();
-  }
-
-  // Set
+  // Page
 
   set page(int newValue) {
     _page = newValue;
     notifyListeners();
   }
 
-  set tasks(List<Task> newValue) {
-    _tasks = newValue;
+  // Task
+
+  void initTask() async {
+    _tasks = await FirestoreService().getTasks();
+    _tasks.sort((a, b) => a.index.compareTo(b.index));
+    notifyListeners();
+  }
+
+  void addTask(String title) {
+    final newTask = Task(
+      id: Uuid().v4(),
+      title: title,
+      index: _tasks.length,
+      isCompleted: false,
+    );
+    _tasks.add(newTask);
+    FirestoreService().addTaskToFirestore(newTask);
+    notifyListeners();
+  }
+
+  void toggleTask(Task target) {
+    // Set local
+    Task? task = tasks.firstWhere((task) => task.id == target.id);
+    task.isCompleted = !task.isCompleted;
+    // Set firestore
+    FirestoreService().setTask(task);
+    notifyListeners();
+  }
+
+  void removeTask(task) {
+    tasks.remove(task);
+    FirestoreService().deleteTaskFromFirestore(task.id);
+    notifyListeners();
+  }
+
+  void reorderTask(oldIndex, newIndex) {
+    if (newIndex > oldIndex) {
+      newIndex -= 1;
+    }
+    final Task task = _tasks.removeAt(oldIndex);
+    task.index = newIndex;
+    _tasks.insert(newIndex, task);
+    FirestoreService().setTask(task);
+    notifyListeners();
+  }
+
+  // Skill
+
+  void initSkill() async {
+    _skills = await FirestoreService().getSkills();
     notifyListeners();
   }
 
@@ -46,7 +97,7 @@ class MainState with ChangeNotifier {
     notifyListeners();
   }
 
-  void setSkill(String id, String title, int exp, int level) {
+  void setSkill(String id, String title, int exp, int level, String type) {
     var newSkill = Skill(
       id: id,
       title: title,
@@ -56,13 +107,13 @@ class MainState with ChangeNotifier {
     for (var skill in skills) {
       if (skill.id == id) skill = newSkill;
     }
-    FirestoreService().setSkillInFirestore(id, title, exp, level);
+    FirestoreService().setSkillInFirestore(id, title, exp, level, type);
     notifyListeners();
   }
 
   void levelUpSkill(Skill target, int gain) {
     int cap = (100 * (target.level ^ 2)).toInt();
-    var exp = (target.exp + gain);
+    int exp = (target.exp + gain);
     var level = target.level + (exp ~/ cap);
     exp = exp % cap;
     var newSkill = Skill(
@@ -72,9 +123,14 @@ class MainState with ChangeNotifier {
       level: level,
     );
     for (var skill in skills) {
-      if (skill.id == target.id) skill = newSkill;
+      if (skill.id == target.id) {
+        skill.exp = newSkill.exp;
+        skill.level = newSkill.level;
+      }
+      ;
     }
-    FirestoreService().setSkillInFirestore(target.id, target.title, exp, level);
+    FirestoreService().setSkillInFirestore(newSkill.id, newSkill.title,
+        newSkill.exp, newSkill.level, newSkill.type);
     notifyListeners();
   }
 
@@ -92,41 +148,19 @@ class MainState with ChangeNotifier {
     return false;
   }
 
-  void addTask(String title) {
-    final newTask = Task(
-      id: Uuid().v4(),
-      title: title,
-      isCompleted: false,
-    );
-    _tasks.add(newTask);
-    FirestoreService().addTaskToFirestore(title);
-    notifyListeners();
-  }
-
-  void addSkill(String title, int gain) {
+  void addSkill(String title, int gain, String type) {
     var cap = 100;
     var exp = gain;
     var level = 1 + (exp ~/ cap);
     exp = exp % cap;
-    final newSkill =
-        Skill(id: const Uuid().v4(), title: title, exp: exp, level: level);
+    final newSkill = Skill(
+        id: const Uuid().v4(),
+        title: title,
+        exp: exp,
+        level: level,
+        type: type);
     _skills.add(newSkill);
-    FirestoreService().addSkillToFirestore(title);
-    notifyListeners();
-  }
-
-  void toggleTask(Task target) {
-    // Set local
-    Task? task = tasks.firstWhere((task) => task.id == target.id);
-    task.isCompleted = !task.isCompleted;
-    // Set firestore
-    FirestoreService().setTask(task);
-    notifyListeners();
-  }
-
-  void removeTask(task) {
-    tasks.remove(task);
-    FirestoreService().deleteTaskFromFirestore(task.id);
+    FirestoreService().addSkillToFirestore(title, type);
     notifyListeners();
   }
 }

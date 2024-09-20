@@ -1,11 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 // Import the firebase_core plugin
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
+import 'package:skillcraft/login/login.dart';
 import 'package:skillcraft/main_state.dart';
 import 'package:skillcraft/profile/profile.dart';
 import 'package:skillcraft/routes.dart';
+import 'package:skillcraft/services/firestore.dart';
 import 'package:skillcraft/shared/shared.dart';
 import 'package:skillcraft/skills/skills.dart';
 import 'package:skillcraft/theme.dart';
@@ -37,17 +40,10 @@ class _AppState extends State<App> {
         if (snapshot.hasError) {
           return const Center(child: Text('Error initializing Firebase'));
         }
-
         if (snapshot.connectionState == ConnectionState.done) {
           return ChangeNotifierProvider<MainState>(
             create: (_) => MainState(),
-            child: MaterialApp(
-              home: Scaffold(
-                body: MainContent(),  // MainContent now depends on MainState
-                bottomNavigationBar: const BottomNavBar(), // BottomNavBar depends on MainState
-              ),
-              theme: appTheme,
-            ),
+            child: MainContent(),
           );
         }
 
@@ -57,8 +53,41 @@ class _AppState extends State<App> {
   }
 }
 
+class MainContent extends StatefulWidget {
+  const MainContent({super.key});
+
+  @override
+  State<MainContent> createState() => _MainContentState();
+}
+
+class _MainContentState extends State<MainContent> {
+
+
+  @override
+  Widget build(BuildContext context) {
+    final state = Provider.of<MainState>(context);
+    if (state.user == null) {
+      return MaterialApp(
+        home: const Scaffold(
+          body: LoginScreen(),
+        ),
+        theme: appTheme,
+      );
+    }
+
+    return MaterialApp(
+      home: Scaffold(
+        body: MainContentBody(), // MainContent now depends on MainState
+        bottomNavigationBar:
+            const BottomNavBar(), // BottomNavBar depends on MainState
+      ),
+      theme: appTheme,
+    );
+  }
+}
+
 // MainContent widget that depends on MainState
-class MainContent extends StatelessWidget {
+class MainContentBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var state = Provider.of<MainState>(context);

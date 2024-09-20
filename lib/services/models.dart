@@ -7,8 +7,9 @@ part 'models.g.dart';
 class Task {
   String id;
   String title;
+  int index;
   bool isCompleted;
-  Task({this.id = '', this.title = '', this.isCompleted = false});
+  Task({this.id = '', this.title = '', this.index = 0, this.isCompleted = false});
   factory Task.fromJson(Map<String, dynamic> json) => _$TaskFromJson(json);
   Map<String, dynamic> toJson() => _$TaskToJson(this);
 }
@@ -19,7 +20,13 @@ class Skill {
   String title;
   int exp;
   int level;
-  Skill({this.id = '', this.title = '', this.exp = 0, this.level = 1});
+  String type;
+  Skill(
+      {this.id = '',
+      this.title = '',
+      this.exp = 0,
+      this.level = 1,
+      this.type = ''});
   factory Skill.fromJson(Map<String, dynamic> json) => _$SkillFromJson(json);
   Map<String, dynamic> toJson() => _$SkillToJson(this);
 }
@@ -31,6 +38,7 @@ class TaskSkills {
 
   TaskSkills({this.title = '', List<Map<String, dynamic>>? skills})
       : skills = skills ?? [];
-  factory TaskSkills.fromJson(Map<String, dynamic> json) => _$TaskSkillsFromJson(json);
+  factory TaskSkills.fromJson(Map<String, dynamic> json) =>
+      _$TaskSkillsFromJson(json);
   Map<String, dynamic> toJson() => _$TaskSkillsToJson(this);
 }

@@ -19,11 +19,21 @@ final Map<String, dynamic> skillProperties = {
         "probability": {
           "type": "number",
           "description": "Probability of getting the skill (0-1)"
-        }
+        },
+        "type": {
+          "type": "string",
+          "description": """
+            fitness, sports, strength, chores, cook,
+            thinking, memory, focus, learning, emotion, creative, 
+            social,
+            software, hardware, 
+            or other
+          """
+        },
       }
     },
     "description": """
-      List of skills names and exps associate with task.
+      List of skills names, exps, probability, icon associate with task.
       Always have one skill with probability 1.0.
       Example: 
         Task: Run for 1 mile
@@ -31,47 +41,56 @@ final Map<String, dynamic> skillProperties = {
           {
             "skill": "Endurance",
             "exp": 50,
-            "probability": 1.0
+            "probability": 1.0,
+            "type": "physical"
           },
           {
             "skill": "Stamina",
             "exp": 40,
-            "probability": 0.9
+            "probability": 0.9,
+            "type": "physical"
           },
           {
             "skill": "Speed",
             "exp": 30,
-            "probability": 0.7
+            "probability": 0.7,
+            "type": "physical"
           },
           {
             "skill": "Breathing Control",
             "exp": 25,
-            "probability": 0.7
+            "probability": 0.7,
+            "type": "physical"
           },
           {
             "skill": "Leg Strength",
             "exp": 35,
-            "probability": 0.85
+            "probability": 0.85,
+            "type": "physical"
           },
           {
             "skill": "Mental Toughness",
             "exp": 20,
-            "probability": 0.6
+            "probability": 0.6,
+            "type": "physical"
           },
           {
             "skill": "Agility",
             "exp": 15,
-            "probability": 0.5
+            "probability": 0.5,
+            "type": "physical"
           },
           {
             "skill": "Pacing",
             "exp": 25,
-            "probability": 0.75
+            "probability": 0.75,
+            "type": "physical"
           },
           {
             "skill": "Focus",
             "exp": 20,
-            "probability": 0.6
+            "probability": 0.6,
+            "type": "physical"
           }
         ]
     """,
@@ -131,6 +150,7 @@ Future<String?> callChatGPT(state, futureMessages, functions) async {
 
 String? handleResponse(state, Map<String, dynamic> responseData) {
   final List<dynamic> choices = responseData['choices'];
+  print(responseData['usage']);
   if (choices.isNotEmpty) {
     final Map<String, dynamic> message = choices[0]['message'];
     if (message.containsKey('function_call')) {
@@ -169,12 +189,12 @@ Set<String> generateSkillMessage(
     var skill = state.getSkillByTitle(name);
     if (skill == null) return {"ERROR: Cannot find skill $name"};
     int newExp = skill.exp + exp;
-    int cap = (100 * (skill.level ^ 2)).toInt();
+    int cap = (100 * (skill.level * skill.level)).toInt();
     int newLevel = skill.level;
     while (newExp > cap) {
       newExp -= cap;
       newLevel++;
-      cap = 100 * (newLevel ^ 2);
+      cap = (100 * (newLevel * newLevel)).toInt();
     }
     state.setSkill(skill.id, name, newExp, newLevel);
     messages.add("$name + $exp");

@@ -8,7 +8,23 @@ import 'package:uuid/uuid.dart';
 
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
-  final String? user = FirebaseAuth.instance.currentUser?.uid;
+  String? user = FirebaseAuth.instance.currentUser?.uid;
+
+  FirestoreService() {
+    FirebaseAuth.instance.authStateChanges().listen((User? currentUser) {
+      user = currentUser?.uid;
+    });
+  }
+
+  // User
+
+  String? getUser() {
+    return user;
+  }
+
+  void updateUser() {
+    user = FirebaseAuth.instance.currentUser?.uid;
+  }
 
   // Task
 
@@ -35,13 +51,15 @@ class FirestoreService {
         .set({
           'id': task.id,
           'title': task.title,
+          'index': task.index,
           'isCompleted': task.isCompleted,
         })
         .then((value) => print("Task Set"))
         .catchError((error) => print("Failed to set task: $error"));
   }
 
-  Future setTaskInFirestore(String id, String title, bool completed) {
+  Future setTaskInFirestore(
+      String id, String title, int index, bool completed) {
     CollectionReference tasks = _db
         .collection('users') // User collection
         .doc(user) // Specific user document
@@ -53,6 +71,7 @@ class FirestoreService {
         .set({
           'id': id,
           'title': title,
+          'index': index,
           'isCompleted': completed,
         })
         .then((value) => print("User Set"))
@@ -63,23 +82,24 @@ class FirestoreService {
     return setTaskInFirestore(
       task.id,
       task.title,
+      task.index,
       !task.isCompleted,
     );
   }
 
-  Future addTaskToFirestore(String title) {
+  Future addTaskToFirestore(Task newTask) {
     CollectionReference tasks = _db
         .collection('users') // User collection
         .doc(user) // Specific user document
         .collection('tasks'); // Tasks subcollection
-    var id = const Uuid().v4();
 
     return tasks
-        .doc(id)
+        .doc(newTask.id)
         .set({
-          'id': id,
-          'title': title,
-          'isCompleted': false,
+          'id': newTask.id,
+          'title': newTask.title,
+          'index': newTask.index,
+          'isCompleted': newTask.isCompleted,
         })
         .then((value) => print("Task Set"))
         .catchError((error) => print("Failed to set task: $error"));
@@ -96,17 +116,15 @@ class FirestoreService {
   // Skills
 
   Future<List<Skill>> getSkills() async {
-    var ref = _db
-        .collection('users')
-        .doc(user)
-        .collection('skills');
+    var ref = _db.collection('users').doc(user).collection('skills');
     var snapshot = await ref.get();
     var data = snapshot.docs.map((s) => s.data());
     var skills = data.map((d) => Skill.fromJson(d));
     return skills.toList();
   }
 
-  Future setSkillInFirestore(String id, String title, int exp, int level) {
+  Future setSkillInFirestore(
+      String id, String title, int exp, int level, String type) {
     CollectionReference skills = _db
         .collection('users') // User collection
         .doc(user) // Specific user document
@@ -115,12 +133,18 @@ class FirestoreService {
     // Set data with a custom ID
     return skills
         .doc(id)
-        .set({'id': id, 'title': title, 'exp': exp, 'level': level})
+        .set({
+          'id': id,
+          'title': title,
+          'exp': exp,
+          'level': level,
+          'type': type
+        })
         .then((value) => print("User Set"))
         .catchError((error) => print("Failed to set user: $error"));
   }
 
-  Future addSkillToFirestore(String title) {
+  Future addSkillToFirestore(String title, String type) {
     CollectionReference skills = _db
         .collection('users') // User collection
         .doc(user) // Specific user document
@@ -129,7 +153,7 @@ class FirestoreService {
 
     return skills
         .doc(id)
-        .set({'id': id, 'title': title, 'exp': 0, 'level': 1})
+        .set({'id': id, 'title': title, 'exp': 0, 'level': 1, 'type': type})
         .then((value) => print("User Set"))
         .catchError((error) => print("Failed to set user: $error"));
   }

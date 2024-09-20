@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:skillcraft/api/api.dart';
 import 'package:skillcraft/main_state.dart';
@@ -11,6 +12,7 @@ import 'package:skillcraft/services/models.dart';
 import 'package:skillcraft/shared/shared.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:uuid/uuid.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ToDoScreen extends StatefulWidget {
   const ToDoScreen({super.key});
@@ -62,7 +64,6 @@ class _ToDoScreenState extends State<ToDoScreen> {
       body: Column(
         children: [
           Expanded(
-            // Add Expanded here to let the ListView take up the remaining space
             child: ListView(
               padding: const EdgeInsets.all(16),
               children: [
@@ -79,24 +80,32 @@ class _ToDoScreenState extends State<ToDoScreen> {
   }
 
   Widget buildToDoSection(tasks) {
-    var todos = tasks.where((task) => !task.isCompleted);
-    return Column(
-      children: todos.map<Widget>((task) {
-        int index = tasks.indexOf(task);
-        return Column(
-          children: [
-            evaluatingTasks.contains(task.id)
-                ? taskEvaluatingCard()
-                : taskCard(task),
-            const Divider(
-              // This creates a horizontal line between tasks
-              height: 5,
-              thickness: 5,
-              color: Colors.transparent,
-            ),
-          ],
-        );
-      }).toList(),
+    final state = Provider.of<MainState>(context);
+    var todos = tasks.where((task) => !task.isCompleted).toList();
+    return Container(
+      child: ReorderableListView.builder(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          itemCount: todos.length,
+          onReorder: state.reorderTask,
+          itemBuilder: (context, index) {
+              return Flexible(
+                key: ValueKey(todos[index].id),
+                child: Column(
+                  children: [
+                    evaluatingTasks.contains(todos[index].id)
+                        ? taskEvaluatingCard()
+                        : taskCard(todos[index]),
+                    const Divider(
+                      // This creates a horizontal line between tasks
+                      height: 5,
+                      thickness: 5,
+                      color: Colors.transparent,
+                    ),
+                  ],
+                )
+              );
+          }),
     );
   }
 
@@ -167,13 +176,9 @@ class _ToDoScreenState extends State<ToDoScreen> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Transform.scale(
-              scale: 1.2,
-              child: Checkbox(
-                value: task.isCompleted,
-                shape: const CircleBorder(),
-                onChanged: (bool? value) {
-                  if (value == true) {
+            IconButton(
+                onPressed: () {
+                  if (task.isCompleted == false) {
                     taskToSkills(task);
                   } else {
                     // Directly toggle tasks of no need to wait for response
@@ -182,8 +187,10 @@ class _ToDoScreenState extends State<ToDoScreen> {
                     });
                   }
                 },
-              ),
-            ),
+                icon: task.isCompleted
+                    ? const Icon(IconData(0xe159, fontFamily: 'MaterialIcons'))
+                    : const Icon(
+                        IconData(0xef53, fontFamily: 'MaterialIcons'))),
             Text(
               task.title,
               style: TextStyle(
@@ -239,21 +246,24 @@ class _ToDoScreenState extends State<ToDoScreen> {
         }
       }
 
-      Map<String, dynamic>? getRandomSkill(List<Map<String, dynamic>> skills) {
+      Map<String, dynamic>? getNewSkill(List<Map<String, dynamic>> skills) {
+        skills.sort((a, b) => b['probability'].compareTo(a['probability']));
+
         Random random = Random();
-        int rIndex = random.nextInt(skills.length);
         double chance = random.nextDouble();
 
-        return chance < skills[rIndex]['probability']
-            ? skills[rIndex]
-            : null; // Fallback in case rounding errors occur
+        for (var skill in skills) {
+          if (chance < skill['probability']) return skill;
+        }
+
+        return null;
       }
 
       if (newSkills.isNotEmpty) {
         // Randomly pick 1 skill to give to user
-        var newSkill = getRandomSkill(newSkills);
+        var newSkill = getNewSkill(newSkills);
         if (newSkill != null) {
-          state.addSkill(newSkill['skill'], newSkill['exp']);
+          state.addSkill(newSkill['skill'], newSkill['exp'], newSkill['type']);
           messages.add("New Skill: ${newSkill['skill']} + ${newSkill['exp']}");
         }
       }
@@ -315,8 +325,9 @@ class _ToDoScreenState extends State<ToDoScreen> {
           padding: EdgeInsets.symmetric(horizontal: 16.0),
           child: ClipRRect(
             borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(5.0),   // Radius for bottom-left corner
-              bottomRight: Radius.circular(5.0),  // Radius for bottom-right corner
+              bottomLeft: Radius.circular(5.0), // Radius for bottom-left corner
+              bottomRight:
+                  Radius.circular(5.0), // Radius for bottom-right corner
             ),
             child: Column(
               children: hintMessages
@@ -336,13 +347,13 @@ class _ToDoScreenState extends State<ToDoScreen> {
         ));
   }
 
-  Widget HintCard(text) {
+  Widget HintCard(message) {
     return Material(
       color: Colors.transparent,
       child: Container(
         width: MediaQuery.of(context).size.width,
         height: 52,
-        padding: EdgeInsets.symmetric(horizontal: 16.0),
+        padding: EdgeInsets.symmetric(horizontal: 19.0),
         decoration: BoxDecoration(
           color: Color.fromRGBO(50, 50, 50, 1),
           // Color.fromRGBO(45, 45, 45, 1)
@@ -350,10 +361,20 @@ class _ToDoScreenState extends State<ToDoScreen> {
         ),
         child: Align(
           alignment: Alignment.centerLeft,
-          child: Text(
-            text,
-            style: TextStyle(color: Colors.white, fontSize: 16),
-            textAlign: TextAlign.start,
+          child: Row(
+            children: [
+              const FaIcon(
+                FontAwesomeIcons.upLong, // Use a Font Awesome icon here
+                size: 20.0,
+                color: Colors.white,
+              ),
+              SizedBox(width: 18),
+              Text(
+                message,
+                style: TextStyle(color: Colors.white, fontSize: 16),
+                textAlign: TextAlign.start,
+              ),
+            ],
           ),
         ),
       ),
@@ -416,6 +437,7 @@ class _ToDoScreenState extends State<ToDoScreen> {
           });
         },
         style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.symmetric(horizontal: 14),
           backgroundColor: Color.fromRGBO(45, 45, 45, 1),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(5),
@@ -425,7 +447,7 @@ class _ToDoScreenState extends State<ToDoScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Icon(Icons.add),
-            SizedBox(width: 10),
+            SizedBox(width: 11),
             Text("Add a Task"),
           ],
         ),

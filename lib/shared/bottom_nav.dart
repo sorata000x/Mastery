@@ -18,7 +18,7 @@ class BottomNavBar extends StatelessWidget {
       items: [
         BottomNavigationBarItem(
           icon: Icon(
-            state.page == 0
+            state.page == 1
                 ? FontAwesomeIcons.solidCircleCheck // Filled icon
                 : FontAwesomeIcons.circleCheck, // Lined icon
             size: 20,
@@ -27,16 +27,16 @@ class BottomNavBar extends StatelessWidget {
         ),
         BottomNavigationBarItem(
           icon: Icon(
-            state.page == 1
+            state.page == 2
                 ? FontAwesomeIcons.bolt // Filled icon
                 : FontAwesomeIcons.bolt, // Lined icon
             size: 20,
           ),
-          label: 'Abouts',
+          label: 'Skills',
         ),
         BottomNavigationBarItem(
           icon: Icon(
-            state.page == 2
+            state.page == 3
                 ? FontAwesomeIcons.userCircle // Filled icon
                 : FontAwesomeIcons.userCircle, // Lined icon
             size: 20,
