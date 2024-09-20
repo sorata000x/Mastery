@@ -18,14 +18,6 @@ class _TaskScreenState extends State<TaskScreen> {
     final state = Provider.of<TaskState>(context);
 
     return GestureDetector(
-        onTap: () {
-          if (state.isAddingTask) {
-            // Hide input field if tapped outside the input area
-            setState(() {
-              state.setIsAddingTask(false);
-            });
-          }
-        },
         child: const Stack(
           children: [
             TaskSection(),
