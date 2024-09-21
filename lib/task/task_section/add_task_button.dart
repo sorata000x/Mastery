@@ -16,7 +16,6 @@ class AddTaskButton extends StatelessWidget {
       height: 50,
       child: ElevatedButton(
         onPressed: () {
-          //state.setIsAddingTask(true);
           showModalBottomSheet(
               context: context,
               isScrollControlled: true,
