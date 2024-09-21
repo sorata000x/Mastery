@@ -6,6 +6,7 @@ var appTheme = ThemeData(
     bottomAppBarTheme: const BottomAppBarTheme(
       color: Colors.black87,
     ),
+    splashFactory: NoSplash.splashFactory,
     brightness: Brightness.dark,
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(

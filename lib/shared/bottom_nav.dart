@@ -16,7 +16,7 @@ class BottomNavBar extends StatelessWidget {
       items: [
         BottomNavigationBarItem(
           icon: Icon(
-            state.page == 1
+            state.page == 0
                 ? FontAwesomeIcons.solidCircleCheck // Filled icon
                 : FontAwesomeIcons.circleCheck, // Lined icon
             size: 20,
@@ -25,7 +25,7 @@ class BottomNavBar extends StatelessWidget {
         ),
         BottomNavigationBarItem(
           icon: Icon(
-            state.page == 2
+            state.page == 1
                 ? FontAwesomeIcons.bolt // Filled icon
                 : FontAwesomeIcons.bolt, // Lined icon
             size: 20,
@@ -34,7 +34,7 @@ class BottomNavBar extends StatelessWidget {
         ),
         BottomNavigationBarItem(
           icon: Icon(
-            state.page == 3
+            state.page == 2
                 ? FontAwesomeIcons.userCircle // Filled icon
                 : FontAwesomeIcons.userCircle, // Lined icon
             size: 20,
@@ -44,6 +44,8 @@ class BottomNavBar extends StatelessWidget {
       ],
       selectedItemColor: Colors.white,
       unselectedItemColor: Colors.grey,
+      selectedLabelStyle: const TextStyle(fontSize: 12),
+      unselectedLabelStyle: const TextStyle(fontSize: 12),
       onTap: (int idx) {
         state.page = idx;  // Update the page in MainState using the setter
       },
