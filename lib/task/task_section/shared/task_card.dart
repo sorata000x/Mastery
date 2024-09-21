@@ -71,10 +71,10 @@ class TaskCard extends StatelessWidget {
       ),
       child: Container(
         decoration: BoxDecoration(
-          color: const Color.fromRGBO(45, 45, 45, 1), // Background color
+          color: task.isCompleted ? const Color.fromRGBO(40, 40, 40, 1) : const Color.fromRGBO(45, 45, 45, 1), // Background color
           borderRadius: BorderRadius.circular(5), // Circular radius
         ),
-        height: 52,
+        height: 58,
         alignment: Alignment.center,
         padding: const EdgeInsets.only(left: 2.0),
         child: Row(
@@ -90,9 +90,17 @@ class TaskCard extends StatelessWidget {
                   }
                 },
                 icon: task.isCompleted
-                    ? const Icon(IconData(0xe159, fontFamily: 'MaterialIcons'))
+                    ? const Icon(
+                        IconData(0xe159, fontFamily: 'MaterialIcons'), 
+                        size: 30,
+                        color: Color.fromARGB(255, 160, 160, 160),
+                      )
                     : const Icon(
-                        IconData(0xef53, fontFamily: 'MaterialIcons'))),
+                        IconData(0xef53, fontFamily: 'MaterialIcons'), 
+                        size: 30,
+                        color: Color.fromARGB(255, 160, 160, 160),
+                    )
+                ),
             Text(
               task.title,
               style: TextStyle(

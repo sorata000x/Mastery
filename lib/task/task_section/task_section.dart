@@ -26,7 +26,7 @@ class TaskSection extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               children: const [
                 TodoList(),
-                SizedBox(height: 20),
+                SizedBox(height: 22),
                 CompletedList(),
               ],
             ),

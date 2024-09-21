@@ -13,7 +13,7 @@ class AddTaskButton extends StatelessWidget {
 
     return SizedBox(
       width: double.infinity,
-      height: 50,
+      height: 58,
       child: ElevatedButton(
         onPressed: () {
           showModalBottomSheet(
@@ -58,7 +58,7 @@ class AddTaskButton extends StatelessWidget {
         },
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(horizontal: 14),
-          backgroundColor: const Color.fromRGBO(45, 45, 45, 1),
+          backgroundColor: const Color.fromRGBO(50, 50, 50, 1),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(5),
           ),
