@@ -29,8 +29,8 @@ class TodoList extends StatelessWidget {
                       : TaskCard(task: todos[index]),
                   const Divider(
                     // This creates a horizontal line between tasks
-                    height: 5,
-                    thickness: 5,
+                    height: 4,
+                    thickness: 4,
                     color: Colors.transparent,
                   ),
                 ],

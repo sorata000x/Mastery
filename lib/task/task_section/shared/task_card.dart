@@ -74,9 +74,8 @@ class TaskCard extends StatelessWidget {
           color: task.isCompleted ? const Color.fromRGBO(40, 40, 40, 1) : const Color.fromRGBO(45, 45, 45, 1), // Background color
           borderRadius: BorderRadius.circular(5), // Circular radius
         ),
-        height: 58,
         alignment: Alignment.center,
-        padding: const EdgeInsets.only(left: 2.0),
+        padding: const EdgeInsets.fromLTRB(2.0, 3.0, 0, 3.0),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -101,15 +100,22 @@ class TaskCard extends StatelessWidget {
                         color: Color.fromARGB(255, 160, 160, 160),
                     )
                 ),
-            Text(
-              task.title,
-              style: TextStyle(
-                fontSize: 17,
-                decoration:
-                    task.isCompleted ? TextDecoration.lineThrough : null,
-                color: task.isCompleted ? Colors.grey : null,
+            Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
+                  child: Text(
+                    task.title,
+                    style: TextStyle(
+                      fontSize: 17,
+                      decoration:
+                          task.isCompleted ? TextDecoration.lineThrough : null,
+                      color: task.isCompleted ? Colors.grey : null,
+                    ),
+                    softWrap: true, // Enables wrapping
+                    overflow: TextOverflow.visible,
+                  ),
+                ),
               ),
-            ),
           ],
         ),
       ),

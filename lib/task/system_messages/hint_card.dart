@@ -12,8 +12,7 @@ class HintCard extends StatelessWidget {
       color: Colors.transparent,
       child: Container(
         width: MediaQuery.of(context).size.width,
-        height: 58,
-        padding: const EdgeInsets.symmetric(horizontal: 19.0),
+        padding: const EdgeInsets.fromLTRB(19.0, 15.0, 19.0, 15.0),
         decoration: BoxDecoration(
           color: const Color.fromRGBO(50, 50, 50, 1),
           // Color.fromRGBO(45, 45, 45, 1)

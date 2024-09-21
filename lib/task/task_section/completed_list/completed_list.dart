@@ -18,10 +18,16 @@ class CompletedList extends StatelessWidget {
 
     return ExpansionTile(
         title: const Text(
-          'Completed',
-          style: TextStyle(fontSize: 14, color: Colors.grey),
+            'Completed',
+            style: TextStyle(fontSize: 14, color: Colors.grey),
         ),
         initiallyExpanded: true,
+        collapsedShape: const RoundedRectangleBorder(
+          side: BorderSide(color: Colors.transparent), // No border when collapsed
+        ),
+        shape: const RoundedRectangleBorder(
+          side: BorderSide(color: Colors.transparent), // No border when expanded
+        ),
         children: [
           ReorderableListView.builder(
               shrinkWrap: true,
@@ -38,8 +44,8 @@ class CompletedList extends StatelessWidget {
                             : TaskCard(task: completed[index]),
                         const Divider(
                           // This creates a horizontal line between tasks
-                          height: 5,
-                          thickness: 5,
+                          height: 4,
+                          thickness: 4,
                           color: Colors.transparent,
                         ),
                       ],

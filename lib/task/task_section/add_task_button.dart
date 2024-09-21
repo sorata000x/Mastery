@@ -11,9 +11,8 @@ class AddTaskButton extends StatelessWidget {
     final mainState = Provider.of<MainState>(context);
     final taskState = Provider.of<TaskState>(context);
 
-    return SizedBox(
+    return Container(
       width: double.infinity,
-      height: 58,
       child: ElevatedButton(
         onPressed: () {
           showModalBottomSheet(
@@ -57,7 +56,7 @@ class AddTaskButton extends StatelessWidget {
               });
         },
         style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: 14),
+          padding: const EdgeInsets.fromLTRB(14.0, 14.0, 14.0, 14.0),
           backgroundColor: const Color.fromRGBO(48, 48, 48, 1),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(5),
@@ -68,7 +67,13 @@ class AddTaskButton extends StatelessWidget {
           children: [
             Icon(Icons.add),
             SizedBox(width: 11),
-            Text("Add a Task"),
+            Text(
+              "Add a Task",
+              style: TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.normal,
+              ),
+            ),
           ],
         ),
       ),

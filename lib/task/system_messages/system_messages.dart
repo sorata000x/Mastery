@@ -11,7 +11,7 @@ class SystemMessages extends StatelessWidget {
     final state = Provider.of<TaskState>(context);
 
     return Positioned(
-        bottom: 62,
+        bottom: 53,
         width: MediaQuery.of(context).size.width,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
