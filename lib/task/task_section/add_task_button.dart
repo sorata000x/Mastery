@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:skillcraft/main_state.dart';
-import 'package:skillcraft/task/task_state.dart';
+import 'package:skillborn/main_state.dart';
+import 'package:skillborn/task/task_state.dart';
 
 class AddTaskButton extends StatelessWidget {
   const AddTaskButton({super.key});

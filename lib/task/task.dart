@@ -1,9 +1,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:skillcraft/task/system_messages/system_messages.dart';
-import 'package:skillcraft/task/task_section/task_section.dart';
-import 'package:skillcraft/task/task_state.dart';
+import 'package:skillborn/task/system_messages/system_messages.dart';
+import 'package:skillborn/task/task_section/task_section.dart';
+import 'package:skillborn/task/task_state.dart';
 
 class TaskScreen extends StatefulWidget {
   const TaskScreen({super.key});

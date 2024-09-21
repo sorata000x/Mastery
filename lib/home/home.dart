@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:skillcraft/login/login.dart';
-import 'package:skillcraft/services/auth.dart';
+import 'package:skillborn/login/login.dart';
+import 'package:skillborn/services/auth.dart';
+import 'package:skillborn/task/task.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -17,7 +18,7 @@ class HomeScreen extends StatelessWidget {
               child: Text('error'),
             );
           } else if (snapshot.hasData) {
-            return const ToDoScreen();
+            return const TaskScreen();
           } else {
             return const LoginScreen();
           }

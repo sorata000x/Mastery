@@ -4,11 +4,11 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
-import 'package:skillcraft/api/api.dart';
-import 'package:skillcraft/main_state.dart';
-import 'package:skillcraft/services/firestore.dart';
-import 'package:skillcraft/services/models.dart';
-import 'package:skillcraft/task/task_state.dart';
+import 'package:skillborn/api/api.dart';
+import 'package:skillborn/main_state.dart';
+import 'package:skillborn/services/firestore.dart';
+import 'package:skillborn/services/models.dart';
+import 'package:skillborn/task/task_state.dart';
 
 class TaskCard extends StatelessWidget {
   final Task task;

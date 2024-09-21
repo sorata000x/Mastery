@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:skillcraft/task/task_section/add_task_button.dart';
-import 'package:skillcraft/task/task_section/completed_list/completed_list.dart';
-import 'package:skillcraft/task/task_section/todo_list/todo_list.dart';
+import 'package:skillborn/task/task_section/add_task_button.dart';
+import 'package:skillborn/task/task_section/completed_list/completed_list.dart';
+import 'package:skillborn/task/task_section/todo_list/todo_list.dart';
 
 class TaskSection extends StatelessWidget {
   const TaskSection({super.key});

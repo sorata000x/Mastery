@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:skillcraft/task/system_messages/hint_card.dart';
-import 'package:skillcraft/task/task_state.dart';
+import 'package:skillborn/task/system_messages/hint_card.dart';
+import 'package:skillborn/task/task_state.dart';
 
 class SystemMessages extends StatelessWidget {
   const SystemMessages({super.key});

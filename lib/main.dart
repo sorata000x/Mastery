@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 // Import the firebase_core plugin
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
-import 'package:skillcraft/login/login.dart';
-import 'package:skillcraft/main_state.dart';
-import 'package:skillcraft/profile/profile.dart';
-import 'package:skillcraft/shared/shared.dart';
-import 'package:skillcraft/skills/skills.dart';
-import 'package:skillcraft/theme.dart';
-import 'package:skillcraft/task/task.dart';
-import 'package:skillcraft/task/task_state.dart';
+import 'package:skillborn/login/login.dart';
+import 'package:skillborn/main_state.dart';
+import 'package:skillborn/profile/profile.dart';
+import 'package:skillborn/shared/shared.dart';
+import 'package:skillborn/skills/skills.dart';
+import 'package:skillborn/theme.dart';
+import 'package:skillborn/task/task.dart';
+import 'package:skillborn/task/task_state.dart';
 
 // Main entry point of the app
 void main() {

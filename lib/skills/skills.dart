@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:skillcraft/main_state.dart';
-import 'package:skillcraft/skills/skil_card.dart';
+import 'package:skillborn/main_state.dart';
+import 'package:skillborn/skills/skil_card.dart';
 
 class SkillsScreen extends StatelessWidget {
   const SkillsScreen({super.key});

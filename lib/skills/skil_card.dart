@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:skillcraft/services/models.dart';
-import 'package:skillcraft/skills/skill_icon.dart';
+import 'package:skillborn/services/models.dart';
+import 'package:skillborn/skills/skill_icon.dart';
 
 class SkillCard extends StatelessWidget {
   final Skill skill;

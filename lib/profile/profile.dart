@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:skillcraft/main_state.dart';
-import 'package:skillcraft/services/auth.dart';
+import 'package:skillborn/main_state.dart';
+import 'package:skillborn/services/auth.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
