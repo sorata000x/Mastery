@@ -120,7 +120,7 @@ class MainState with ChangeNotifier {
   }
 
   void levelUpSkill(Skill target, int gain) {
-    int cap = (100 * (target.level ^ 2)).toInt();
+    int cap = (100 * (target.level * target.level)).toInt();
     int exp = (target.exp + gain);
     var level = target.level + (exp ~/ cap);
     exp = exp % cap;
