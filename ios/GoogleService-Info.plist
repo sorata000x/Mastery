@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>1001934211196-7bijf5p0l9v1fhf4cdrcct553c4sl87r.apps.googleusercontent.com</string>
+	<string>1001934211196-aden5rjik46d64t42a104vs38qjr440m.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.1001934211196-7bijf5p0l9v1fhf4cdrcct553c4sl87r</string>
+	<string>com.googleusercontent.apps.1001934211196-aden5rjik46d64t42a104vs38qjr440m</string>
 	<key>ANDROID_CLIENT_ID</key>
 	<string>1001934211196-jvf368unheumeu2n5etf73gapu6p4ujj.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
@@ -15,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>io.amorfati.skillcraft</string>
+	<string>io.amorfati.skillborn</string>
 	<key>PROJECT_ID</key>
 	<string>skillcraft-flutter</string>
 	<key>STORAGE_BUCKET</key>
@@ -31,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:1001934211196:ios:76ce98198fad569bab61f9</string>
+	<string>1:1001934211196:ios:11f3205d621e48ddab61f9</string>
 </dict>
 </plist>
