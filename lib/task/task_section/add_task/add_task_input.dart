@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:skillborn/main_state.dart';
+import 'package:skillborn/services/models.dart';
 import 'package:skillborn/task/task_state.dart';
 
 class AddTaskInput extends StatelessWidget {
@@ -30,9 +31,6 @@ class AddTaskInput extends StatelessWidget {
                     filled: true,
                     fillColor: Color.fromRGBO(45, 45, 45, 1),
                   ),
-                  onTap: () {
-                    // Prevent hiding when tapping inside the input
-                  },
                 ),
               ),
             ),

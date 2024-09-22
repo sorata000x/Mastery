@@ -59,6 +59,20 @@ class MainState with ChangeNotifier {
     notifyListeners();
   }
 
+  void setTask(String id, String title, int index, bool isCompleted) {
+    var newTask = Task(
+      id: id,
+      title: title,
+      index: index,
+      isCompleted: isCompleted,
+    );
+    for (var task in tasks) {
+      if (task.id == id) task = newTask;
+    }
+    FirestoreService().setTaskInFirestore(id, title, index, isCompleted);
+    notifyListeners();
+  }
+
   void toggleTask(Task target) {
     // Set local
     Task? task = tasks.firstWhere((task) => task.id == target.id);

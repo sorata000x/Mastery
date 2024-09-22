@@ -8,6 +8,8 @@ import 'package:skillborn/api/api.dart';
 import 'package:skillborn/main_state.dart';
 import 'package:skillborn/services/firestore.dart';
 import 'package:skillborn/services/models.dart';
+import 'package:skillborn/task/task_section/shared/task_card/component/task_deletion_dialog.dart';
+import 'package:skillborn/task/task_section/shared/task_card/component/task_edit.dart';
 import 'package:skillborn/task/task_state.dart';
 
 class TaskCard extends StatelessWidget {
@@ -28,33 +30,8 @@ class TaskCard extends StatelessWidget {
             onPressed: (context) {
               // Show a confirmation dialog
               showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text('Delete Task'),
-                  content:
-                      Text('Are you sure you want to delete "${task.title}"?'),
-                  actions: [
-                    TextButton(
-                      onPressed: () =>
-                          Navigator.of(context).pop(), // Cancel deletion
-                      child: const Text('Cancel'),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        // Delete the task from Firestore
-                        mainState.removeTask(task);
-                        Navigator.of(context).pop(); // Close the dialog
-                        // Optionally, show a snackbar notification
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                              content: Text('Task "${task.title}" deleted')),
-                        );
-                      },
-                      child: const Text('Delete'),
-                    ),
-                  ],
-                ),
-              );
+                  context: context,
+                  builder: (context) => TaskDeletionDialog(task: task));
             },
             backgroundColor: Colors.red,
             foregroundColor: Colors.white,
@@ -69,38 +46,48 @@ class TaskCard extends StatelessWidget {
           ),
         ],
       ),
-      child: Container(
-        decoration: BoxDecoration(
-          color: task.isCompleted ? const Color.fromRGBO(40, 40, 40, 1) : const Color.fromRGBO(45, 45, 45, 1), // Background color
-          borderRadius: BorderRadius.circular(5), // Circular radius
-        ),
-        alignment: Alignment.center,
-        padding: const EdgeInsets.fromLTRB(2.0, 3.0, 0, 3.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            IconButton(
-                onPressed: () {
-                  if (task.isCompleted == false) {
-                    onTaskComplete(context, task);
-                  } else {
-                    // Directly toggle tasks of no need to wait for response
-                    mainState.toggleTask(task);
-                  }
-                },
-                icon: task.isCompleted
-                    ? const Icon(
-                        IconData(0xe159, fontFamily: 'MaterialIcons'), 
-                        size: 30,
-                        color: Color.fromARGB(255, 160, 160, 160),
-                      )
-                    : const Icon(
-                        IconData(0xef53, fontFamily: 'MaterialIcons'), 
-                        size: 30,
-                        color: Color.fromARGB(255, 160, 160, 160),
-                    )
-                ),
-            Flexible(
+      child: GestureDetector(
+        onTap: () => {
+          showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              builder: (BuildContext context) {
+                return TaskEdit(task: task);
+              })
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: task.isCompleted
+                ? const Color.fromRGBO(40, 40, 40, 1)
+                : const Color.fromRGBO(45, 45, 45, 1), // Background color
+            borderRadius: BorderRadius.circular(5), // Circular radius
+          ),
+          alignment: Alignment.center,
+          padding: const EdgeInsets.fromLTRB(2.0, 3.0, 0, 3.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              IconButton(
+                  onPressed: () {
+                    if (task.isCompleted == false) {
+                      onTaskComplete(context, task);
+                    } else {
+                      // Directly toggle tasks of no need to wait for response
+                      mainState.toggleTask(task);
+                    }
+                  },
+                  icon: task.isCompleted
+                      ? const Icon(
+                          IconData(0xe159, fontFamily: 'MaterialIcons'),
+                          size: 30,
+                          color: Color.fromARGB(255, 160, 160, 160),
+                        )
+                      : const Icon(
+                          IconData(0xef53, fontFamily: 'MaterialIcons'),
+                          size: 30,
+                          color: Color.fromARGB(255, 160, 160, 160),
+                        )),
+              Flexible(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
                   child: Text(
@@ -116,7 +103,8 @@ class TaskCard extends StatelessWidget {
                   ),
                 ),
               ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -180,7 +168,8 @@ class TaskCard extends StatelessWidget {
         // Randomly pick 1 skill to give to user
         var newSkill = getNewSkill(newSkills);
         if (newSkill != null) {
-          mainState.addSkill(newSkill['skill'], newSkill['exp'], newSkill['type']);
+          mainState.addSkill(
+              newSkill['skill'], newSkill['exp'], newSkill['type']);
           messages.add("New Skill: ${newSkill['skill']} + ${newSkill['exp']}");
         }
       }

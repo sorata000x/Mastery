@@ -38,12 +38,14 @@ class _AppState extends State<App> {
           return const Center(child: Text('Error initializing Firebase'));
         }
         if (snapshot.connectionState == ConnectionState.done) {
-          return ChangeNotifierProvider<MainState>(
-            create: (_) => MainState(),
+          return MultiProvider(
+            providers: [
+              ChangeNotifierProvider(create: (context) => MainState()),
+              ChangeNotifierProvider(create: (context) => TaskState()),
+            ],
             child: const MainContent(),
           );
         }
-
         return const Center(child: Text('Loading...'));
       },
     );
@@ -58,8 +60,6 @@ class MainContent extends StatefulWidget {
 }
 
 class _MainContentState extends State<MainContent> {
-
-
   @override
   Widget build(BuildContext context) {
     final state = Provider.of<MainState>(context);
@@ -93,10 +93,7 @@ class MainContentBody extends StatelessWidget {
     var page = state.page;
 
     if (page == 0) {
-      return ChangeNotifierProvider(
-              create: (_) => TaskState(),
-              child: const TaskScreen(),
-            );
+      return const TaskScreen();
     } else if (page == 1) {
       return const SkillsScreen();
     } else if (page == 2) {

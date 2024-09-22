@@ -17,7 +17,7 @@ class AddTaskButton extends StatelessWidget {
               context: context,
               isScrollControlled: true,
               builder: (BuildContext context) {
-                return AddTaskInput();
+                return const AddTaskInput();
               });
         },
         style: ElevatedButton.styleFrom(
