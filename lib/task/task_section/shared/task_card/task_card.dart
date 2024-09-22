@@ -9,7 +9,7 @@ import 'package:skillborn/main_state.dart';
 import 'package:skillborn/services/firestore.dart';
 import 'package:skillborn/services/models.dart';
 import 'package:skillborn/task/task_section/shared/task_card/component/task_deletion_dialog.dart';
-import 'package:skillborn/task/task_section/shared/task_card/component/task_edit.dart';
+import 'package:skillborn/task/task_section/shared/task_card/component/task_edit/task_edit.dart';
 import 'package:skillborn/task/task_state.dart';
 
 class TaskCard extends StatelessWidget {

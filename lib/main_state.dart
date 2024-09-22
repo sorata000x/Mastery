@@ -51,6 +51,7 @@ class MainState with ChangeNotifier {
     final newTask = Task(
       id: const Uuid().v4(),
       title: title,
+      note: '',
       index: _tasks.length,
       isCompleted: false,
     );
@@ -59,17 +60,18 @@ class MainState with ChangeNotifier {
     notifyListeners();
   }
 
-  void setTask(String id, String title, int index, bool isCompleted) {
-    var newTask = Task(
-      id: id,
-      title: title,
-      index: index,
-      isCompleted: isCompleted,
-    );
+  void setTask(
+      String id, String title, String note, int index, bool isCompleted) {
     for (var task in tasks) {
-      if (task.id == id) task = newTask;
+      if (task.id == id) {
+        task.id = id;
+        task.title = title;
+        task.note = note;
+        task.index = index;
+        task.isCompleted = isCompleted;
+      }
     }
-    FirestoreService().setTaskInFirestore(id, title, index, isCompleted);
+    FirestoreService().setTaskInFirestore(id, title, note, index, isCompleted);
     notifyListeners();
   }
 

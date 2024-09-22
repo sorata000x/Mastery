@@ -57,7 +57,7 @@ class FirestoreService {
   }
 
   Future setTaskInFirestore(
-      String id, String title, int index, bool completed) {
+      String id, String title, String note, int index, bool completed) {
     CollectionReference tasks = _db
         .collection('users') // User collection
         .doc(user) // Specific user document
@@ -69,6 +69,7 @@ class FirestoreService {
         .set({
           'id': id,
           'title': title,
+          'note': note,
           'index': index,
           'isCompleted': completed,
         })
@@ -88,6 +89,7 @@ class FirestoreService {
             .doc(task.id)
             .set({
               'id': task.id,
+              'note': task.note,
               'title': task.title,
               'index': task.index,
               'isCompleted': task.isCompleted,
@@ -105,6 +107,7 @@ class FirestoreService {
     return setTaskInFirestore(
       task.id,
       task.title,
+      task.note,
       task.index,
       !task.isCompleted,
     );
@@ -121,6 +124,7 @@ class FirestoreService {
         .set({
           'id': newTask.id,
           'title': newTask.title,
+          'note': newTask.note,
           'index': newTask.index,
           'isCompleted': newTask.isCompleted,
         })

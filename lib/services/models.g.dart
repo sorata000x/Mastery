@@ -9,6 +9,7 @@ part of 'models.dart';
 Task _$TaskFromJson(Map<String, dynamic> json) => Task(
       id: json['id'] as String? ?? '',
       title: json['title'] as String? ?? '',
+      note: json['note'] as String? ?? '',
       index: (json['index'] as num?)?.toInt() ?? 0,
       isCompleted: json['isCompleted'] as bool? ?? false,
     );
@@ -16,6 +17,7 @@ Task _$TaskFromJson(Map<String, dynamic> json) => Task(
 Map<String, dynamic> _$TaskToJson(Task instance) => <String, dynamic>{
       'id': instance.id,
       'title': instance.title,
+      'note': instance.note,
       'index': instance.index,
       'isCompleted': instance.isCompleted,
     };

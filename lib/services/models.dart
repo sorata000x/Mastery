@@ -7,11 +7,13 @@ part 'models.g.dart';
 class Task {
   String id;
   String title;
+  String note;
   int index;
   bool isCompleted;
   Task(
       {this.id = '',
       this.title = '',
+      this.note = '',
       this.index = 0,
       this.isCompleted = false});
   factory Task.fromJson(Map<String, dynamic> json) => _$TaskFromJson(json);
