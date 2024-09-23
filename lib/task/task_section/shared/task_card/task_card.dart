@@ -8,8 +8,8 @@ import 'package:skillborn/api/api.dart';
 import 'package:skillborn/main_state.dart';
 import 'package:skillborn/services/firestore.dart';
 import 'package:skillborn/services/models.dart';
-import 'package:skillborn/task/task_section/shared/task_card/component/task_deletion_dialog.dart';
-import 'package:skillborn/task/task_section/shared/task_card/component/task_edit/task_edit.dart';
+import 'package:skillborn/task/task_section/shared/task_card/task_deletion_dialog.dart';
+import 'package:skillborn/task/task_section/shared/task_card/task_edit.dart';
 import 'package:skillborn/task/task_state.dart';
 
 class TaskCard extends StatelessWidget {
@@ -138,6 +138,7 @@ class TaskCard extends StatelessWidget {
       List<Map<String, dynamic>> newSkills = [];
       var messages = [];
 
+      // Find and level up existing skills
       for (var s1 in skills) {
         Skill? s2;
         if (mainState.skills.any((s) => s.title == s1['skill'])) {
@@ -169,7 +170,11 @@ class TaskCard extends StatelessWidget {
         var newSkill = getNewSkill(newSkills);
         if (newSkill != null) {
           mainState.addSkill(
-              newSkill['skill'], newSkill['exp'], newSkill['type']);
+            newSkill['skill'], 
+            newSkill['description'], 
+            newSkill['exp'], 
+            newSkill['type'],
+          );
           messages.add("New Skill: ${newSkill['skill']} + ${newSkill['exp']}");
         }
       }

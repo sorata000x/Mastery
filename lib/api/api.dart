@@ -11,7 +11,11 @@ final Map<String, dynamic> skillProperties = {
       "properties": {
         "skill": {
           "type": "string",
-          "description": "Skill name",
+          "description": "Skill name, in the form of praise, like 'Laser-Focused Mind' and 'Herculean Endurance'.",
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the skill. Tone: appealing to self-improvement without praise."
         },
         "exp": {"type": "number", "description": "Skill experience point"},
         "probability": {
@@ -21,8 +25,9 @@ final Map<String, dynamic> skillProperties = {
         "type": {
           "type": "string",
           "description": """
-            fitness, sports, strength, chores, cook,
-            thinking, memory, focus, learning, emotion, creative, 
+            One of the following:
+            energy, run-walk, cycling, sports, strength, chores, cook,
+            thinking, memory, focus, learning, emotion, creative, mental,
             social,
             software, hardware, 
             or other
@@ -31,65 +36,59 @@ final Map<String, dynamic> skillProperties = {
       }
     },
     "description": """
-      List of skills names, exps, probability, icon associate with task.
+      List of skills names, description, exps, probability, icon associate with task.
       Always have one skill with probability 1.0.
       Example: 
         Task: Run for 1 mile
         "skills": [
           {
-            "skill": "Endurance",
+            "skill": "Boundless Stamina",
             "exp": 50,
             "probability": 1.0,
-            "type": "physical"
+            "type": "energy"
           },
           {
-            "skill": "Stamina",
+            "skill": "Herculean Endurance",
             "exp": 40,
             "probability": 0.9,
-            "type": "physical"
+            "type": "endurance"
           },
           {
-            "skill": "Speed",
+            "skill": "Laser-Focused Mind",
             "exp": 30,
             "probability": 0.7,
-            "type": "physical"
+            "type": "focus"
           },
           {
-            "skill": "Breathing Control",
+            "skill": "Unyielding Determination",
             "exp": 25,
             "probability": 0.7,
-            "type": "physical"
+            "type": "mental"
           },
           {
-            "skill": "Leg Strength",
+            "skill": "Rhythmic Breathing",
             "exp": 35,
             "probability": 0.85,
-            "type": "physical"
+            "type": "run-walk"
           },
           {
-            "skill": "Mental Toughness",
+            "skill": "Pace Management",
             "exp": 20,
             "probability": 0.6,
-            "type": "physical"
+            "type": "run-walk"
           },
           {
-            "skill": "Agility",
-            "exp": 15,
+            "skill": "Mental Fortitude",
+            "exp": 10,
             "probability": 0.5,
-            "type": "physical"
+            "type": "mental"
           },
           {
-            "skill": "Pacing",
+            "skill": "Supreme Agility",
             "exp": 25,
             "probability": 0.75,
-            "type": "physical"
+            "type": "run-walk"
           },
-          {
-            "skill": "Focus",
-            "exp": 20,
-            "probability": 0.6,
-            "type": "physical"
-          }
         ]
     """,
   }

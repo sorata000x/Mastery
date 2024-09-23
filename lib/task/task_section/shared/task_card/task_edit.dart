@@ -45,7 +45,6 @@ class _TaskEditState extends State<TaskEdit> {
                 Expanded(
                   child: TextField(
                     controller: _taskTitleController,
-                    autofocus: true, // Automatically focus the input when it appears
                     // Style
                     decoration: const InputDecoration(
                       hintText: "Untitled",
@@ -75,15 +74,15 @@ class _TaskEditState extends State<TaskEdit> {
             ),
           ),
           Container(
-            height: 168,
+            height: 400,
             padding: const EdgeInsets.fromLTRB(16, 0, 6, 6),
             color: const Color.fromRGBO(45, 45, 45, 1),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(2, 8.5, 2, 0),
-                  child: const Icon(
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(2, 8.5, 2, 0),
+                  child: Icon(
                     Icons.subject,
                     size: 26,
                     color: Color.fromARGB(255, 160, 160, 160),
@@ -93,7 +92,7 @@ class _TaskEditState extends State<TaskEdit> {
                   child: TextField(
                   controller: _taskNoteController,
                   // Style
-                  style: TextStyle(
+                  style: const TextStyle(
                     height: 1.4, 
                   ),
                   decoration: const InputDecoration(

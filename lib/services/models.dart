@@ -25,6 +25,7 @@ class Skill {
   String id;
   int index;
   String title;
+  String description;
   int exp;
   int level;
   String type;
@@ -32,6 +33,7 @@ class Skill {
       {this.id = '',
       this.index = 0,
       this.title = '',
+      this.description = '',
       this.exp = 0,
       this.level = 1,
       this.type = ''});

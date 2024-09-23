@@ -119,11 +119,12 @@ class MainState with ChangeNotifier {
   }
 
   void setSkill(
-      String id, int index, String title, int exp, int level, String type) {
+      String id, int index, String title, String description, int exp, int level, String type) {
     var newSkill = Skill(
       id: id,
-      title: title,
       index: index,
+      title: title,
+      description: description,
       exp: exp,
       level: level,
       type: type,
@@ -131,7 +132,7 @@ class MainState with ChangeNotifier {
     for (var skill in skills) {
       if (skill.id == id) skill = newSkill;
     }
-    FirestoreService().setSkillInFirestore(id, index, title, exp, level, type);
+    FirestoreService().setSkillInFirestore(id, index, title, description, exp, level, type);
     notifyListeners();
   }
 
@@ -143,6 +144,8 @@ class MainState with ChangeNotifier {
     var newSkill = Skill(
       id: target.id,
       title: target.title,
+      description: target.description,
+      type: target.type,
       exp: exp,
       level: level,
     );
@@ -153,7 +156,7 @@ class MainState with ChangeNotifier {
       }
     }
     FirestoreService().setSkillInFirestore(newSkill.id, newSkill.index,
-        newSkill.title, newSkill.exp, newSkill.level, newSkill.type);
+        newSkill.title, newSkill.description, newSkill.exp, newSkill.level, newSkill.type);
     notifyListeners();
   }
 
@@ -171,7 +174,7 @@ class MainState with ChangeNotifier {
     return false;
   }
 
-  void addSkill(String title, int gain, String type) {
+  void addSkill(String title, String description, int gain, String type) {
     var cap = 100;
     var exp = gain;
     var level = 1 + (exp ~/ cap);
@@ -179,6 +182,7 @@ class MainState with ChangeNotifier {
     final newSkill = Skill(
         id: const Uuid().v4(),
         title: title,
+        description: description,
         exp: exp,
         level: level,
         type: type);

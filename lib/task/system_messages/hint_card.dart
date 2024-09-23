@@ -28,10 +28,13 @@ class HintCard extends StatelessWidget {
                 color: Colors.white,
               ),
               const SizedBox(width: 18),
-              Text(
-                message,
-                style: const TextStyle(color: Colors.white, fontSize: 16),
-                textAlign: TextAlign.start,
+              Flexible(
+                child: Text(
+                  message,
+                  style: const TextStyle(color: Colors.white, fontSize: 16),
+                  softWrap: true,
+                  textAlign: TextAlign.start,
+                ),
               ),
             ],
           ),

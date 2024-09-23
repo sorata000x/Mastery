@@ -9,8 +9,17 @@ class SkillIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var iconName = 'star';
-    if (type == 'fitness') {
+    if (type == 'energy') {
+      iconName = 'thunder';
+    }
+    if (type == 'run-walk') {
       iconName = 'run';
+    }
+    if (type == 'swim') {
+      iconName = 'swim';
+    }
+    if (type == 'cycling') {
+      iconName = 'cycling';
     }
     if (type == 'sports') {
       iconName = 'star';
@@ -25,6 +34,9 @@ class SkillIcon extends StatelessWidget {
       iconName = 'brain';
     }
     if (type == 'memory') {
+      iconName = 'brain';
+    }
+    if (type == 'mental') {
       iconName = 'brain';
     }
     if (type == 'focus') {
@@ -50,6 +62,9 @@ class SkillIcon extends StatelessWidget {
     }
     if (type == 'cook') {
       iconName = 'cook';
+    }
+    if (type == 'endurance') {
+      iconName = 'mountain';
     }
     return Padding(
       padding: const EdgeInsets.all(8),

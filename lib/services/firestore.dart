@@ -49,6 +49,7 @@ class FirestoreService {
         .set({
           'id': task.id,
           'title': task.title,
+          'note': task.note,
           'index': task.index,
           'isCompleted': task.isCompleted,
         })
@@ -162,6 +163,7 @@ class FirestoreService {
         .set({
           'id': skill.id,
           'title': skill.title,
+          'description': skill.description,
           'index': skill.index,
           'exp': skill.exp,
           'level': skill.level,
@@ -172,7 +174,7 @@ class FirestoreService {
   }
 
   Future setSkillInFirestore(
-      String id, int index, String title, int exp, int level, String type) {
+      String id, int index, String title, String description, int exp, int level, String type) {
     CollectionReference skills = _db
         .collection('users') // User collection
         .doc(user) // Specific user document
@@ -185,6 +187,7 @@ class FirestoreService {
           'id': id,
           'index': index,
           'title': title,
+          'description': description,
           'exp': exp,
           'level': level,
           'type': type
@@ -207,6 +210,7 @@ class FirestoreService {
               'id': skill.id,
               'index': skill.index,
               'title': skill.title,
+              'description': skill.description,
               'exp': skill.exp,
               'level': skill.level,
               'type': skill.type
@@ -233,6 +237,7 @@ class FirestoreService {
           'id': id,
           'index': 0,
           'title': title,
+          'description': '',
           'exp': 0,
           'level': 1,
           'type': type
