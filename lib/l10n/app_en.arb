@@ -1,0 +1,8 @@
+{
+  "@@locale": "en",
+  "title": "Welcome",
+  "@title": {
+    "description": "Title for the welcome screen"
+  },
+  "add_a_task": "Add a Task"
+}

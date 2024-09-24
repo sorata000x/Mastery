@@ -9,6 +9,7 @@ class FirestoreService {
   String? user = FirebaseAuth.instance.currentUser?.uid;
 
   FirestoreService() {
+    // Update user whenever user changes
     FirebaseAuth.instance.authStateChanges().listen((User? currentUser) {
       user = currentUser?.uid;
     });

@@ -56,7 +56,7 @@ class MainState with ChangeNotifier {
       isCompleted: false,
     );
     _tasks.add(newTask);
-    FirestoreService().addTaskToFirestore(newTask);
+    FirestoreService().setTask(newTask);
     notifyListeners();
   }
 
@@ -118,8 +118,8 @@ class MainState with ChangeNotifier {
     notifyListeners();
   }
 
-  void setSkill(
-      String id, int index, String title, String description, int exp, int level, String type) {
+  void setSkill(String id, int index, String title, String description, int exp,
+      int level, String type) {
     var newSkill = Skill(
       id: id,
       index: index,
@@ -132,7 +132,8 @@ class MainState with ChangeNotifier {
     for (var skill in skills) {
       if (skill.id == id) skill = newSkill;
     }
-    FirestoreService().setSkillInFirestore(id, index, title, description, exp, level, type);
+    FirestoreService()
+        .setSkillInFirestore(id, index, title, description, exp, level, type);
     notifyListeners();
   }
 
@@ -155,8 +156,14 @@ class MainState with ChangeNotifier {
         skill.level = newSkill.level;
       }
     }
-    FirestoreService().setSkillInFirestore(newSkill.id, newSkill.index,
-        newSkill.title, newSkill.description, newSkill.exp, newSkill.level, newSkill.type);
+    FirestoreService().setSkillInFirestore(
+        newSkill.id,
+        newSkill.index,
+        newSkill.title,
+        newSkill.description,
+        newSkill.exp,
+        newSkill.level,
+        newSkill.type);
     notifyListeners();
   }
 
@@ -179,15 +186,20 @@ class MainState with ChangeNotifier {
     var exp = gain;
     var level = 1 + (exp ~/ cap);
     exp = exp % cap;
+    var id = const Uuid().v4();
+    var index = _skills.length;
     final newSkill = Skill(
-        id: const Uuid().v4(),
+        id: id,
+        index: index,
         title: title,
         description: description,
         exp: exp,
         level: level,
         type: type);
     _skills.add(newSkill);
-    FirestoreService().addSkillToFirestore(title, type);
+    FirestoreService().setSkillInFirestore(
+      id, index, title, description, exp, level, type
+    );
     notifyListeners();
   }
 
