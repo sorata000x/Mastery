@@ -10,6 +10,10 @@ Task _$TaskFromJson(Map<String, dynamic> json) => Task(
       id: json['id'] as String? ?? '',
       title: json['title'] as String? ?? '',
       note: json['note'] as String? ?? '',
+      skills: (json['skills'] as List<dynamic>?)
+              ?.map((e) => e as Map<String, dynamic>)
+              .toList() ??
+          const [],
       index: (json['index'] as num?)?.toInt() ?? 0,
       isCompleted: json['isCompleted'] as bool? ?? false,
     );
@@ -18,6 +22,7 @@ Map<String, dynamic> _$TaskToJson(Task instance) => <String, dynamic>{
       'id': instance.id,
       'title': instance.title,
       'note': instance.note,
+      'skills': instance.skills,
       'index': instance.index,
       'isCompleted': instance.isCompleted,
     };

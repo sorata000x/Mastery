@@ -9,7 +9,7 @@ import 'package:skillborn/main_state.dart';
 import 'package:skillborn/services/firestore.dart';
 import 'package:skillborn/services/models.dart';
 import 'package:skillborn/task/task_section/shared/task_card/task_deletion_dialog.dart';
-import 'package:skillborn/task/task_section/shared/task_card/task_edit.dart';
+import 'package:skillborn/task/task_section/shared/task_card/task_edit/task_edit.dart';
 import 'package:skillborn/task/task_state.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -114,25 +114,7 @@ class TaskCard extends StatelessWidget {
   Future onTaskComplete(context, task) async {
     final mainState = Provider.of<MainState>(context, listen: false);
     final taskState = Provider.of<TaskState>(context, listen: false);
-    var skills = await FirestoreService().getSkillsFromTask(task.title);
-
-    /// Generate new skills from task title with OpenAI api
-    Future<List<Map<String, dynamic>>?> generateSkillsFromTaskTitle(
-        taskTitle) async {
-      // Get skill as a string of List<Map<String, int>>
-      var messages =
-          getTaskCompletionMessages(FirestoreService().getSkills(), taskTitle);
-      var result = await callChatGPT(mainState, messages, functions);
-      if (result == null) return [];
-      // Decode string to List<Map<String, dynamic>>
-      List<Map<String, dynamic>> skills =
-          List<Map<String, dynamic>>.from(json.decode(result));
-
-      // Add the new instance of task-skills to database
-      FirestoreService().addTaskSkills(taskTitle, skills);
-      // Return skills
-      return skills;
-    }
+    var skills = task.skills;
 
     /// Level up & add new skills
     void parseSkills(skills) async {
@@ -171,12 +153,13 @@ class TaskCard extends StatelessWidget {
         var newSkill = getNewSkill(newSkills);
         if (newSkill != null) {
           mainState.addSkill(
-            newSkill['skill'], 
-            newSkill['description'], 
-            newSkill['exp'], 
+            newSkill['skill'],
+            newSkill['description'],
+            newSkill['exp'],
             newSkill['type'],
           );
-          messages.add("${AppLocalizations.of(context)!.new_skill}: ${newSkill['skill']} + ${newSkill['exp']}");
+          messages.add(
+              "${AppLocalizations.of(context)!.new_skill}: ${newSkill['skill']} + ${newSkill['exp']}");
         }
       }
 
@@ -185,13 +168,6 @@ class TaskCard extends StatelessWidget {
         // Add a delay of 0.2 seconds
         await Future.delayed(const Duration(milliseconds: 500));
       }
-    }
-
-    if (skills == null) {
-      // If task not found in database, create new skills
-      taskState.addEvaluatingTask(task.id);
-      skills = await generateSkillsFromTaskTitle(task.title);
-      taskState.removeEvaluatingTask(task.id);
     }
 
     parseSkills(skills);

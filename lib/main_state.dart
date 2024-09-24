@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:skillborn/api/api.dart';
 import 'package:skillborn/services/firestore.dart';
 import 'package:skillborn/services/models.dart';
 import 'package:uuid/uuid.dart';
@@ -9,11 +12,16 @@ class MainState with ChangeNotifier {
   List<Task> _tasks = [];
   List<Skill> _skills = [];
   String? _user;
+  final List<String> _evaluatingTasks =
+      []; // List of tasks that are currently getting responses from
+  final List<String> _completingTasks =
+      []; // List of tasks that are currently getting responses from
 
   int get page => _page;
   List<Task> get tasks => _tasks;
   List<Skill> get skills => _skills;
   String? get user => _user;
+  List<String> get evaluatingTasks => _evaluatingTasks;
 
   MainState() {
     initTask();
@@ -47,31 +55,46 @@ class MainState with ChangeNotifier {
     notifyListeners();
   }
 
-  void addTask(String title) {
+  Task addTask(String title) {
+    // TODO: Task template
+
+    var id = const Uuid().v4();
+
     final newTask = Task(
-      id: const Uuid().v4(),
+      id: id,
       title: title,
       note: '',
+      skills: const [],
       index: _tasks.length,
       isCompleted: false,
     );
     _tasks.add(newTask);
     FirestoreService().setTask(newTask);
     notifyListeners();
+
+    return newTask;
   }
 
   void setTask(
-      String id, String title, String note, int index, bool isCompleted) {
+    String id,
+    String title,
+    String note,
+    List<Map<String, dynamic>> skills,
+    int index,
+    bool isCompleted,
+  ) {
     for (var task in tasks) {
       if (task.id == id) {
         task.id = id;
         task.title = title;
         task.note = note;
+        task.skills = skills;
         task.index = index;
         task.isCompleted = isCompleted;
       }
     }
-    FirestoreService().setTaskInFirestore(id, title, note, index, isCompleted);
+    FirestoreService()
+        .setTaskInFirestore(id, title, note, skills, index, isCompleted);
     notifyListeners();
   }
 
@@ -103,6 +126,16 @@ class MainState with ChangeNotifier {
       _tasks[i].index = i;
     }
     FirestoreService().setTasks(_tasks);
+    notifyListeners();
+  }
+
+  void addTaskSkills(task, skills) {
+    for (int i = 0; i < _tasks.length; i++) {
+      if (_tasks[i].id == task.id) {
+        _tasks[i].skills = skills;
+      }
+    }
+    FirestoreService().setTask(task);
     notifyListeners();
   }
 
@@ -197,9 +230,8 @@ class MainState with ChangeNotifier {
         level: level,
         type: type);
     _skills.add(newSkill);
-    FirestoreService().setSkillInFirestore(
-      id, index, title, description, exp, level, type
-    );
+    FirestoreService()
+        .setSkillInFirestore(id, index, title, description, exp, level, type);
     notifyListeners();
   }
 
@@ -217,5 +249,57 @@ class MainState with ChangeNotifier {
     }
     FirestoreService().setSkills(_skills);
     notifyListeners();
+  }
+
+  void genTaskSkills(task) async {
+    // Check if there are existing task-skills pair in system database
+    var skills = await FirestoreService().getSkillsFromTask(task.title);
+    if (skills == null) {
+      addEvaluatingTask(task.id);
+      skills = await generateSkillsFromTaskTitle(task.title);
+      removeEvaluatingTask(task.id);
+    }
+    setTask(
+        task.id, task.title, task.note, skills, task.index, task.isCompleted);
+  }
+
+  void addEvaluatingTask(String taskId) {
+    _evaluatingTasks.add(taskId);
+    notifyListeners();
+  }
+
+  void removeEvaluatingTask(String taskId) {
+    _evaluatingTasks.remove(taskId);
+    notifyListeners();
+  }
+
+  void addCompletingTask(String taskId) {
+    _completingTasks.add(taskId);
+    notifyListeners();
+  }
+
+  void removeCompletingTask(String taskId) {
+    _completingTasks.remove(taskId);
+    notifyListeners();
+  }
+
+  // ========== HELPER FUNCTION ==========
+
+  /// Generate new skills from task title with OpenAI api
+  Future<List<Map<String, dynamic>>?> generateSkillsFromTaskTitle(
+      taskTitle) async {
+    // Get skill as a string of List<Map<String, int>>
+    var messages =
+        getTaskCompletionMessages(FirestoreService().getSkills(), taskTitle);
+    var result = await callChatGPT(this, messages, functions);
+    if (result == null) return [];
+    // Decode string to List<Map<String, dynamic>>
+    List<Map<String, dynamic>> skills =
+        List<Map<String, dynamic>>.from(json.decode(result));
+    // Add the new instance of task-skills to database
+    addTaskSkills(taskTitle, skills);
+    FirestoreService().addTaskSkills(taskTitle, skills);
+    // Return skills
+    return skills;
   }
 }

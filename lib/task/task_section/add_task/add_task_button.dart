@@ -11,12 +11,13 @@ class AddTaskButton extends StatelessWidget {
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () {
+          // Show add task input
           showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              builder: (BuildContext context) {
-                return const AddTaskInput();
-              });
+            context: context,
+            isScrollControlled: true,
+            builder: (BuildContext context) {
+              return const AddTaskInput();
+            });
         },
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.fromLTRB(14.0, 14.0, 14.0, 14.0),

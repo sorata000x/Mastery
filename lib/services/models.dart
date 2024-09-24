@@ -8,14 +8,19 @@ class Task {
   String id;
   String title;
   String note;
-  int index;
-  bool isCompleted;
+  List<Map<String, dynamic>>
+      skills; // List of known skills associated with task
+  int index; // Position of the task. Keep the order of task list
+  bool isCompleted; // Task is marked as completed and will be moved to completed task list
+
   Task(
       {this.id = '',
       this.title = '',
       this.note = '',
+      this.skills = const [],
       this.index = 0,
-      this.isCompleted = false});
+      this.isCompleted = false,
+      });
   factory Task.fromJson(Map<String, dynamic> json) => _$TaskFromJson(json);
   Map<String, dynamic> toJson() => _$TaskToJson(this);
 }

@@ -20,10 +20,12 @@ class TodoList extends StatelessWidget {
         itemCount: todos.length,
         onReorder: mainState.reorderTask,
         itemBuilder: (context, index) {
+          var task = todos[index];
           return Container(
               key: ValueKey(todos[index].id),
               child: Column(
                 children: [
+<<<<<<< Updated upstream
                   taskState.evaluatingTasks.contains(todos[index].id)
                       ? const TaskEvalurationCard()
                       : TaskCard(task: todos[index]),
@@ -33,6 +35,11 @@ class TodoList extends StatelessWidget {
                     thickness: 4,
                     color: Colors.transparent,
                   ),
+=======
+                  task.isEvaluating && task.isCompleting
+                      ? const TaskEvalurationCard()
+                      : TaskCard(task: todos[index]),
+>>>>>>> Stashed changes
                 ],
               ));
         });
