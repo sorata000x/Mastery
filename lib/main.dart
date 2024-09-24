@@ -77,7 +77,6 @@ class _MainContentState extends State<MainContent> {
     }
 
     return MaterialApp(
-      locale: const Locale('zh'),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: const Scaffold(

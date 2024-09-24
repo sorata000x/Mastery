@@ -7,7 +7,6 @@ import 'package:skillborn/task/task_state.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CompletedList extends StatelessWidget {
-
   const CompletedList({super.key});
 
   @override
@@ -19,15 +18,17 @@ class CompletedList extends StatelessWidget {
 
     return ExpansionTile(
         title: Text(
-            AppLocalizations.of(context)!.completed,
-            style: const TextStyle(fontSize: 14, color: Colors.grey),
+          AppLocalizations.of(context)!.completed,
+          style: const TextStyle(fontSize: 14, color: Colors.grey),
         ),
         initiallyExpanded: true,
         collapsedShape: const RoundedRectangleBorder(
-          side: BorderSide(color: Colors.transparent), // No border when collapsed
+          side:
+              BorderSide(color: Colors.transparent), // No border when collapsed
         ),
         shape: const RoundedRectangleBorder(
-          side: BorderSide(color: Colors.transparent), // No border when expanded
+          side:
+              BorderSide(color: Colors.transparent), // No border when expanded
         ),
         children: [
           ReorderableListView.builder(
@@ -37,20 +38,12 @@ class CompletedList extends StatelessWidget {
               onReorder: mainState.reorderTask,
               itemBuilder: (context, index) {
                 return Container(
-                    key: ValueKey(completed[index].id),
-                    child: Column(
-                      children: [
-                        taskState.evaluatingTasks.contains(completed[index].id)
-                            ? const TaskEvalurationCard()
-                            : TaskCard(task: completed[index]),
-                        const Divider(
-                          // This creates a horizontal line between tasks
-                          height: 4,
-                          thickness: 4,
-                          color: Colors.transparent,
-                        ),
-                      ],
-                    ));
+                  key: ValueKey(completed[index].id),
+                  padding: const EdgeInsets.symmetric(vertical: 2.0),
+                  child: taskState.evaluatingTasks.contains(completed[index].id)
+                      ? const TaskEvalurationCard()
+                      : TaskCard(task: completed[index]),
+                );
               })
         ]);
   }

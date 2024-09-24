@@ -21,18 +21,13 @@ class TodoList extends StatelessWidget {
         onReorder: mainState.reorderTask,
         itemBuilder: (context, index) {
           return Container(
+              padding: const EdgeInsets.symmetric(vertical: 2.0),
               key: ValueKey(todos[index].id),
               child: Column(
                 children: [
                   taskState.evaluatingTasks.contains(todos[index].id)
-                      ? const TaskEvalurationCard()
-                      : TaskCard(task: todos[index]),
-                  const Divider(
-                    // This creates a horizontal line between tasks
-                    height: 4,
-                    thickness: 4,
-                    color: Colors.transparent,
-                  ),
+                    ? const TaskEvalurationCard()
+                    : TaskCard(task: todos[index]),
                 ],
               ));
         });

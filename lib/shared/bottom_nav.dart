@@ -36,8 +36,8 @@ class BottomNavBar extends StatelessWidget {
         BottomNavigationBarItem(
           icon: Icon(
             state.page == 2
-                ? FontAwesomeIcons.userCircle // Filled icon
-                : FontAwesomeIcons.userCircle, // Lined icon
+                ? FontAwesomeIcons.solidCircleUser // Filled icon
+                : FontAwesomeIcons.circleUser, // Lined icon
             size: 20,
           ),
           label: AppLocalizations.of(context)!.profile,

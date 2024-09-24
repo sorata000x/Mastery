@@ -25,15 +25,22 @@ class TaskSection extends StatelessWidget {
             child: ListView(
               padding: const EdgeInsets.all(15),
               children: const [
-                SizedBox(height: 16),
                 TodoList(),
-                SizedBox(height: 0),
                 CompletedList(),
               ],
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
+          Container(
+            padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 10.0),
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.8),  // Shadow color with opacity
+                  spreadRadius: 2,  // Spread radius (makes the shadow bigger)
+                  blurRadius: 5,  // Blur radius (makes the shadow softer)
+                ),
+              ],
+            ),
             child: AddTaskButton()), // Display add task button or input field at the bottom
             ],
       ),
