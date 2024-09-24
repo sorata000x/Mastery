@@ -11,11 +11,13 @@ final Map<String, dynamic> skillProperties = {
       "properties": {
         "skill": {
           "type": "string",
-          "description": "Skill name, in the form of praise, like 'Laser-Focused Mind' and 'Herculean Endurance'.",
+          "description":
+              "Skill name, in the form of praise, like 'Laser-Focused Mind' and 'Herculean Endurance'",
         },
         "description": {
           "type": "string",
-          "description": "Description of the skill. Tone: appealing to self-improvement without praise."
+          "description":
+              "Description of the skill. Tone: appealing to self-improvement without praise."
         },
         "exp": {"type": "number", "description": "Skill experience point"},
         "probability": {
@@ -107,7 +109,8 @@ final List<Map<String, dynamic>> functions = [
 Future<List<Map<String, dynamic>>> getTaskCompletionMessages(
     futureSkills, taskName) async {
   return [
-    {"role": "user", "content": "Task: $taskName."}
+    {"role": "system", "content": "Translate skill names and description to task's language"},
+    {"role": "user", "content": "Task: $taskName"}
   ];
 }
 
@@ -136,8 +139,9 @@ Future<String?> callChatGPT(state, futureMessages, functions) async {
   );
 
   if (response.statusCode == 200) {
-    final Map<String, dynamic> responseData = json.decode(response.body);
-    print('Response body: ${response.body}');
+    final decodedResponse = utf8.decode(response.bodyBytes); // handle different languages
+    final Map<String, dynamic> responseData = json.decode(decodedResponse);
+    print('Response body: ${utf8.decode(response.bodyBytes)}');
     return handleResponse(state, responseData);
   } else {
     print('Request failed with status: ${response.statusCode}.');

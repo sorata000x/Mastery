@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:skillborn/main_state.dart';
 import 'package:skillborn/skills/skill_card/skil_card.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SkillsScreen extends StatelessWidget {
   const SkillsScreen({super.key});
@@ -12,7 +13,7 @@ class SkillsScreen extends StatelessWidget {
 
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Skills"),
+          title: Text(AppLocalizations.of(context)!.skills),
         ),
         body: buildSkillSection(state, state.skills));
   }

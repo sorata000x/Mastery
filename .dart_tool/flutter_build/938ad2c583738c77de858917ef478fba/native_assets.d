@@ -1,0 +1,1 @@
+ /Users/sora/Development/SkillCraft/.dart_tool/flutter_build/938ad2c583738c77de858917ef478fba/native_assets.yaml: 

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:skillborn/services/models.dart';
 import 'package:skillborn/skills/skill_card/skill_summary.dart';
-import 'package:skillborn/skills/skill_icon.dart';
 
 class SkillDetail extends StatelessWidget {
   final Skill skill;
@@ -28,7 +27,7 @@ class SkillDetail extends StatelessWidget {
               children: [
                 SkillSummary(skill: skill),
                 Padding(
-                  padding: EdgeInsets.fromLTRB(16, 10, 16, 10),
+                  padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
                   child: Text(skill.description),
                 )
               ],

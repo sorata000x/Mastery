@@ -4,6 +4,7 @@ import 'package:skillborn/main_state.dart';
 import 'package:skillborn/task/task_section/shared/task_card/task_card.dart';
 import 'package:skillborn/task/task_section/shared/task_evaluration_card.dart';
 import 'package:skillborn/task/task_state.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CompletedList extends StatelessWidget {
 
@@ -17,9 +18,9 @@ class CompletedList extends StatelessWidget {
         mainState.tasks.where((task) => task.isCompleted == true).toList();
 
     return ExpansionTile(
-        title: const Text(
-            'Completed',
-            style: TextStyle(fontSize: 14, color: Colors.grey),
+        title: Text(
+            AppLocalizations.of(context)!.completed,
+            style: const TextStyle(fontSize: 14, color: Colors.grey),
         ),
         initiallyExpanded: true,
         collapsedShape: const RoundedRectangleBorder(

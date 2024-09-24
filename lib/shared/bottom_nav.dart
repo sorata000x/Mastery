@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:skillborn/main_state.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BottomNavBar extends StatelessWidget {
   const BottomNavBar({super.key});
@@ -21,7 +22,7 @@ class BottomNavBar extends StatelessWidget {
                 : FontAwesomeIcons.circleCheck, // Lined icon
             size: 20,
           ),
-          label: 'Todos',
+          label: AppLocalizations.of(context)!.todos,
         ),
         BottomNavigationBarItem(
           icon: Icon(
@@ -30,7 +31,7 @@ class BottomNavBar extends StatelessWidget {
                 : FontAwesomeIcons.bolt, // Lined icon
             size: 20,
           ),
-          label: 'Skills',
+          label: AppLocalizations.of(context)!.skills,
         ),
         BottomNavigationBarItem(
           icon: Icon(
@@ -39,7 +40,7 @@ class BottomNavBar extends StatelessWidget {
                 : FontAwesomeIcons.userCircle, // Lined icon
             size: 20,
           ),
-          label: 'Profile',
+          label: AppLocalizations.of(context)!.profile,
         ),
       ],
       selectedItemColor: Colors.white,

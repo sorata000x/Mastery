@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:skillborn/main_state.dart';
-import 'package:skillborn/services/models.dart';
 import 'package:skillborn/task/task_state.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AddTaskInput extends StatelessWidget {
   const AddTaskInput({super.key});
@@ -14,11 +14,11 @@ class AddTaskInput extends StatelessWidget {
 
     return SingleChildScrollView(
       child: Container(
-        color: Color.fromRGBO(45, 45, 45, 1),
+        color: const Color.fromRGBO(45, 45, 45, 1),
         padding: MediaQuery.of(context).viewInsets, // Adjust for keyboard
         child: Row(
           children: [
-            SizedBox(width: 14, height: 60,),
+            const SizedBox(width: 14, height: 60,),
             const Icon(
               IconData(0xef53, fontFamily: 'MaterialIcons'),
               size: 30,
@@ -26,7 +26,7 @@ class AddTaskInput extends StatelessWidget {
             ),
             Expanded(
               child: Container(
-                color: Color.fromRGBO(45, 45, 45, 1),
+                color: const Color.fromRGBO(45, 45, 45, 1),
                 child: TextField(
                   controller: taskState.taskController,
                   onSubmitted: (value) {
@@ -35,11 +35,14 @@ class AddTaskInput extends StatelessWidget {
                   },
                   autofocus:
                       true, // Automatically focus the input when it appears
-                  decoration: const InputDecoration(
-                    hintText: "Enter task name",
+                  decoration: InputDecoration(
+                    hintText: AppLocalizations.of(context)!.add_a_task,
+                    hintStyle: const TextStyle(
+                        color: Colors.grey,
+                      ),
                     border: InputBorder.none,
                     filled: true,
-                    fillColor: Color.fromRGBO(45, 45, 45, 1),
+                    fillColor: const Color.fromRGBO(45, 45, 45, 1),
                   ),
                 ),
               ),

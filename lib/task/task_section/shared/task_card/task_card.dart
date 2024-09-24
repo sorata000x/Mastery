@@ -11,6 +11,7 @@ import 'package:skillborn/services/models.dart';
 import 'package:skillborn/task/task_section/shared/task_card/task_deletion_dialog.dart';
 import 'package:skillborn/task/task_section/shared/task_card/task_edit.dart';
 import 'package:skillborn/task/task_state.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TaskCard extends StatelessWidget {
   final Task task;
@@ -175,7 +176,7 @@ class TaskCard extends StatelessWidget {
             newSkill['exp'], 
             newSkill['type'],
           );
-          messages.add("New Skill: ${newSkill['skill']} + ${newSkill['exp']}");
+          messages.add("${AppLocalizations.of(context)!.new_skill}: ${newSkill['skill']} + ${newSkill['exp']}");
         }
       }
 

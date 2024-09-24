@@ -4,5 +4,32 @@
   "@title": {
     "description": "Title for the welcome screen"
   },
-  "add_a_task": "添加任務"
-}
+  "add_a_task": "新增任務",
+  "@add_a_task": {
+    "description": "Text on add a task button"
+  },
+  "completed": "已完成",
+  "@completed": {
+    "description": "Completed tasks section text"
+  },
+  "todos": "任務",
+  "@todos": {
+    "description": "Todos tab of navigation bar"
+  },
+  "skills": "技能",
+  "@skills": {
+    "description": "Skills tab of navigation bar and the title of the skills screen"
+  },
+  "profile": "使用者",
+  "@profile": {
+    "description": "Profile tab of navigation bar and the title of the profile screen"
+  },
+  "sign_out": "登出",
+  "@sign_out": {
+    "description": "Text of sign-out button in Profile screen"
+  },
+  "new_skill": "新技能",
+  "@new_skill": {
+    "description": "New skill message when adding new skill"
+  }
+} 

@@ -4,5 +4,32 @@
   "@title": {
     "description": "Title for the welcome screen"
   },
-  "add_a_task": "Add a Task"
-}
+  "add_a_task": "Add a Task",
+  "@add_a_task": {
+    "description": "Text on add a task button"
+  },
+  "completed": "Completed",
+  "@completed": {
+    "description": "Completed tasks section text"
+  },
+  "todos": "Todos",
+  "@todos": {
+    "description": "Todos tab of navigation bar"
+  },
+  "skills": "Skills",
+  "@skills": {
+    "description": "Skills tab of navigation bar and the title of the skills screen"
+  },
+  "profile": "Profile",
+  "@profile": {
+    "description": "Profile tab of navigation bar and the title of the profile screen"
+  },
+  "sign_out": "Sign-out",
+  "@sign_out": {
+    "description": "Text of sign-out button in Profile screen"
+  },
+  "new_skill": "New Skill",
+  "@new_skill": {
+    "description": "New skill message when adding new skill"
+  }
+} 

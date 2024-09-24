@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:skillborn/main_state.dart';
 import 'package:skillborn/services/models.dart';
-import 'package:skillborn/task/task_state.dart';
 
 class TaskEdit extends StatefulWidget {
   final Task task;

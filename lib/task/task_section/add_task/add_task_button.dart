@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:skillborn/main_state.dart';
 import 'package:skillborn/task/task_section/add_task/add_task_input.dart';
-import 'package:skillborn/task/task_state.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AddTaskButton extends StatelessWidget {
   const AddTaskButton({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () {
@@ -27,14 +25,15 @@ class AddTaskButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(5),
           ),
         ),
-        child: const Row(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(Icons.add),
-            SizedBox(width: 11),
+            const Icon(Icons.add),
+            const SizedBox(width: 8),
             Text(
-              "Add a Task",
-              style: TextStyle(
+              AppLocalizations.of(context)!.add_a_task,
+              style: const TextStyle(
                 fontSize: 16.0,
                 fontWeight: FontWeight.normal,
               ),
