@@ -10,16 +10,19 @@ class SkillIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     var iconName = 'star';
     if (type == 'energy') {
-      iconName = 'thunder';
+      iconName = 'bolt';
+    }
+    if (type == 'endurance') {
+      iconName = 'mountain';
     }
     if (type == 'run-walk') {
       iconName = 'run';
     }
-    if (type == 'swim') {
-      iconName = 'swim';
-    }
     if (type == 'cycling') {
       iconName = 'cycling';
+    }
+    if (type == 'swim') {
+      iconName = 'swim';
     }
     if (type == 'sports') {
       iconName = 'star';
@@ -27,16 +30,19 @@ class SkillIcon extends StatelessWidget {
     if (type == 'strength') {
       iconName = 'muscle_up';
     }
-    if (type == 'chores') {
-      iconName = 'broom';
+    if (type == 'stretching') {
+      iconName = 'stretching';
+    }
+    if (type == 'clean') {
+      iconName = 'clean_hand';
+    }
+    if (type == 'cook') {
+      iconName = 'cook';
     }
     if (type == 'thinking') {
       iconName = 'brain';
     }
     if (type == 'memory') {
-      iconName = 'brain';
-    }
-    if (type == 'mental') {
       iconName = 'brain';
     }
     if (type == 'focus') {
@@ -48,8 +54,20 @@ class SkillIcon extends StatelessWidget {
     if (type == 'emotion') {
       iconName = 'emotion';
     }
-    if (type == 'creative') {
+    if (type == 'creativity') {
       iconName = 'lightbulb';
+    }
+     if (type == 'problem-solving') {
+      iconName = 'problem-solving';
+    }
+     if (type == 'mental') {
+      iconName = 'brain';
+    }
+    if (type == 'sleep') {
+      iconName = 'sleep';
+    }
+    if (type == 'food') {
+      iconName = 'food';
     }
     if (type == 'social') {
       iconName = 'handshake';
@@ -60,11 +78,8 @@ class SkillIcon extends StatelessWidget {
     if (type == 'hardware') {
       iconName = 'gear';
     }
-    if (type == 'cook') {
-      iconName = 'cook';
-    }
-    if (type == 'endurance') {
-      iconName = 'mountain';
+    if (type == 'design') {
+      iconName = 'design';
     }
     return Padding(
       padding: const EdgeInsets.all(8),

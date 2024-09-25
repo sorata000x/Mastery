@@ -17,7 +17,7 @@ final Map<String, dynamic> skillProperties = {
         "description": {
           "type": "string",
           "description":
-              "Description of the skill. Tone: appealing to self-improvement without praise."
+              "General description of the skill. Tone: appealing to self-improvement without praise."
         },
         "exp": {"type": "number", "description": "Skill experience point"},
         "probability": {
@@ -27,12 +27,17 @@ final Map<String, dynamic> skillProperties = {
         "type": {
           "type": "string",
           "description": """
-            One of the following:
-            energy, run-walk, cycling, sports, strength, chores, cook,
-            thinking, memory, focus, learning, emotion, creative, mental,
-            social,
-            software, hardware, 
-            or other
+            Choose one from the following list:[
+            'energy', 'endurance', 'run-walk', 'cycling', 'swim', 'sports', 'strength', 'stretching'
+            'clean', 'cook',
+            'thinking', 'memory', 'focus', 'learning', 'emotion', 'creativity', 'problem-solving', 
+            'mental', 
+            'sleep', 'food',
+            'social',
+            'software', 'hardware', 
+            'design',
+            'other'
+            ]
           """
         },
       }
