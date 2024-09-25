@@ -53,10 +53,13 @@ class MainState with ChangeNotifier {
       title: title,
       note: '',
       skills: [],
-      index: _tasks.length,
+      index: 0,
       isCompleted: false,
     );
-    _tasks.add(newTask);
+    _tasks.insert(0, newTask);
+    for (int i = 0; i < _tasks.length; i++) {
+      _tasks[i].index = i;
+    }
     FirestoreService().setTask(newTask);
     notifyListeners();
   }
