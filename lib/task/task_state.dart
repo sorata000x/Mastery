@@ -10,7 +10,7 @@ class TaskState extends ChangeNotifier {
 
   List<String> get evaluatingTasks => _evaluatingTasks;
   Queue<String> get hintMessages => _hintMessages;
-  
+
   void addEvaluatingTask(String taskId) {
     _evaluatingTasks.add(taskId);
     notifyListeners();

@@ -31,19 +31,8 @@ class TaskSection extends StatelessWidget {
               ],
             ),
           ),
-          Container(
-            padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 10.0),
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.8),  // Shadow color with opacity
-                  spreadRadius: 2,  // Spread radius (makes the shadow bigger)
-                  blurRadius: 5,  // Blur radius (makes the shadow softer)
-                ),
-              ],
-            ),
-            child: const AddTaskButton()), // Display add task button or input field at the bottom
-            ],
+          const AddTaskButton(), // Display add task button or input field at the bottom
+        ],
       ),
     );
   }

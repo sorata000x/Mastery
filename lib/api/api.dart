@@ -39,7 +39,7 @@ final Map<String, dynamic> skillProperties = {
     },
     "description": """
       List of skills names, description, exps, probability, icon associate with task.
-      Always have one skill with probability 1.0.
+      Always have one skill with probability 1.0 and others with probability 0.1.
       Example: 
         Task: Run for 1 mile
         "skills": [
@@ -52,43 +52,43 @@ final Map<String, dynamic> skillProperties = {
           {
             "skill": "Herculean Endurance",
             "exp": 40,
-            "probability": 0.9,
+            "probability": 0.1,
             "type": "endurance"
           },
           {
             "skill": "Laser-Focused Mind",
             "exp": 30,
-            "probability": 0.7,
+            "probability": 0.1,
             "type": "focus"
           },
           {
             "skill": "Unyielding Determination",
             "exp": 25,
-            "probability": 0.7,
+            "probability": 0.1,
             "type": "mental"
           },
           {
             "skill": "Rhythmic Breathing",
             "exp": 35,
-            "probability": 0.85,
+            "probability": 0.1,
             "type": "run-walk"
           },
           {
             "skill": "Pace Management",
             "exp": 20,
-            "probability": 0.6,
+            "probability": 0.1,
             "type": "run-walk"
           },
           {
             "skill": "Mental Fortitude",
             "exp": 10,
-            "probability": 0.5,
+            "probability": 0.1,
             "type": "mental"
           },
           {
             "skill": "Supreme Agility",
             "exp": 25,
-            "probability": 0.75,
+            "probability": 0.1,
             "type": "run-walk"
           },
         ]
