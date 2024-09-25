@@ -24,7 +24,7 @@ class HintCard extends StatelessWidget {
                     color: Colors.black.withOpacity(0.5),  // Shadow color with opacity
                     spreadRadius: 0,  // Spread radius (makes the shadow bigger)
                     blurRadius: 5,  // Blur radius (makes the shadow softer)
-                    offset: Offset(0, -4),
+                    offset: const Offset(0, -4),
                   ),
                 ],
           ),

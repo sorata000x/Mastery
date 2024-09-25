@@ -41,6 +41,7 @@ class _TitleEditState extends State<TitleEdit> {
               controller: _taskTitleController,
               // Style
               maxLines: null,
+              textInputAction: TextInputAction.done, 
               decoration: const InputDecoration(
                 hintText: "Untitled",
                 hintStyle: TextStyle(

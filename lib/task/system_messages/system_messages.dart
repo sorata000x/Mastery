@@ -23,10 +23,10 @@ class SystemMessages extends StatelessWidget {
             ),
             child: Column(
               children: [
-                SizedBox(height: 10,),
+                const SizedBox(height: 10,),
                 ...state.hintMessages
                   .map((m) => HintCard(message: m))
-                  .toList()],
+                  ],
             ),
           ),
         ));

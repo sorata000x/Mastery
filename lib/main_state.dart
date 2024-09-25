@@ -204,7 +204,7 @@ class MainState with ChangeNotifier {
     var level = 1 + (exp ~/ cap);
     exp = exp % cap;
     var id = const Uuid().v4();
-    var index = _skills.length;
+    var index = 0;
     final newSkill = Skill(
         id: id,
         index: index,
@@ -213,7 +213,10 @@ class MainState with ChangeNotifier {
         exp: exp,
         level: level,
         type: type);
-    _skills.add(newSkill);
+    _skills.insert(0, newSkill);
+    for (int i = 0; i < _skills.length; i++) {
+      _skills[i].index = i;
+    }
     FirestoreService()
         .setSkillInFirestore(id, index, title, description, exp, level, type);
     notifyListeners();

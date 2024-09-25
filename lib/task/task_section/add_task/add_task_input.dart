@@ -30,6 +30,7 @@ class AddTaskInput extends StatelessWidget {
                 child: TextField(
                   controller: taskState.taskController,
                   maxLines: null,
+                  textInputAction: TextInputAction.done, 
                   onSubmitted: (value) {
                     mainState.addTask(taskState.taskController.text);
                     taskState.taskController.clear();
