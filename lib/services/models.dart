@@ -8,12 +8,14 @@ class Task {
   String id;
   String title;
   String note;
+  List<String>? skills;
   int index;
   bool isCompleted;
   Task(
       {this.id = '',
       this.title = '',
       this.note = '',
+      this.skills,
       this.index = 0,
       this.isCompleted = false});
   factory Task.fromJson(Map<String, dynamic> json) => _$TaskFromJson(json);

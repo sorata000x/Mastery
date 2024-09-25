@@ -31,7 +31,7 @@ class TaskSection extends StatelessWidget {
             ),
           ),
           Container(
-            padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 10.0),
+            padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 10.0),
             decoration: BoxDecoration(
               boxShadow: [
                 BoxShadow(
@@ -41,7 +41,7 @@ class TaskSection extends StatelessWidget {
                 ),
               ],
             ),
-            child: AddTaskButton()), // Display add task button or input field at the bottom
+            child: const AddTaskButton()), // Display add task button or input field at the bottom
             ],
       ),
     );

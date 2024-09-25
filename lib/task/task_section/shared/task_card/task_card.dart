@@ -9,7 +9,7 @@ import 'package:skillborn/main_state.dart';
 import 'package:skillborn/services/firestore.dart';
 import 'package:skillborn/services/models.dart';
 import 'package:skillborn/task/task_section/shared/task_card/task_deletion_dialog.dart';
-import 'package:skillborn/task/task_section/shared/task_card/task_edit.dart';
+import 'package:skillborn/task/task_section/shared/task_card/task_edit/task_edit.dart';
 import 'package:skillborn/task/task_state.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -49,12 +49,9 @@ class TaskCard extends StatelessWidget {
       ),
       child: GestureDetector(
         onTap: () => {
-          showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              builder: (BuildContext context) {
-                return TaskEdit(task: task);
-              })
+          Navigator.push(context, MaterialPageRoute(builder: (context) => 
+            TaskEdit(task: task)
+          ),)
         },
         child: Container(
           decoration: BoxDecoration(
@@ -115,6 +112,7 @@ class TaskCard extends StatelessWidget {
     final mainState = Provider.of<MainState>(context, listen: false);
     final taskState = Provider.of<TaskState>(context, listen: false);
     var skills = await FirestoreService().getSkillsFromTask(task.title);
+    var localizations = Localizations.of<AppLocalizations>(context, AppLocalizations);
 
     /// Generate new skills from task title with OpenAI api
     Future<List<Map<String, dynamic>>?> generateSkillsFromTaskTitle(
@@ -170,13 +168,17 @@ class TaskCard extends StatelessWidget {
         // Randomly pick 1 skill to give to user
         var newSkill = getNewSkill(newSkills);
         if (newSkill != null) {
-          mainState.addSkill(
-            newSkill['skill'], 
-            newSkill['description'], 
-            newSkill['exp'], 
-            newSkill['type'],
-          );
-          messages.add("${AppLocalizations.of(context)!.new_skill}: ${newSkill['skill']} + ${newSkill['exp']}");
+          var skillId = mainState
+              .addSkill(
+                newSkill['skill'],
+                newSkill['description'],
+                newSkill['exp'],
+                newSkill['type'],
+              )
+              .id;
+          mainState.addSkillToTask(task.id, skillId);
+          messages.add(
+              "${localizations!.new_skill}: ${newSkill['skill']} + ${newSkill['exp']}");
         }
       }
 

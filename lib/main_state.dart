@@ -52,6 +52,7 @@ class MainState with ChangeNotifier {
       id: const Uuid().v4(),
       title: title,
       note: '',
+      skills: [],
       index: _tasks.length,
       isCompleted: false,
     );
@@ -60,18 +61,20 @@ class MainState with ChangeNotifier {
     notifyListeners();
   }
 
-  void setTask(
-      String id, String title, String note, int index, bool isCompleted) {
+  void setTask(String id, String title, String note, List<String> skills,
+      int index, bool isCompleted) {
     for (var task in tasks) {
       if (task.id == id) {
         task.id = id;
         task.title = title;
         task.note = note;
+        task.skills = skills;
         task.index = index;
         task.isCompleted = isCompleted;
       }
     }
-    FirestoreService().setTaskInFirestore(id, title, note, index, isCompleted);
+    FirestoreService()
+        .setTaskInFirestore(id, title, note, skills, index, isCompleted);
     notifyListeners();
   }
 
@@ -103,6 +106,17 @@ class MainState with ChangeNotifier {
       _tasks[i].index = i;
     }
     FirestoreService().setTasks(_tasks);
+    notifyListeners();
+  }
+
+  void addSkillToTask(taskId, skillId) {
+    for (int i = 0; i < _tasks.length; i++) {
+      if (_tasks[i].id == taskId) {
+        print('adding: $skillId');
+        _tasks[i].skills?.add(skillId);
+        FirestoreService().setTask(_tasks[i]);
+      }
+    }
     notifyListeners();
   }
 
@@ -181,7 +195,7 @@ class MainState with ChangeNotifier {
     return false;
   }
 
-  void addSkill(String title, String description, int gain, String type) {
+  Skill addSkill(String title, String description, int gain, String type) {
     var cap = 100;
     var exp = gain;
     var level = 1 + (exp ~/ cap);
@@ -197,10 +211,10 @@ class MainState with ChangeNotifier {
         level: level,
         type: type);
     _skills.add(newSkill);
-    FirestoreService().setSkillInFirestore(
-      id, index, title, description, exp, level, type
-    );
+    FirestoreService()
+        .setSkillInFirestore(id, index, title, description, exp, level, type);
     notifyListeners();
+    return newSkill;
   }
 
   void reorderSkill(oldIndex, newIndex) {
