@@ -25,6 +25,7 @@ class TaskSection extends StatelessWidget {
             child: ListView(
               padding: const EdgeInsets.all(15),
               children: const [
+                SizedBox(height: 4),
                 TodoList(),
                 CompletedList(),
               ],
