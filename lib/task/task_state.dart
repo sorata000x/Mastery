@@ -1,15 +1,18 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:skillborn/task/task_section/shared/task_card/task_edit/title_edit.dart';
 
 class TaskState extends ChangeNotifier {
   final List<String> _evaluatingTasks =
       []; // List of tasks that are currently getting responses from
   TextEditingController taskController = TextEditingController();
   final Queue<String> _hintMessages = Queue();
+  String _titleEditText = "";
 
   List<String> get evaluatingTasks => _evaluatingTasks;
   Queue<String> get hintMessages => _hintMessages;
+  String get titleEditText => _titleEditText;
 
   void addEvaluatingTask(String taskId) {
     _evaluatingTasks.add(taskId);
@@ -29,5 +32,10 @@ class TaskState extends ChangeNotifier {
       _hintMessages.remove(message);
       notifyListeners();
     });
+  }
+
+  void setTitleEditText(value) {
+    _titleEditText = value;
+    notifyListeners();
   }
 }

@@ -29,6 +29,7 @@ class AddTaskInput extends StatelessWidget {
                 color: const Color.fromRGBO(45, 45, 45, 1),
                 child: TextField(
                   controller: taskState.taskController,
+                  maxLines: null,
                   onSubmitted: (value) {
                     mainState.addTask(taskState.taskController.text);
                     taskState.taskController.clear();

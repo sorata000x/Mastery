@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:skillborn/main_state.dart';
 import 'package:skillborn/services/models.dart';
+import 'package:skillborn/task/task_state.dart';
 
 class TitleEdit extends StatefulWidget {
   final Task task;
@@ -24,6 +25,7 @@ class _TitleEditState extends State<TitleEdit> {
   @override
   Widget build(BuildContext context) {
     final mainState = Provider.of<MainState>(context);
+    final taskState = Provider.of<TaskState>(context);
 
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 6, 6, 0),
@@ -38,21 +40,18 @@ class _TitleEditState extends State<TitleEdit> {
             child: TextField(
               controller: _taskTitleController,
               // Style
+              maxLines: null,
               decoration: const InputDecoration(
                 hintText: "Untitled",
                 hintStyle: TextStyle(
                   color: Colors.grey,
-                  fontSize: 16.0,
+                  fontSize: 18.0,
                 ),
                 border: InputBorder.none,
                 filled: true,
               ),
               onChanged: (value) {
-                mainState.setTask(widget.task.id, value, widget.task.note, widget.task.skills!,
-                    widget.task.index, widget.task.isCompleted);
-              },
-              onSubmitted: (value) {
-                Navigator.pop(context);
+                taskState.setTitleEditText(value);
               },
             ),
           ),
