@@ -24,8 +24,9 @@ class _TitleEditState extends State<TitleEdit> {
 
   @override
   Widget build(BuildContext context) {
-    final mainState = Provider.of<MainState>(context);
     final taskState = Provider.of<TaskState>(context);
+
+    taskState.setTitleEditText(widget.task.title);
 
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 6, 6, 0),
@@ -41,7 +42,7 @@ class _TitleEditState extends State<TitleEdit> {
               controller: _taskTitleController,
               // Style
               maxLines: null,
-              textInputAction: TextInputAction.done, 
+              textInputAction: TextInputAction.done,
               decoration: const InputDecoration(
                 hintText: "Untitled",
                 hintStyle: TextStyle(

@@ -12,12 +12,12 @@ final Map<String, dynamic> skillProperties = {
         "skill": {
           "type": "string",
           "description":
-              "Skill name, in the form of praise, like 'Laser-Focused Mind' and 'Herculean Endurance'",
+              "Skill name, be descriptive, exaggerated, and use powerful language, like 'Laser-Focused Mind' and 'Herculean Endurance'",
         },
         "description": {
           "type": "string",
           "description":
-              "General description of the skill. Tone: appealing to self-improvement without praise."
+              "General description of the skill. Tone: appealing and desirable without praise."
         },
         "exp": {"type": "number", "description": "Skill experience point"},
         "probability": {

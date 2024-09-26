@@ -44,6 +44,10 @@ class MainState with ChangeNotifier {
   void initTask() async {
     _tasks = await FirestoreService().getTasks();
     _tasks.sort((a, b) => a.index.compareTo(b.index));
+    // Ensure reordering will work
+    for (int i = 0; i < _tasks.length; i++) {
+      _tasks[i].index = i;
+    }
     notifyListeners();
   }
 
@@ -127,6 +131,10 @@ class MainState with ChangeNotifier {
 
   void initSkill() async {
     _skills = await FirestoreService().getSkills();
+    // Ensure reordering will work
+    for (int i = 0; i < _skills.length; i++) {
+      _skills[i].index = i;
+    }
     notifyListeners();
   }
 
