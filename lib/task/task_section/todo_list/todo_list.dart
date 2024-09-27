@@ -18,7 +18,7 @@ class TodoList extends StatelessWidget {
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemCount: todos.length,
-        onReorder: mainState.reorderTask,
+        onReorder: (oldIndex, newIndex) => mainState.reorderTask(todos[oldIndex].index, todos[newIndex].index),
         itemBuilder: (context, index) {
           return Container(
               padding: const EdgeInsets.symmetric(vertical: 2.0),

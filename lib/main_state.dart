@@ -9,20 +9,30 @@ class MainState with ChangeNotifier {
   List<Task> _tasks = [];
   List<Skill> _skills = [];
   String? _user;
+  List<Map<String, dynamic>> _functions = [];
 
   int get page => _page;
   List<Task> get tasks => _tasks;
   List<Skill> get skills => _skills;
   String? get user => _user;
+  List<Map<String, dynamic>> get functions => _functions;
 
   MainState() {
     initTask();
     initSkill();
+    initFunctions();
     updateUser();
     FirebaseAuth.instance.authStateChanges().listen((User? currentUser) {
       _user = currentUser?.uid;
       notifyListeners();
     });
+  }
+
+  // Functions
+
+  void initFunctions() async {
+    _functions = await FirestoreService().getFunctions();
+    notifyListeners();
   }
 
   // User
@@ -64,7 +74,7 @@ class MainState with ChangeNotifier {
     for (int i = 0; i < _tasks.length; i++) {
       _tasks[i].index = i;
     }
-    FirestoreService().setTask(newTask);
+    FirestoreService().setTasks(_tasks);
     notifyListeners();
   }
 
@@ -89,6 +99,7 @@ class MainState with ChangeNotifier {
     // Set local
     Task? task = tasks.firstWhere((task) => task.id == target.id);
     task.isCompleted = !task.isCompleted;
+
     // Set firestore
     FirestoreService().setTask(task);
     notifyListeners();
@@ -103,9 +114,6 @@ class MainState with ChangeNotifier {
   void reorderTask(oldIndex, newIndex) {
     if (newIndex > oldIndex) {
       newIndex -= 1;
-    }
-    for (int i = 0; i < _tasks.length; i++) {
-      _tasks[i].index = i;
     }
     final Task task = _tasks.removeAt(oldIndex);
     _tasks.insert(newIndex, task);
@@ -225,8 +233,7 @@ class MainState with ChangeNotifier {
     for (int i = 0; i < _skills.length; i++) {
       _skills[i].index = i;
     }
-    FirestoreService()
-        .setSkillInFirestore(id, index, title, description, exp, level, type);
+    FirestoreService().setSkills(_skills);
     notifyListeners();
     return newSkill;
   }

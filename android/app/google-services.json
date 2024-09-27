@@ -7,12 +7,25 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1001934211196:android:99f8898bcda09772ab61f9",
+        "mobilesdk_app_id": "1:1001934211196:android:1832082fca918032ab61f9",
         "android_client_info": {
-          "package_name": "com.amorfati.skillcraft"
+          "package_name": "io.amorfati.skillborn"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1001934211196-9ko298o62u19ccful7scge40tg7fs1ab.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "io.amorfati.skillborn",
+            "certificate_hash": "75d47aafa53fa8e46b6249f187cc720b57e200cb"
+          }
+        },
+        {
+          "client_id": "1001934211196-d8chmosk0ojhuo4e8d76vqimqecmt77e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBv-WLpUnyo7KjfeTW8zW4YkdZqq7ZO4Vc"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1001934211196-d8chmosk0ojhuo4e8d76vqimqecmt77e.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1001934211196-7bijf5p0l9v1fhf4cdrcct553c4sl87r.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "io.amorfati.skillcraft"
+              }
+            }
+          ]
         }
       }
     }

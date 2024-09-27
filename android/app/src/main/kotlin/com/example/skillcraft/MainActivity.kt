@@ -1,4 +1,4 @@
-package com.example.skillcraft
+package io.amorfati.skillborn
 
 import io.flutter.embedding.android.FlutterActivity
 

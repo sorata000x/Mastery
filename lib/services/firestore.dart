@@ -1,6 +1,7 @@
 import 'dart:core';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:skillborn/services/models.dart';
 import 'package:uuid/uuid.dart';
 
@@ -23,6 +24,19 @@ class FirestoreService {
 
   void updateUser() {
     user = FirebaseAuth.instance.currentUser?.uid;
+  }
+
+  Future<List<Map<String, dynamic>>> getFunctions() async {
+    var ref = _db.collection('functions'); // User collection
+    var snapshot = await ref.get();
+    var data = snapshot.docs.map((s) => s.data());
+    var functions = data
+        .map((d) => {
+              "name": d["function"]["name"],
+              "parameters": d["function"]["parameters"]
+            })
+        .toList();
+    return functions;
   }
 
   // Task
@@ -59,8 +73,8 @@ class FirestoreService {
         .catchError((error) => print("Failed to set task: $error"));
   }
 
-  Future setTaskInFirestore(
-      String id, String title, String note, List<String> skills, int index, bool completed) {
+  Future setTaskInFirestore(String id, String title, String note,
+      List<String> skills, int index, bool completed) {
     CollectionReference tasks = _db
         .collection('users') // User collection
         .doc(user) // Specific user document
@@ -179,8 +193,8 @@ class FirestoreService {
         .catchError((error) => print("Failed to set task: $error"));
   }
 
-  Future setSkillInFirestore(
-      String id, int index, String title, String description, int exp, int level, String type) {
+  Future setSkillInFirestore(String id, int index, String title,
+      String description, int exp, int level, String type) {
     CollectionReference skills = _db
         .collection('users') // User collection
         .doc(user) // Specific user document

@@ -49,9 +49,10 @@ class TaskCard extends StatelessWidget {
       ),
       child: GestureDetector(
         onTap: () => {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => 
-            TaskEdit(task: task)
-          ),)
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => TaskEdit(task: task)),
+          )
         },
         child: Container(
           decoration: BoxDecoration(
@@ -112,7 +113,8 @@ class TaskCard extends StatelessWidget {
     final mainState = Provider.of<MainState>(context, listen: false);
     final taskState = Provider.of<TaskState>(context, listen: false);
     var skills = await FirestoreService().getSkillsFromTask(task.title);
-    var localizations = Localizations.of<AppLocalizations>(context, AppLocalizations);
+    var localizations =
+        Localizations.of<AppLocalizations>(context, AppLocalizations);
 
     /// Generate new skills from task title with OpenAI api
     Future<List<Map<String, dynamic>>?> generateSkillsFromTaskTitle(
@@ -120,6 +122,7 @@ class TaskCard extends StatelessWidget {
       // Get skill as a string of List<Map<String, int>>
       var messages =
           getTaskCompletionMessages(FirestoreService().getSkills(), taskTitle);
+      var functions = mainState.functions;
       var result = await callChatGPT(mainState, messages, functions);
       if (result == null) return [];
       // Decode string to List<Map<String, dynamic>>
@@ -167,11 +170,12 @@ class TaskCard extends StatelessWidget {
       if (newSkills.isNotEmpty) {
         // Randomly pick 1 skill to give to user
         var newSkill = getNewSkill(newSkills);
+        print("newSkill: $newSkill");
         if (newSkill != null) {
           var skillId = mainState
               .addSkill(
                 newSkill['skill'],
-                newSkill['description'],
+                newSkill['desc'],
                 newSkill['exp'],
                 newSkill['type'],
               )
