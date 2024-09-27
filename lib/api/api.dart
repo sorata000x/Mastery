@@ -1,68 +1,58 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:skillborn/services/firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 
 // Generate skill messages
 
 Future<List<Map<String, dynamic>>> getTaskCompletionMessages(
-    futureSkills, taskName) async {
+    futureSkills, taskName, language) async {
   return [
     {
       "role": "system",
-      "content": "Translate skill names and description to task's language"
+      "content": "Response language: $language"
     },
     {"role": "user", "content": "Task: $taskName"}
   ];
 }
 
 Future<String?> callChatGPT(state, futureMessages, functions) async {
-  final messages = await futureMessages;
-  const String apiKey =
-      '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'; // Replace with your API key
-  final Uri url = Uri.parse('https://api.openai.com/v1/chat/completions');
+  try {
+    final messages = await futureMessages;
+    HttpsCallable callable =
+        FirebaseFunctions.instance.httpsCallable('callOpenAI');
+    final result = await callable.call(<String, dynamic>{
+      'messages': messages,
+      'functions': functions,
+    });
+    final responseData = result.data;
 
-  final Map<String, String> headers = {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer $apiKey',
-  };
+    // Print the response data for debugging
+    print('Response data: $responseData');
 
-  final Map<String, dynamic> body = {
-    "model": "gpt-4o-mini", // Use "gpt-4-0613" if you have access
-    "messages": messages,
-    "functions": functions,
-    "function_call": {"name": "parseSkills"},
-  };
-
-  final http.Response response = await http.post(
-    url,
-    headers: headers,
-    body: json.encode(body),
-  );
-
-  if (response.statusCode == 200) {
-    final decodedResponse =
-        utf8.decode(response.bodyBytes); // handle different languages
-    final Map<String, dynamic> responseData = json.decode(decodedResponse);
-    print('Response body: ${utf8.decode(response.bodyBytes)}');
     return handleResponse(state, responseData);
-  } else {
-    print('Request failed with status: ${response.statusCode}.');
-    print('Response body: ${response.body}');
+  } catch (e) {
+    if (e is FirebaseFunctionsException) {
+      print('Firebase Functions error: ${e.code} - ${e.message}');
+      print('Error details: ${e.details}');
+    } else {
+      print('Unexpected error: $e');
+    }
+    return null;
   }
-  return null;
 }
 
 String? handleResponse(state, Map<String, dynamic> responseData) {
   final List<dynamic> choices = responseData['choices'];
+  print(responseData['choices'].runtimeType);
+  print(choices.isNotEmpty);
   print(responseData['usage']);
   if (choices.isNotEmpty) {
-    final Map<String, dynamic> message = choices[0]['message'];
+    final Map<String, dynamic> message = Map<String, dynamic>.from(choices[0]['message']);
     if (message.containsKey('function_call')) {
-      final Map<String, dynamic> functionCall = message['function_call'];
+      final Map<String, dynamic> functionCall = Map<String, dynamic>.from(message['function_call']);
       final String functionName = functionCall['name'];
-      final Map<String, dynamic> arguments =
-          json.decode(functionCall['arguments']);
-
+      final Map<String, dynamic> arguments = Map<String, dynamic>.from(json.decode(functionCall['arguments']));
       // Execute the corresponding function
       if (functionName == "parseSkills") {
         String skills = jsonEncode(arguments["skills"]);

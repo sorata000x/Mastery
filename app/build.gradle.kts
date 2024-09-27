@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.skillcraft"
+    namespace = "io.amorfati.skillborn"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.skillcraft"
+        applicationId = "io.amorfati.skillborn"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

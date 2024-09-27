@@ -121,7 +121,7 @@ class TaskCard extends StatelessWidget {
         taskTitle) async {
       // Get skill as a string of List<Map<String, int>>
       var messages =
-          getTaskCompletionMessages(FirestoreService().getSkills(), taskTitle);
+          getTaskCompletionMessages(FirestoreService().getSkills(), taskTitle, WidgetsBinding.instance.window.locale);
       var functions = mainState.functions;
       var result = await callChatGPT(mainState, messages, functions);
       if (result == null) return [];
