@@ -10,14 +10,14 @@ class TaskSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.person_add),
-            onPressed: () {
-              // Add action for the button
-            },
-          ),
-        ],
+        //actions: [
+        //  IconButton(
+        //    icon: const Icon(Icons.person_add),
+        //    onPressed: () {
+        //      // Add action for the button
+        //    },
+        //  ),
+        //],
       ),
       body: Column(
         children: [

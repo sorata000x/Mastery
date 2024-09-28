@@ -115,7 +115,7 @@ class MainContentBody extends StatelessWidget {
     } else if (page == 1) {
       return const SkillsScreen();
     } else if (page == 2) {
-      return const ProfileScreen();
+      return ProfileScreen();
     }
 
     return Center(child: Text("ERROR: Page number $page not found."));
