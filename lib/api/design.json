@@ -66,6 +66,7 @@
               },
               {
                 "skill": "Unyielding Determination",
+                "description": "A relentless drive to pursue goals, overcoming obstacles with unwavering focus. This ability enables persistence through challenges, maintaining resilience and pushing forward without hesitation.",
                 "exp": 25,
                 "probability": 0.1,
                 "type": "mental"
@@ -102,3 +103,12 @@
   }
 }
 
+
+
+{
+  "skill": "Skill Name",
+  "description": "This is an example",
+  "exp": 30,
+  "probability": 0.1,
+  "type": "other"
+}

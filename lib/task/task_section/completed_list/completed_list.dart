@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:skillborn/main_state.dart';
 import 'package:skillborn/task/task_section/shared/task_card/task_card.dart';
 import 'package:skillborn/task/task_section/shared/task_evaluration_card.dart';
-import 'package:skillborn/task/task_state.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CompletedList extends StatelessWidget {
@@ -11,10 +10,9 @@ class CompletedList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mainState = Provider.of<MainState>(context);
-    final taskState = Provider.of<TaskState>(context);
+    final state = Provider.of<MainState>(context);
     var completed =
-        mainState.tasks.where((task) => task.isCompleted == true).toList();
+        state.tasks.where((task) => task.isCompleted == true).toList();
 
     return ExpansionTile(
         title: Text(
@@ -35,12 +33,12 @@ class CompletedList extends StatelessWidget {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: completed.length,
-              onReorder: mainState.reorderTask,
+              onReorder: state.reorderTask,
               itemBuilder: (context, index) {
                 return Container(
                   key: ValueKey(completed[index].id),
                   padding: const EdgeInsets.symmetric(vertical: 2.0),
-                  child: taskState.evaluatingTasks.contains(completed[index].id)
+                  child: state.evaluatingTasks.contains(completed[index].id)
                       ? const TaskEvalurationCard()
                       : TaskCard(task: completed[index]),
                 );

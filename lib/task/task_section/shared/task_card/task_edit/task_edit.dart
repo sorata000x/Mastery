@@ -5,7 +5,6 @@ import 'package:skillborn/services/models.dart';
 import 'package:skillborn/task/task_section/shared/task_card/task_edit/note_edit.dart';
 import 'package:skillborn/task/task_section/shared/task_card/task_edit/skill_list/skills_list.dart';
 import 'package:skillborn/task/task_section/shared/task_card/task_edit/title_edit.dart';
-import 'package:skillborn/task/task_state.dart';
 
 class TaskEdit extends StatefulWidget {
   final Task task;
@@ -19,8 +18,7 @@ class TaskEdit extends StatefulWidget {
 class _TaskEditState extends State<TaskEdit> {
   @override
   Widget build(BuildContext context) {
-    final mainState = Provider.of<MainState>(context);
-    final taskState = Provider.of<TaskState>(context);
+    final state = Provider.of<MainState>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -28,10 +26,10 @@ class _TaskEditState extends State<TaskEdit> {
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
-            if (taskState.titleEditText != "") {
-              mainState.setTask(
+            if (state.titleEditText != "") {
+              state.setTask(
                   widget.task.id,
-                  taskState.titleEditText,
+                  state.titleEditText,
                   widget.task.note,
                   widget.task.skills!,
                   widget.task.index,

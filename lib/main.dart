@@ -10,7 +10,6 @@ import 'package:skillborn/shared/shared.dart';
 import 'package:skillborn/skills/skills.dart';
 import 'package:skillborn/theme.dart';
 import 'package:skillborn/task/task.dart';
-import 'package:skillborn/task/task_state.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // Main entry point of the app
@@ -23,16 +22,30 @@ void main() {
 class App extends StatefulWidget {
   const App({super.key});
 
+  static void restartApp(BuildContext context) {
+    final _AppState? state =
+        context.findAncestorStateOfType<_AppState>();
+    state?.restartApp();
+  }
+
   @override
   State<App> createState() => _AppState();
 }
 
 class _AppState extends State<App> {
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+  Key key = UniqueKey();
+
+  void restartApp() {
+    setState(() {
+      key = UniqueKey(); // Assign a new key to force widget rebuild
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
+      key: key,
       future: _initialization,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
@@ -42,7 +55,6 @@ class _AppState extends State<App> {
           return MultiProvider(
             providers: [
               ChangeNotifierProvider(create: (context) => MainState()),
-              ChangeNotifierProvider(create: (context) => TaskState()),
             ],
             child: const MainContent(),
           );

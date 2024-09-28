@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:skillborn/main_state.dart';
 import 'package:skillborn/task/system_messages/hint_card.dart';
-import 'package:skillborn/task/task_state.dart';
 
 class SystemMessages extends StatelessWidget {
   const SystemMessages({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final state = Provider.of<TaskState>(context);
+    final state = Provider.of<MainState>(context);
 
     return Positioned(
         bottom: 64,

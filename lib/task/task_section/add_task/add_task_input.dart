@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:skillborn/main_state.dart';
-import 'package:skillborn/task/task_state.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AddTaskInput extends StatelessWidget {
@@ -9,8 +8,7 @@ class AddTaskInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mainState = Provider.of<MainState>(context);
-    final taskState = Provider.of<TaskState>(context);
+    final state = Provider.of<MainState>(context);
 
     return SingleChildScrollView(
       child: Container(
@@ -28,12 +26,12 @@ class AddTaskInput extends StatelessWidget {
               child: Container(
                 color: const Color.fromRGBO(45, 45, 45, 1),
                 child: TextField(
-                  controller: taskState.taskController,
+                  controller: state.taskController,
                   maxLines: null,
                   textInputAction: TextInputAction.done, 
                   onSubmitted: (value) {
-                    mainState.addTask(taskState.taskController.text);
-                    taskState.taskController.clear();
+                    state.addTask(state.taskController.text);
+                    state.taskController.clear();
                   },
                   autofocus:
                       true, // Automatically focus the input when it appears

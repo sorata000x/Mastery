@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:skillborn/main_state.dart';
 import 'package:skillborn/services/models.dart';
-import 'package:skillborn/task/task_state.dart';
 
 class TitleEdit extends StatefulWidget {
   final Task task;
@@ -24,9 +23,9 @@ class _TitleEditState extends State<TitleEdit> {
 
   @override
   Widget build(BuildContext context) {
-    final taskState = Provider.of<TaskState>(context);
+    final state = Provider.of<MainState>(context);
 
-    taskState.setTitleEditText(widget.task.title);
+    state.setTitleEditText(widget.task.title);
 
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 6, 6, 0),
@@ -53,7 +52,7 @@ class _TitleEditState extends State<TitleEdit> {
                 filled: true,
               ),
               onChanged: (value) {
-                taskState.setTitleEditText(value);
+                state.setTitleEditText(value);
               },
             ),
           ),

@@ -10,7 +10,6 @@ import 'package:skillborn/services/firestore.dart';
 import 'package:skillborn/services/models.dart';
 import 'package:skillborn/task/task_section/shared/task_card/task_deletion_dialog.dart';
 import 'package:skillborn/task/task_section/shared/task_card/task_edit/task_edit.dart';
-import 'package:skillborn/task/task_state.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TaskCard extends StatelessWidget {
@@ -19,7 +18,7 @@ class TaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mainState = Provider.of<MainState>(context);
+    final state = Provider.of<MainState>(context);
 
     return Slidable(
       key: Key(task.id),
@@ -72,7 +71,7 @@ class TaskCard extends StatelessWidget {
                       onTaskComplete(context, task);
                     } else {
                       // Directly toggle tasks of no need to wait for response
-                      mainState.toggleTask(task);
+                      state.toggleTask(task);
                     }
                   },
                   icon: task.isCompleted
@@ -110,8 +109,7 @@ class TaskCard extends StatelessWidget {
   }
 
   Future onTaskComplete(context, task) async {
-    final mainState = Provider.of<MainState>(context, listen: false);
-    final taskState = Provider.of<TaskState>(context, listen: false);
+    final state = Provider.of<MainState>(context, listen: false);
     var skills = await FirestoreService().getSkillsFromTask(task.title);
     var localizations =
         Localizations.of<AppLocalizations>(context, AppLocalizations);
@@ -122,8 +120,8 @@ class TaskCard extends StatelessWidget {
       // Get skill as a string of List<Map<String, int>>
       var messages =
           getTaskCompletionMessages(FirestoreService().getSkills(), taskTitle, WidgetsBinding.instance.window.locale);
-      var functions = mainState.functions;
-      var result = await callChatGPT(mainState, messages, functions);
+      var functions = state.functions;
+      var result = await callChatGPT(state, messages, functions);
       if (result == null) return [];
       // Decode string to List<Map<String, dynamic>>
       List<Map<String, dynamic>> skills =
@@ -143,11 +141,11 @@ class TaskCard extends StatelessWidget {
       // Find and level up existing skills
       for (var s1 in skills) {
         Skill? s2;
-        if (mainState.skills.any((s) => s.title == s1['skill'])) {
-          s2 = mainState.skills.firstWhere((s) => s.title == s1['skill']);
+        if (state.skills.any((s) => s.title == s1['skill'])) {
+          s2 = state.skills.firstWhere((s) => s.title == s1['skill']);
         }
         if (s2 != null) {
-          mainState.levelUpSkill(s2, s1['exp']);
+          state.levelUpSkill(s2, s1['exp']);
           messages.add("${s1['skill']} + ${s1['exp']}");
         } else {
           newSkills.add(s1);
@@ -172,22 +170,22 @@ class TaskCard extends StatelessWidget {
         var newSkill = getNewSkill(newSkills);
         print("newSkill: $newSkill");
         if (newSkill != null) {
-          var skillId = mainState
+          var skillId = state
               .addSkill(
                 newSkill['skill'],
-                newSkill['desc'],
-                newSkill['exp'],
-                newSkill['type'],
+                newSkill['description'] ?? "Error: No description",
+                newSkill['exp'] ?? 1,
+                newSkill['type'] ?? "error",
               )
               .id;
-          mainState.addSkillToTask(task.id, skillId);
+          state.addSkillToTask(task.id, skillId);
           messages.add(
               "${localizations!.new_skill}: ${newSkill['skill']} + ${newSkill['exp']}");
         }
       }
 
       for (var message in messages) {
-        taskState.addHintMessage(message);
+        state.addHintMessage(message);
         // Add a delay of 0.2 seconds
         await Future.delayed(const Duration(milliseconds: 500));
       }
@@ -195,12 +193,12 @@ class TaskCard extends StatelessWidget {
 
     if (skills == null) {
       // If task not found in database, create new skills
-      taskState.addEvaluatingTask(task.id);
+      state.addEvaluatingTask(task.id);
       skills = await generateSkillsFromTaskTitle(task.title);
-      taskState.removeEvaluatingTask(task.id);
+      state.removeEvaluatingTask(task.id);
     }
 
     parseSkills(skills);
-    mainState.toggleTask(task);
+    state.toggleTask(task);
   }
 }

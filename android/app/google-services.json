@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "1001934211196-vgmbp3p0qcude9lr7ohi5nt0tj6skq98.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "io.amorfati.skillborn",
+            "certificate_hash": "64573a101e71df4880d9e99b0d8a0aef69387a54"
+          }
+        },
+        {
           "client_id": "1001934211196-d8chmosk0ojhuo4e8d76vqimqecmt77e.apps.googleusercontent.com",
           "client_type": 3
         }
