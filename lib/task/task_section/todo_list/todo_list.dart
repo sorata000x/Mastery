@@ -16,7 +16,12 @@ class TodoList extends StatelessWidget {
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemCount: todos.length,
-        onReorder: (oldIndex, newIndex) => state.reorderTask(todos[oldIndex].index, todos[newIndex].index),
+        onReorder: (oldIndex, newIndex) {
+          if (newIndex > oldIndex) {
+            newIndex -= 1;
+          }
+          state.reorderTask(todos[oldIndex].index, todos[newIndex].index);
+        },
         itemBuilder: (context, index) {
           return Container(
               padding: const EdgeInsets.symmetric(vertical: 2.0),
@@ -24,8 +29,8 @@ class TodoList extends StatelessWidget {
               child: Column(
                 children: [
                   state.evaluatingTasks.contains(todos[index].id)
-                    ? const TaskEvalurationCard()
-                    : TaskCard(task: todos[index]),
+                      ? const TaskEvalurationCard()
+                      : TaskCard(task: todos[index]),
                 ],
               ));
         });

@@ -109,7 +109,7 @@ class MainState with ChangeNotifier {
     Task? task = tasks.firstWhere((task) => task.id == target.id);
     // Set firestore
     FirestoreService().setTask(task);
-    // Set local
+    // Set local after firestore
     task.isCompleted = !task.isCompleted;
     notifyListeners();
   }
@@ -121,9 +121,8 @@ class MainState with ChangeNotifier {
   }
 
   void reorderTask(oldIndex, newIndex) {
-    if (newIndex > oldIndex) {
-      newIndex -= 1;
-    }
+    print('2oldIndex: $oldIndex, 2newIndex: $newIndex');
+    
     final Task task = _tasks.removeAt(oldIndex);
     _tasks.insert(newIndex, task);
     for (int i = 0; i < _tasks.length; i++) {

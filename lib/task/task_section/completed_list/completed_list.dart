@@ -33,7 +33,13 @@ class CompletedList extends StatelessWidget {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: completed.length,
-              onReorder: state.reorderTask,
+              onReorder: (oldIndex, newIndex) {
+                if (newIndex > oldIndex) {
+                  newIndex -= 1;
+                }
+                state.reorderTask(
+                    completed[oldIndex].index, completed[newIndex].index);
+              },
               itemBuilder: (context, index) {
                 return Container(
                   key: ValueKey(completed[index].id),

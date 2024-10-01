@@ -67,7 +67,7 @@ class FirestoreService {
           'note': task.note,
           'skills': task.skills,
           'index': task.index,
-          'isCompleted': task.isCompleted,
+          'isCompleted': !task.isCompleted,
         })
         .then((value) => print("Task Set"))
         .catchError((error) => print("Failed to set task: $error"));
