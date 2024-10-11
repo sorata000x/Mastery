@@ -14,7 +14,7 @@ class SkillSummary extends StatelessWidget {
 
     return Material(
       child: Container(
-        padding: const EdgeInsets.fromLTRB(10, 10, 20, 10),
+        padding: const EdgeInsets.fromLTRB(10, 4, 20, 4),
         child: Row(
           children: [
             SkillIcon(type: skill.type),
@@ -23,26 +23,26 @@ class SkillSummary extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(skill.title),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 3, bottom: 3),
-                    child: LinearProgressIndicator(
-                      value: percentage,
-                    ),
-                  ),
                   Row(
                     children: [
-                      Text(
-                        "EXP ${skill.exp} / $cap",
-                        style: const TextStyle(fontSize: 14),
-                      ),
+                      Text(skill.title, style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500)),
                       const Spacer(),
                       Text(
-                        "LV.${skill.level}",
-                        style: const TextStyle(fontSize: 14),
+                        "LV ${skill.level}",
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                       ),
                     ],
                   ),
+                  SizedBox(height: 6,),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 3, bottom: 4),
+                    child: LinearProgressIndicator(
+                      value: percentage,
+                      minHeight: 5,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  
                 ],
               ),
             ),

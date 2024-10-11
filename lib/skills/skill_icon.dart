@@ -3,8 +3,9 @@ import 'package:flutter_svg/svg.dart';
 
 class SkillIcon extends StatelessWidget {
   final String type;
+  final double size;
 
-  const SkillIcon({super.key, required this.type});
+  const SkillIcon({super.key, required this.type, this.size = 34});
 
   @override
   Widget build(BuildContext context) {
@@ -57,10 +58,10 @@ class SkillIcon extends StatelessWidget {
     if (type == 'creativity') {
       iconName = 'lightbulb';
     }
-     if (type == 'problem-solving') {
+    if (type == 'problem-solving') {
       iconName = 'problem-solving';
     }
-     if (type == 'mental') {
+    if (type == 'mental') {
       iconName = 'brain';
     }
     if (type == 'sleep') {
@@ -81,13 +82,17 @@ class SkillIcon extends StatelessWidget {
     if (type == 'design') {
       iconName = 'design';
     }
-    return Padding(
-      padding: const EdgeInsets.all(8),
+    return Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: const Color.fromARGB(120, 0, 0, 0),
+        shape: BoxShape.circle,
+      ),
       child: SizedBox(
-        height: 34,
-        width: 34,
+        height: size,
+        width: size,
         child: SvgPicture.asset(
-          'lib/assets/icons/$iconName.svg',
+          'lib/assets/icons/skills/$iconName.svg',
           colorFilter: const ColorFilter.mode(
             Colors.white, // Replace with your desired color
             BlendMode

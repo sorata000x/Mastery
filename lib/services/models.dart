@@ -28,19 +28,58 @@ class Skill {
   int index;
   String title;
   String description;
+  String effect;
+  String cultivation;
+  String type;
+  String category;
+  String author;
+  String rank;
   int exp;
   int level;
-  String type;
+
   Skill(
       {this.id = '',
       this.index = 0,
       this.title = '',
       this.description = '',
+      this.effect = '',
+      this.cultivation = '',
+      this.type = 'other',
+      this.category = '',
+      this.author = 'Unknown',
+      this.rank = 'Common',
       this.exp = 0,
       this.level = 1,
-      this.type = ''});
+      });
   factory Skill.fromJson(Map<String, dynamic> json) => _$SkillFromJson(json);
   Map<String, dynamic> toJson() => _$SkillToJson(this);
+}
+
+@JsonSerializable()
+class GlobalSkill {
+  String id;
+  String title;
+  String description;
+  String effect;
+  String cultivation;
+  String type;
+  String category;
+  String author;
+  String rank;
+  GlobalSkill({
+    this.id = '',
+    this.title = 'Undefined',
+    this.description = '',
+    this.effect = '',
+    this.cultivation = '',
+    this.type = '',
+    this.category = '',
+    this.author = 'unknown',
+    this.rank = 'Unranked',
+  });
+  factory GlobalSkill.fromJson(Map<String, dynamic> json) =>
+      _$GlobalSkillFromJson(json);
+  Map<String, dynamic> toJson() => _$GlobalSkillToJson(this);
 }
 
 @JsonSerializable()

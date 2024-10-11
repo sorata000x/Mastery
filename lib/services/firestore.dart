@@ -266,6 +266,43 @@ class FirestoreService {
         .catchError((error) => print("Failed to set user: $error"));
   }
 
+  // Created Skills
+
+  Future<List<GlobalSkill>?> getCreatedSkills() async {
+    var ref = _db
+        .collection('users') // User collection
+        .doc(user) // Specific user document
+        .collection('created-skills'); // Tasks subcollection
+    var snapshot = await ref.get();
+    var data = snapshot.docs.map((s) => s.data());
+    var createdSkills = data.map((d) => GlobalSkill.fromJson(d));
+    return createdSkills.toList();
+  }
+
+  Future setCreatedSkills(GlobalSkill createdSkill) {
+    CollectionReference createdSkills = _db
+        .collection('users') // User collection
+        .doc(user) // Specific user document
+        .collection('created-skills'); // Tasks subcollection
+
+    // Set data with a custom ID
+    return createdSkills
+        .doc(createdSkill.id)
+        .set({
+          'id': createdSkill.id,
+          'title': createdSkill.title,
+          'description': createdSkill.description,
+          'effect': createdSkill.effect,
+          'cultivation': createdSkill.cultivation,
+          'type': createdSkill.type,
+          'category': createdSkill.category,
+          'author': createdSkill.author,
+          'rank': createdSkill.rank,
+        })
+        .then((value) => print("Created Skills Set"))
+        .catchError((error) => print("Failed to set created skill: $error"));
+  }
+
   // Task-Skills
 
   Future addTaskSkills(String taskTitle, List<Map<String, dynamic>> skills) {
@@ -288,5 +325,36 @@ class FirestoreService {
       if (ts.title == taskTitle) return ts.skills;
     }
     return null;
+  }
+
+  // Global Skills
+
+  Future<List<GlobalSkill>?> getGlobalSkills() async {
+    var ref = _db.collection('global-skills');
+    var snapshot = await ref.get();
+    var data = snapshot.docs.map((s) => s.data());
+    var globalSkillList = data.map((d) => GlobalSkill.fromJson(d));
+    return globalSkillList.toList();
+  }
+
+  Future setGlobalSkills(GlobalSkill createdSkill) {
+    CollectionReference globalSkills = _db.collection('global-skills');
+
+    // Set data with a custom ID
+    return globalSkills
+        .doc(createdSkill.id)
+        .set({
+          'id': createdSkill.id,
+          'title': createdSkill.title,
+          'description': createdSkill.description,
+          'effect': createdSkill.effect,
+          'cultivation': createdSkill.cultivation,
+          'type': createdSkill.type,
+          'category': createdSkill.category,
+          'author': createdSkill.author,
+          'rank': createdSkill.rank,
+        })
+        .then((value) => print("Global Skills Set"))
+        .catchError((error) => print("Failed to set global skill: $error"));
   }
 }
