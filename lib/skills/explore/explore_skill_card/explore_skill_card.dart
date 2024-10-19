@@ -4,7 +4,7 @@ import 'package:skillborn/skills/explore/explore_skill_card/explore_skill_detail
 import 'package:skillborn/skills/explore/explore_skill_card/explore_skill_summary.dart';
 
 class ExploreSkillCard extends StatelessWidget {
-  final GlobalSkill globalSkill;
+  final Skill globalSkill;
 
   const ExploreSkillCard({super.key, required this.globalSkill});
 

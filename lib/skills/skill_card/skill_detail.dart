@@ -3,7 +3,7 @@ import 'package:skillborn/services/models.dart';
 import 'package:skillborn/skills/skill_card/skill_summary.dart';
 
 class SkillDetail extends StatelessWidget {
-  final Skill skill;
+  final UserSkill skill;
 
   const SkillDetail({super.key, required this.skill});
 
@@ -26,10 +26,48 @@ class SkillDetail extends StatelessWidget {
             child: Column(
               children: [
                 SkillSummary(skill: skill),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
-                  child: Text(skill.description),
-                )
+                Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Description",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Text(skill.description),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Effect",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Text(skill.effect.replaceAll('\\n', '\n')),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Cultivation",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Text(skill.cultivation),
+                        ],
+                      ),
+                    ),
               ],
             ),
           ),

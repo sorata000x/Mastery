@@ -25,9 +25,9 @@ class _CreateSkillState extends State<CreateSkill> {
     final state = Provider.of<MainState>(context);
 
     void _submitForm(_publishing, _category) {
-      final createdSkill = GlobalSkill(
+      final createdSkill = Skill(
         id: const Uuid().v4(),
-        title: _name,
+        name: _name,
         description: _description,
         effect: _effect,
         cultivation: _cultivation,

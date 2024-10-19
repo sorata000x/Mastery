@@ -58,8 +58,14 @@ class _EditTaskNoteState extends State<NoteEdit> {
             keyboardType: TextInputType.multiline,
             // Event
             onChanged: (value) {
-              mainState.setTask(widget.task.id, widget.task.title, value, widget.task.skills!,
-                  widget.task.index, widget.task.isCompleted);
+              var newTask = Task(
+                id: widget.task.id,
+                title: widget.task.title,
+                note: value,
+                index: widget.task.index,
+                isCompleted: widget.task.isCompleted,
+              );
+              mainState.setTask(newTask);
             },
             onSubmitted: (value) {
               Navigator.pop(context);

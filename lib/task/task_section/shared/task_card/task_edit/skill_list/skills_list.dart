@@ -13,8 +13,11 @@ class SkillsList extends StatelessWidget {
   Widget build(BuildContext context) {
     final mainState = Provider.of<MainState>(context, listen: false);
     var skills = mainState.skills
-        .where((s) => task.skills!.contains(s.id))
-        .map((s) => s.title)
+        .where((s) {
+          var skillExps = mainState.taskSkillExps[task.id] ?? [];
+          return skillExps.any((se) => se["skillId"] == s.id);
+        })
+        .map((s) => s.name)
         .toList();
     return Container(
       width: MediaQuery.of(context).size.width,
@@ -27,16 +30,14 @@ class SkillsList extends StatelessWidget {
                   color: Colors.grey,
                   fontSize: 16,
                 ))),
-        ...skills
-            .map((s) => Column(
-                  children: [
-                    SkillsListCard(title: s),
-                    const SizedBox(
-                      height: 3,
-                    ),
-                  ],
-                ))
-            ,
+        ...skills.map((s) => Column(
+              children: [
+                SkillsListCard(title: s),
+                const SizedBox(
+                  height: 3,
+                ),
+              ],
+            )),
       ]),
     );
   }

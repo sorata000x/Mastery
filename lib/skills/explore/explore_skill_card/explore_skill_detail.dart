@@ -6,7 +6,7 @@ import 'package:skillborn/skills/explore/explore_skill_card/explore_skill_summar
 import 'package:skillborn/skills/skill_icon.dart';
 
 class ExploreSkillDetail extends StatelessWidget {
-  final GlobalSkill globalSkill;
+  final Skill globalSkill;
 
   const ExploreSkillDetail({super.key, required this.globalSkill});
 
@@ -62,7 +62,7 @@ class ExploreSkillDetail extends StatelessWidget {
                       height: 8,
                     ),
                     Text(
-                      globalSkill.title,
+                      globalSkill.name,
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
@@ -134,8 +134,7 @@ class ExploreSkillDetail extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10)),
                   child: TextButton(
                       onPressed: () {
-                        mainState.addSkillFromStore(globalSkill);
-                        print("adding: ${globalSkill.toJson()}");
+                        mainState.addSkill(context, UserSkill.fromSkill(globalSkill, 0, 0, 1));
                         // Return to skill page
                         Navigator.pop(context);
                         Navigator.pop(context);

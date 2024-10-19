@@ -16,7 +16,10 @@ class AddTaskInput extends StatelessWidget {
         padding: MediaQuery.of(context).viewInsets, // Adjust for keyboard
         child: Row(
           children: [
-            const SizedBox(width: 14, height: 60,),
+            const SizedBox(
+              width: 14,
+              height: 60,
+            ),
             const Icon(
               IconData(0xef53, fontFamily: 'MaterialIcons'),
               size: 30,
@@ -28,7 +31,7 @@ class AddTaskInput extends StatelessWidget {
                 child: TextField(
                   controller: state.taskController,
                   maxLines: null,
-                  textInputAction: TextInputAction.done, 
+                  textInputAction: TextInputAction.done,
                   onSubmitted: (value) {
                     state.addTask(state.taskController.text);
                     state.taskController.clear();
@@ -38,8 +41,8 @@ class AddTaskInput extends StatelessWidget {
                   decoration: InputDecoration(
                     hintText: AppLocalizations.of(context)!.add_a_task,
                     hintStyle: const TextStyle(
-                        color: Colors.grey,
-                      ),
+                      color: Colors.grey,
+                    ),
                     border: InputBorder.none,
                     filled: true,
                     fillColor: const Color.fromRGBO(45, 45, 45, 1),

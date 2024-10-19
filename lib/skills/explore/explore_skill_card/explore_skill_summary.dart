@@ -3,7 +3,7 @@ import 'package:skillborn/services/models.dart';
 import 'package:skillborn/skills/skill_icon.dart';
 
 class ExploreSkillSummary extends StatelessWidget {
-  final GlobalSkill globalSkill;
+  final Skill globalSkill;
 
   const ExploreSkillSummary({super.key, required this.globalSkill});
 
@@ -27,7 +27,7 @@ class ExploreSkillSummary extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        globalSkill.title,
+                        globalSkill.name,
                         style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
                       ),
                       Text(

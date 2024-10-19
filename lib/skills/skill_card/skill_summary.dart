@@ -3,7 +3,7 @@ import 'package:skillborn/services/models.dart';
 import 'package:skillborn/skills/skill_icon.dart';
 
 class SkillSummary extends StatelessWidget {
-  final Skill skill;
+  final UserSkill skill;
 
   const SkillSummary({super.key, required this.skill});
 
@@ -25,7 +25,7 @@ class SkillSummary extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Text(skill.title, style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500)),
+                      Text(skill.name, style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500)),
                       const Spacer(),
                       Text(
                         "LV ${skill.level}",

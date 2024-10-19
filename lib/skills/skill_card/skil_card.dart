@@ -4,7 +4,7 @@ import 'package:skillborn/skills/skill_card/skill_detail.dart';
 import 'package:skillborn/skills/skill_card/skill_summary.dart';
 
 class SkillCard extends StatelessWidget {
-  final Skill skill;
+  final UserSkill skill;
 
   const SkillCard({super.key, required this.skill});
 

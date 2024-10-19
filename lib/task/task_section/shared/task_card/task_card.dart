@@ -19,6 +19,87 @@ class TaskCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = Provider.of<MainState>(context);
+    var localizations =
+        Localizations.of<AppLocalizations>(context, AppLocalizations);
+
+    Future levelUpSkills() async {
+      var messages = [];
+      if (state.skills.isEmpty) return null;
+      var skillExps = task.skillExps;
+      if (skillExps == null) {
+        state.addEvaluatingTask(task.id);
+        skillExps = await generateSkillExpFromTask(context, task) ?? [];
+        state.setTask(Task(
+            id: task.id,
+            title: task.title,
+            note: task.note,
+            skillExps: skillExps,
+            index: task.index,
+            isCompleted: task.isCompleted));
+        state.removeEvaluatingTask(task.id);
+      }
+      // Level up skills
+      for (var skillExp in skillExps) {
+        state.levelUpSkillById(skillExp["skillId"], skillExp["exp"]);
+        var skill = state.skills.firstWhere((s) => s.id == skillExp["skillId"]);
+        messages.add("${skill.name} + ${skillExp["exp"]}");
+      }
+      // Display level up messages
+      for (var message in messages) {
+        state.addHintMessage(message);
+        // Add a delay of 0.2 seconds
+        await Future.delayed(const Duration(milliseconds: 500));
+      }
+    }
+
+    Future drawSkill() async {
+      var messages = [];
+      const probabilities = {
+        "Common": 0.1,
+        "Uncommon": 0.05,
+        "Rare": 0.01,
+        "Epic": 0.005,
+        "Legendary": 0.0001,
+      };
+      Set<String> skillsId =
+          await FirestoreService().getGlobalTaskSkills(task.title) ?? {};
+      print("skillsId: $skillsId");
+      if (skillsId.isEmpty) {
+        skillsId = await generateNewSkills(context, task.title) ?? {};
+      }
+      // Filter out skills user already have
+      var userSkillIds = state.skills.map((s) => s.id);
+      skillsId = skillsId.where((s) => !userSkillIds.contains(s)).toSet();
+      // Find corresponding global skills
+      List<Skill> skills =
+          state.globalSkills.where((s) => skillsId.contains(s.id)).toList();
+      if (skills.isEmpty) return;
+      // Randomly get a skill (low probability)
+      final random = Random();
+      for (var skill in skills) {
+        var rank = skill.rank;
+        var probability = probabilities[rank] ?? 0;
+        if (random.nextDouble() < (probability / skills.length)) {
+          // TODO: Prompt to ask if user want to add the skill
+          // Add new skill
+          state.addSkill(context, UserSkill.fromSkill(skill, 0, 0, 1));
+          messages.add("${localizations!.new_skill}: ${skill.name}");
+        }
+      }
+
+      // Display new skill messages
+      for (var message in messages) {
+        state.addHintMessage(message);
+        // Add a delay of 0.2 seconds
+        await Future.delayed(const Duration(milliseconds: 500));
+      }
+    }
+
+    Future onTaskComplete(task) async {
+      await levelUpSkills();
+      //await drawSkill();
+      state.toggleTask(task);
+    }
 
     return Slidable(
       key: Key(task.id),
@@ -68,7 +149,7 @@ class TaskCard extends StatelessWidget {
               IconButton(
                   onPressed: () {
                     if (task.isCompleted == false) {
-                      onTaskComplete(context, task);
+                      onTaskComplete(task);
                     } else {
                       // Directly toggle tasks of no need to wait for response
                       state.toggleTask(task);
@@ -106,99 +187,5 @@ class TaskCard extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Future onTaskComplete(context, task) async {
-    final state = Provider.of<MainState>(context, listen: false);
-    var skills = await FirestoreService().getSkillsFromTask(task.title);
-    var localizations =
-        Localizations.of<AppLocalizations>(context, AppLocalizations);
-
-    /// Generate new skills from task title with OpenAI api
-    Future<List<Map<String, dynamic>>?> generateSkillsFromTaskTitle(
-        taskTitle) async {
-      // Get skill as a string of List<Map<String, int>>
-      var messages =
-          getTaskCompletionMessages(FirestoreService().getSkills(), taskTitle, WidgetsBinding.instance.window.locale);
-      var functions = state.functions;
-      var result = await callChatGPT(state, messages, functions);
-      if (result == null) return [];
-      // Decode string to List<Map<String, dynamic>>
-      List<Map<String, dynamic>> skills =
-          List<Map<String, dynamic>>.from(json.decode(result));
-
-      // Add the new instance of task-skills to database
-      FirestoreService().addTaskSkills(taskTitle, skills);
-      // Return skills
-      return skills;
-    }
-
-    /// Level up & add new skills
-    void parseSkills(skills) async {
-      List<Map<String, dynamic>> newSkills = [];
-      var messages = [];
-
-      // Find and level up existing skills
-      for (var s1 in skills) {
-        Skill? s2;
-        if (state.skills.any((s) => s.title == s1['skill'])) {
-          s2 = state.skills.firstWhere((s) => s.title == s1['skill']);
-        }
-        if (s2 != null) {
-          state.levelUpSkill(s2, s1['exp']);
-          messages.add("${s1['skill']} + ${s1['exp']}");
-        } else {
-          newSkills.add(s1);
-        }
-      }
-
-      Map<String, dynamic>? getNewSkill(List<Map<String, dynamic>> skills) {
-        skills.sort((a, b) => b['probability'].compareTo(a['probability']));
-
-        Random random = Random();
-        double chance = random.nextDouble();
-
-        for (var skill in skills) {
-          if (chance < skill['probability']) return skill;
-        }
-
-        return null;
-      }
-
-      if (newSkills.isNotEmpty) {
-        // Randomly pick 1 skill to give to user
-        var newSkill = getNewSkill(newSkills);
-        print("newSkill: $newSkill");
-        if (newSkill != null) {
-          var skillId = state
-              .addSkill(
-                newSkill['skill'],
-                newSkill['description'] ?? "Error: No description",
-                newSkill['exp'] ?? 1,
-                newSkill['type'] ?? "error",
-              )
-              .id;
-          state.addSkillToTask(task.id, skillId);
-          messages.add(
-              "${localizations!.new_skill}: ${newSkill['skill']} + ${newSkill['exp']}");
-        }
-      }
-
-      for (var message in messages) {
-        state.addHintMessage(message);
-        // Add a delay of 0.2 seconds
-        await Future.delayed(const Duration(milliseconds: 500));
-      }
-    }
-
-    if (skills == null) {
-      // If task not found in database, create new skills
-      state.addEvaluatingTask(task.id);
-      skills = await generateSkillsFromTaskTitle(task.title);
-      state.removeEvaluatingTask(task.id);
-    }
-
-    parseSkills(skills);
-    state.toggleTask(task);
   }
 }
