@@ -11,8 +11,7 @@ import 'package:uuid/uuid.dart';
 // Usages
 
 /// Generate skill exp with OpenAI API
-Future<List<Map>?> generateSkillExpFromTask(context, task) async {
-  final state = Provider.of<MainState>(context, listen: false);
+Future<List<Map>?> generateSkillExpFromTask(state, task) async {
   var messages = [
     {
       "role": "system",
@@ -20,13 +19,19 @@ Future<List<Map>?> generateSkillExpFromTask(context, task) async {
     },
     {
       "role": "user",
-      "content": "Task: ${task.title}, Skills: ${state.skills.toString()}"
+      "content": "Task: ${task.title}, Skills: ${state.skills.map((s) => """
+      {
+        name: ${s.name},
+        description: ${s.description},
+        cultivation: ${s.cultivation},
+      }
+      """)}"
     }
   ];
   var functions = state.functions
       .where((f) => f["name"] == "generateSkillExpFromTask")
       .toList();
-  var result = await callChatGPT(context, messages, functions);
+  var result = await callChatGPT(messages, functions);
   if (result == null) return null;
   print(json.decode(result));
   List<int> exps =
@@ -50,8 +55,8 @@ Future<List<Map>?> generateSkillExpFromTask(context, task) async {
 
 /// Generate skill exp with OpenAI API
 /// Call when new skills added
-Future generateSkillExpForTasks(context, skill) async {
-  final state = Provider.of<MainState>(context, listen: false);
+Future generateSkillExpForTasks(state, skill) async {
+  print("generateSkillExpForTasks");
   var messages = [
     {
       "role": "system",
@@ -59,13 +64,19 @@ Future generateSkillExpForTasks(context, skill) async {
     },
     {
       "role": "user",
-      "content": "Skill: $skill, Tasks: ${state.tasks.map((t) => t.title)}"
+      "content": """Skill: 
+        {
+        name: ${skill.name},
+        description: ${skill.description},
+        cultivation: ${skill.cultivation},
+      }
+      , Tasks: ${state.tasks.map((t) => t.title)}"""
     }
   ];
   var functions = state.functions
       .where((f) => f["name"] == "generateSkillExpForTasks")
       .toList();
-  var result = await callChatGPT(context, messages, functions);
+  var result = await callChatGPT(messages, functions);
   if (result == null) return null;
   print(json.decode(result));
   List<int> exps =
@@ -88,8 +99,7 @@ Future generateSkillExpForTasks(context, skill) async {
 }
 
 /// Generate task tags and info with OpenAI API
-Future<Set<String>?> generateNewSkills(context, taskTitle) async {
-  final state = Provider.of<MainState>(context, listen: false);
+Future<Set<String>?> generateNewSkills(state, taskTitle) async {
   var messages = [
     {
       "role": "system",
@@ -99,29 +109,41 @@ Future<Set<String>?> generateNewSkills(context, taskTitle) async {
   ];
   var functions =
       state.functions.where((f) => f["name"] == "generateNewSkills").toList();
-  var result = await callChatGPT(context, messages, functions);
+  var result = await callChatGPT(messages, functions);
   print("RESULT: $result");
   if (result == null) return null;
   var decodedResult = List<Map<String, dynamic>>.from(json.decode(result));
   var skills = [];
-  Set<String> globalTaskSkillsSet = {};
   var globalTaskSkills =
       await FirestoreService().getGlobalTaskSkills(taskTitle) ?? {};
   for (var item in decodedResult) {
-    var id = Uuid().v4();
-    var skill = Skill(
-      id: id,
-      name: item["name"] ?? "Unknown",
-      description: item["description"] ?? "",
-      effect: item["effect"] ?? "",
-      cultivation: item["cultivation"] ?? "",
-      type: item["type"] ?? "other",
-      category: item["category"] ?? "Other",
-      author: "Skillborn GPT",
-      rank: "Common",
-    );
-    // Add to global skills
-    FirestoreService().setGlobalSkill(skill);
+    var skill = Skill();
+    if (state.globalSkills
+        .where((s) =>
+            (s.name == item["name"]) &&
+            (s.author == "Skillborn GPT") &&
+            (s.rank == "Common"))
+        .isEmpty) {
+      var id = Uuid().v4();
+      skill = Skill(
+        id: id,
+        name: item["name"] ?? "Unknown",
+        description: item["description"] ?? "",
+        effect: item["effect"] ?? "",
+        cultivation: item["cultivation"] ?? "",
+        type: item["type"] ?? "other",
+        category: item["category"] ?? "Other",
+        author: "Skillborn GPT",
+        rank: "Common",
+      );
+      // Add to global skills
+      state.setGlobalSkill(skill);
+    } else {
+      skill = state.globalSkills.firstWhere((s) =>
+          s.name == item["name"] &&
+          s.author == "Skillborn GPT" &&
+          s.rank == "Common");
+    }
     // Add the new instance of task-skills to database
     globalTaskSkills.add(skill.id);
     skills.add(skill);
@@ -132,7 +154,7 @@ Future<Set<String>?> generateNewSkills(context, taskTitle) async {
 
 // API Calls
 
-Future<String?> callChatGPT(state, futureMessages, functions) async {
+Future<String?> callChatGPT(futureMessages, functions) async {
   try {
     final messages = await futureMessages;
     HttpsCallable callable =
@@ -146,7 +168,7 @@ Future<String?> callChatGPT(state, futureMessages, functions) async {
     // Print the response data for debugging
     print('Response data: $responseData');
 
-    return handleResponse(state, responseData);
+    return handleResponse(responseData);
   } catch (e) {
     if (e is FirebaseFunctionsException) {
       print('Firebase Functions error: ${e.code} - ${e.message}');
@@ -158,7 +180,7 @@ Future<String?> callChatGPT(state, futureMessages, functions) async {
   }
 }
 
-String? handleResponse(state, Map<String, dynamic> responseData) {
+String? handleResponse(Map<String, dynamic> responseData) {
   final List<dynamic> choices = responseData['choices'];
   print(responseData['choices'].runtimeType);
   print(choices.isNotEmpty);
@@ -178,7 +200,11 @@ String? handleResponse(state, Map<String, dynamic> responseData) {
         String skills = jsonEncode(arguments["skills"]);
         print(skills);
         return skills;
-      } else if (functionName == "generateSkillEXP") {
+      } else if (functionName == "generateSkillExpFromTask") {
+        String exps = jsonEncode(arguments['exps']);
+        print("EXP: $exps");
+        return exps;
+      } else if (functionName == "generateSkillExpForTasks") {
         String exps = jsonEncode(arguments['exps']);
         print("EXP: $exps");
         return exps;

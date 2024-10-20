@@ -221,7 +221,7 @@ const funcs = [
     "parameters": {
       "type": "object",
       "description":
-          "Experience for skills from completed task. Example exps: [10, 30, 50, 100]",
+          "Experience for skills from completed task. 0 exp if skill not highly relevant to the task. Example exps: [10, 30, 50, 100, 0]",
       "properties": {
         "exps": {
           "types": "array",
@@ -239,7 +239,7 @@ const funcs = [
     "parameters": {
       "type": "object",
       "description":
-          "Skill experience for a list of tasks. Example exps: [10, 30, 50, 100]",
+          "Skill experience for a list of tasks. 0 exp if skill not highly relevant to the task. Example exps: [10, 30, 50, 100, 0]",
       "properties": {
         "exps": {
           "types": "array",

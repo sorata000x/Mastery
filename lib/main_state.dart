@@ -161,25 +161,23 @@ class MainState with ChangeNotifier {
     notifyListeners();
   }
 
-  void setSkill(UserSkill newSkill) {
+  void setSkill(state, UserSkill newSkill) {
     // Update state
-    for (var skill in skills) {
-      if (skill.id == newSkill.id) skill = {...(newSkill as Map)} as UserSkill;
+    bool exist = false;
+    for (var i = 0; i < skills.length; i++) {
+      if (skills[i].id == newSkill.id) {
+        skills[i] = newSkill;
+        exist = true;
+      }
+    }
+    // Add new skill if doesn't exist
+    if (exist == false) {
+      skills.add(newSkill);
+      // Generate tasks' skillExps for new skill
+      generateSkillExpForTasks(state, newSkill);
     }
     // Update firestore
     FirestoreService().setSkill(newSkill);
-    notifyListeners();
-  }
-
-  void addSkill(context, UserSkill newSkill) {
-    // Update state
-    for (var skill in skills) {
-      if (skill.id == newSkill.id) skill = {...(newSkill as Map)} as UserSkill;
-    }
-    // Update firestore
-    FirestoreService().setSkill(newSkill);
-    // Generate tasks' skillExps for new skill
-    generateSkillExpForTasks(context, newSkill);
     notifyListeners();
   }
 
@@ -269,6 +267,21 @@ class MainState with ChangeNotifier {
 
   void initGlobalSkills() async {
     _globalSkills = await FirestoreService().getGlobalSkills() ?? [];
+    notifyListeners();
+  }
+
+  void setGlobalSkill(Skill newGlobalSkill) async {
+    // Update state
+    var exist = false;
+    for (var i = 0; i < globalSkills.length; i++) {
+      if (globalSkills[i].id == newGlobalSkill.id) {
+        globalSkills[i] = newGlobalSkill;
+        exist = true;
+      }
+    }
+    if (exist == false) _globalSkills.add(newGlobalSkill);
+    // Update firestore
+    FirestoreService().setGlobalSkill(newGlobalSkill);
     notifyListeners();
   }
 

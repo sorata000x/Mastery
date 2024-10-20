@@ -152,7 +152,7 @@ class _ShareSkillState extends State<ShareSkill> {
                         value: _category, // Current selected value
                         hint: Text(
                             'Select an option'), // Placeholder when no value is selected
-                        items: exploreState.categories
+                        items: exploreState.selectableCategories
                             .map<DropdownMenuItem<String>>((value) {
                           return DropdownMenuItem<String>(
                             value: value,

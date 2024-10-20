@@ -27,8 +27,7 @@ class TaskCard extends StatelessWidget {
       if (state.skills.isEmpty) return null;
       var skillExps = task.skillExps;
       if (skillExps == null) {
-        state.addEvaluatingTask(task.id);
-        skillExps = await generateSkillExpFromTask(context, task) ?? [];
+        skillExps = await generateSkillExpFromTask(state, task) ?? [];
         state.setTask(Task(
             id: task.id,
             title: task.title,
@@ -36,7 +35,6 @@ class TaskCard extends StatelessWidget {
             skillExps: skillExps,
             index: task.index,
             isCompleted: task.isCompleted));
-        state.removeEvaluatingTask(task.id);
       }
       // Level up skills
       for (var skillExp in skillExps) {
@@ -65,28 +63,32 @@ class TaskCard extends StatelessWidget {
           await FirestoreService().getGlobalTaskSkills(task.title) ?? {};
       print("skillsId: $skillsId");
       if (skillsId.isEmpty) {
-        skillsId = await generateNewSkills(context, task.title) ?? {};
+        skillsId = await generateNewSkills(state, task.title) ?? {};
       }
+      print("skillsId: $skillsId");
       // Filter out skills user already have
       var userSkillIds = state.skills.map((s) => s.id);
+      print("userSkillIds: $userSkillIds");
       skillsId = skillsId.where((s) => !userSkillIds.contains(s)).toSet();
       // Find corresponding global skills
+      print("skillsId: $skillsId");
       List<Skill> skills =
           state.globalSkills.where((s) => skillsId.contains(s.id)).toList();
+      print("skills: $skills");
       if (skills.isEmpty) return;
       // Randomly get a skill (low probability)
       final random = Random();
       for (var skill in skills) {
         var rank = skill.rank;
         var probability = probabilities[rank] ?? 0;
+        print("probability: $probability");
         if (random.nextDouble() < (probability / skills.length)) {
           // TODO: Prompt to ask if user want to add the skill
           // Add new skill
-          state.addSkill(context, UserSkill.fromSkill(skill, 0, 0, 1));
+          state.setSkill(context, UserSkill.fromSkill(skill, 0, 0, 1));
           messages.add("${localizations!.new_skill}: ${skill.name}");
         }
       }
-
       // Display new skill messages
       for (var message in messages) {
         state.addHintMessage(message);
@@ -96,8 +98,11 @@ class TaskCard extends StatelessWidget {
     }
 
     Future onTaskComplete(task) async {
+      state.addEvaluatingTask(task.id);
       await levelUpSkills();
-      //await drawSkill();
+      await drawSkill();
+      print(104);
+      state.removeEvaluatingTask(task.id);
       state.toggleTask(task);
     }
 

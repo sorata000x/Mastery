@@ -14,7 +14,7 @@ class Explore extends StatelessWidget {
   Widget build(BuildContext context) {
     final mainState = Provider.of<MainState>(context);
     final exploreState = Provider.of<ExploreState>(context);
-    var category = exploreState.categories[exploreState.selected];
+    var category = exploreState.allCategories[exploreState.selected];
 
     return Scaffold(
       appBar: AppBar(

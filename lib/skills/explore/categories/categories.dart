@@ -12,18 +12,17 @@ class Categories extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = Provider.of<ExploreState>(context);
-    var categories = ['Top Picks', 'My Skills', ...state.categories];
 
     return Container(
       padding: EdgeInsets.only(left: 14),
       height: 36,
       child: (ListView.builder(
-          itemCount: categories.length,
+          itemCount: state.allCategories.length,
           scrollDirection: Axis.horizontal,
           itemBuilder: (context, index) {
             return Container(
                 child: CategoryButton(
-              title: categories[index],
+              title: state.allCategories[index],
               onPressed: () => {state.setSelected(index)},
               isSelected: state.selected == index,
             ));
