@@ -11,6 +11,7 @@ import 'package:skillborn/services/models.dart';
 import 'package:skillborn/task/task_section/shared/task_card/task_deletion_dialog.dart';
 import 'package:skillborn/task/task_section/shared/task_card/task_edit/task_edit.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:uuid/uuid.dart';
 
 class TaskCard extends StatelessWidget {
   final Task task;
@@ -59,11 +60,34 @@ class TaskCard extends StatelessWidget {
         "Epic": 0.005,
         "Legendary": 0.0001,
       };
+      // List of ids for the skills that are associated with the task
+      // First find existing skills associated with task
       Set<String> skillsId =
           await FirestoreService().getGlobalTaskSkills(task.title) ?? {};
-      print("skillsId: $skillsId");
+      // If not existing skills, generate new skills for the task
       if (skillsId.isEmpty) {
-        skillsId = await generateNewSkills(state, task.title) ?? {};
+        // Generate new skills for the task
+        var result = await generateNewSkills(state, task.title) ?? [];
+        var skills = [];
+        // Add generated skills to global skills and global task skills
+        for (var skill in result) {
+          var id = Uuid().v4();
+          var newGlobalSkill = Skill(
+            id: id,
+            name: skill["name"] ?? "Unknown",
+            description: skill["description"] ?? "",
+            effect: skill["effect"] ?? "",
+            cultivation: skill["cultivation"] ?? "",
+            type: skill["type"] ?? "other",
+            category: skill["category"] ?? "Other",
+            author: "Skillborn GPT",
+            rank: "Common",
+          );
+          state.setGlobalSkill(newGlobalSkill);
+          skillsId.add(newGlobalSkill.id);
+          skills.add(newGlobalSkill);
+        }
+        FirestoreService().setGlobalTaskSkills(task.title, skillsId);
       }
       print("skillsId: $skillsId");
       // Filter out skills user already have
@@ -85,7 +109,27 @@ class TaskCard extends StatelessWidget {
         if (random.nextDouble() < (probability / skills.length)) {
           // TODO: Prompt to ask if user want to add the skill
           // Add new skill
-          state.setSkill(context, UserSkill.fromSkill(skill, 0, 0, 1));
+          state.setSkill(UserSkill.fromSkill(skill, 0, 0, 1));
+          // Generate tasks' skillExps for new skill
+          var exps = await generateSkillExpForTasks(
+              state, UserSkill.fromSkill(skill, 0, 0, 1));
+          if (exps != null) {
+            for (var i = 0; i < exps.length; i++) {
+              if (exps[i] > 0) {
+                var skillExps = state.tasks[i].skillExps ?? [];
+                state.setTask(Task(
+                    id: state.tasks[i].id,
+                    title: state.tasks[i].title,
+                    note: state.tasks[i].note,
+                    skillExps: [
+                      ...skillExps,
+                      {"skillId": skill.id, "exp": exps[i]}
+                    ],
+                    index: state.tasks[i].index,
+                    isCompleted: state.tasks[i].isCompleted));
+              }
+            }
+          }
           messages.add("${localizations!.new_skill}: ${skill.name}");
         }
       }
@@ -97,13 +141,14 @@ class TaskCard extends StatelessWidget {
       }
     }
 
-    Future onTaskComplete(task) async {
+    void onTaskComplete(task) {
       state.addEvaluatingTask(task.id);
-      await levelUpSkills();
-      await drawSkill();
-      print(104);
-      state.removeEvaluatingTask(task.id);
-      state.toggleTask(task);
+      levelUpSkills().then((_) => {
+        drawSkill().then((_) {
+          state.removeEvaluatingTask(task.id);
+          state.toggleTask(task);
+        })
+      });
     }
 
     return Slidable(

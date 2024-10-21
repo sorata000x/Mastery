@@ -13,10 +13,8 @@ class SkillsList extends StatelessWidget {
   Widget build(BuildContext context) {
     final mainState = Provider.of<MainState>(context, listen: false);
     var skills = mainState.skills
-        .where((s) {
-          var skillExps = mainState.taskSkillExps[task.id] ?? [];
-          return skillExps.any((se) => se["skillId"] == s.id);
-        })
+        .where((s) =>
+          task.skillExps != null && task.skillExps!.any((se) => se["skillId"] == s.id))
         .map((s) => s.name)
         .toList();
     return Container(

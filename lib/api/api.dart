@@ -42,20 +42,12 @@ Future<List<Map>?> generateSkillExpFromTask(state, task) async {
       skillExps.add({"skillId": state.skills[i].id, "exp": exps[i]});
     }
   }
-  state.setTask(Task(
-    id: task.id,
-    title: task.title,
-    note: task.note,
-    skillExps: skillExps,
-    index: task.index,
-    isCompleted: task.isCompleted,
-  ));
   return skillExps;
 }
 
 /// Generate skill exp with OpenAI API
 /// Call when new skills added
-Future generateSkillExpForTasks(state, skill) async {
+Future<List<int>?> generateSkillExpForTasks(state, skill) async {
   print("generateSkillExpForTasks");
   var messages = [
     {
@@ -81,25 +73,12 @@ Future generateSkillExpForTasks(state, skill) async {
   print(json.decode(result));
   List<int> exps =
       (json.decode(result) as List<dynamic>).map((e) => e as int).toList();
-  for (var i = 0; i < exps.length; i++) {
-    if (exps[i] > 0) {
-      var skillExps = state.tasks[i].skillExps ?? [];
-      state.setTask(Task(
-          id: state.tasks[i].id,
-          title: state.tasks[i].title,
-          note: state.tasks[i].note,
-          skillExps: [
-            ...skillExps,
-            {"skillId": skill.id, "exp": exps[i]}
-          ],
-          index: state.tasks[i].index,
-          isCompleted: state.tasks[i].isCompleted));
-    }
-  }
+  return exps;
 }
 
 /// Generate task tags and info with OpenAI API
-Future<Set<String>?> generateNewSkills(state, taskTitle) async {
+Future<List<Map<String, dynamic>>?> generateNewSkills(state, taskTitle) async {
+  // Make API call
   var messages = [
     {
       "role": "system",
@@ -111,45 +90,11 @@ Future<Set<String>?> generateNewSkills(state, taskTitle) async {
       state.functions.where((f) => f["name"] == "generateNewSkills").toList();
   var result = await callChatGPT(messages, functions);
   print("RESULT: $result");
+  // Return null if error
   if (result == null) return null;
+  // Parse result
   var decodedResult = List<Map<String, dynamic>>.from(json.decode(result));
-  var skills = [];
-  var globalTaskSkills =
-      await FirestoreService().getGlobalTaskSkills(taskTitle) ?? {};
-  for (var item in decodedResult) {
-    var skill = Skill();
-    if (state.globalSkills
-        .where((s) =>
-            (s.name == item["name"]) &&
-            (s.author == "Skillborn GPT") &&
-            (s.rank == "Common"))
-        .isEmpty) {
-      var id = Uuid().v4();
-      skill = Skill(
-        id: id,
-        name: item["name"] ?? "Unknown",
-        description: item["description"] ?? "",
-        effect: item["effect"] ?? "",
-        cultivation: item["cultivation"] ?? "",
-        type: item["type"] ?? "other",
-        category: item["category"] ?? "Other",
-        author: "Skillborn GPT",
-        rank: "Common",
-      );
-      // Add to global skills
-      state.setGlobalSkill(skill);
-    } else {
-      skill = state.globalSkills.firstWhere((s) =>
-          s.name == item["name"] &&
-          s.author == "Skillborn GPT" &&
-          s.rank == "Common");
-    }
-    // Add the new instance of task-skills to database
-    globalTaskSkills.add(skill.id);
-    skills.add(skill);
-  }
-  FirestoreService().setGlobalTaskSkills(taskTitle, globalTaskSkills);
-  return globalTaskSkills;
+  return decodedResult;
 }
 
 // API Calls

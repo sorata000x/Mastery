@@ -134,7 +134,7 @@ class ExploreSkillDetail extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10)),
                   child: TextButton(
                       onPressed: () {
-                        mainState.setSkill(mainState, UserSkill.fromSkill(globalSkill, 0, 0, 1));
+                        mainState.setSkill(UserSkill.fromSkill(globalSkill, 0, 0, 1));
                         // Return to skill page
                         Navigator.pop(context);
                         Navigator.pop(context);

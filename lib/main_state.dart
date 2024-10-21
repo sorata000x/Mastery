@@ -161,7 +161,7 @@ class MainState with ChangeNotifier {
     notifyListeners();
   }
 
-  void setSkill(state, UserSkill newSkill) {
+  void setSkill(UserSkill newSkill) async {
     // Update state
     bool exist = false;
     for (var i = 0; i < skills.length; i++) {
@@ -173,8 +173,6 @@ class MainState with ChangeNotifier {
     // Add new skill if doesn't exist
     if (exist == false) {
       skills.add(newSkill);
-      // Generate tasks' skillExps for new skill
-      generateSkillExpForTasks(state, newSkill);
     }
     // Update firestore
     FirestoreService().setSkill(newSkill);
