@@ -29,23 +29,29 @@ class TaskCard extends StatelessWidget {
       var skillExps = task.skillExps;
       if (skillExps == null) {
         skillExps = await generateSkillExpFromTask(state, task) ?? [];
-        state.setTask(Task(
-            id: task.id,
-            title: task.title,
-            note: task.note,
-            skillExps: skillExps,
-            index: task.index,
-            isCompleted: task.isCompleted));
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          state.setTask(Task(
+              id: task.id,
+              title: task.title,
+              note: task.note,
+              skillExps: skillExps,
+              index: task.index,
+              isCompleted: task.isCompleted));
+        });
       }
       // Level up skills
       for (var skillExp in skillExps) {
-        state.levelUpSkillById(skillExp["skillId"], skillExp["exp"]);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          state.levelUpSkillById(skillExp["skillId"], skillExp["exp"]);
+        });
         var skill = state.skills.firstWhere((s) => s.id == skillExp["skillId"]);
         messages.add("${skill.name} + ${skillExp["exp"]}");
       }
       // Display level up messages
       for (var message in messages) {
-        state.addHintMessage(message);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          state.addHintMessage(message);
+        });
         // Add a delay of 0.2 seconds
         await Future.delayed(const Duration(milliseconds: 500));
       }
@@ -83,7 +89,9 @@ class TaskCard extends StatelessWidget {
             author: "Skillborn GPT",
             rank: "Common",
           );
-          state.setGlobalSkill(newGlobalSkill);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            state.setGlobalSkill(newGlobalSkill);
+          });
           skillsId.add(newGlobalSkill.id);
           skills.add(newGlobalSkill);
         }
@@ -109,7 +117,9 @@ class TaskCard extends StatelessWidget {
         if (random.nextDouble() < (probability / skills.length)) {
           // TODO: Prompt to ask if user want to add the skill
           // Add new skill
-          state.setSkill(UserSkill.fromSkill(skill, 0, 0, 1));
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            state.setSkill(UserSkill.fromSkill(skill, 0, 0, 1));
+          });
           // Generate tasks' skillExps for new skill
           var exps = await generateSkillExpForTasks(
               state, UserSkill.fromSkill(skill, 0, 0, 1));
@@ -117,16 +127,18 @@ class TaskCard extends StatelessWidget {
             for (var i = 0; i < exps.length; i++) {
               if (exps[i] > 0) {
                 var skillExps = state.tasks[i].skillExps ?? [];
-                state.setTask(Task(
-                    id: state.tasks[i].id,
-                    title: state.tasks[i].title,
-                    note: state.tasks[i].note,
-                    skillExps: [
-                      ...skillExps,
-                      {"skillId": skill.id, "exp": exps[i]}
-                    ],
-                    index: state.tasks[i].index,
-                    isCompleted: state.tasks[i].isCompleted));
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  state.setTask(Task(
+                      id: state.tasks[i].id,
+                      title: state.tasks[i].title,
+                      note: state.tasks[i].note,
+                      skillExps: [
+                        ...skillExps,
+                        {"skillId": skill.id, "exp": exps[i]}
+                      ],
+                      index: state.tasks[i].index,
+                      isCompleted: state.tasks[i].isCompleted));
+                });
               }
             }
           }
@@ -135,19 +147,21 @@ class TaskCard extends StatelessWidget {
       }
       // Display new skill messages
       for (var message in messages) {
-        state.addHintMessage(message);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          state.addHintMessage(message);
+        });
         // Add a delay of 0.2 seconds
         await Future.delayed(const Duration(milliseconds: 500));
       }
     }
 
-    void onTaskComplete(task) {
+    void onTaskComplete(task) async {
       state.addEvaluatingTask(task.id);
-      levelUpSkills().then((_) => {
-        drawSkill().then((_) {
-          state.removeEvaluatingTask(task.id);
-          state.toggleTask(task);
-        })
+      await levelUpSkills();
+      await drawSkill();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        state.removeEvaluatingTask(task.id);
+        state.toggleTask(task);
       });
     }
 
@@ -202,7 +216,10 @@ class TaskCard extends StatelessWidget {
                       onTaskComplete(task);
                     } else {
                       // Directly toggle tasks of no need to wait for response
-                      state.toggleTask(task);
+                      // use callback to prevent race condition
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        state.toggleTask(task);
+                      });
                     }
                   },
                   icon: task.isCompleted

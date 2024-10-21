@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:skillborn/main_state.dart';
 import 'package:skillborn/skills/explore/explore_skill_button.dart';
-import 'package:skillborn/skills/skill_card/skil_card.dart';
+import 'package:skillborn/skills/skill_card/skill_card.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:skillborn/skills/user_rank.dart';
