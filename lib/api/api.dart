@@ -97,6 +97,27 @@ Future<List<Map<String, dynamic>>?> generateNewSkills(state, taskTitle) async {
   return decodedResult;
 }
 
+/// Generate karma with OpenAI API
+Future<int?> generateTaskExperience(state, taskTitle) async {
+  // Make API call
+  var messages = [
+    {
+      "role": "system",
+      "content": "Response language: ${WidgetsBinding.instance.window.locale}"
+    },
+    {"role": "user", "content": "Task: $taskTitle"}
+  ];
+  var functions =
+      state.functions.where((f) => f["name"] == "generateTaskExperience").toList();
+  var result = await callChatGPT(messages, functions);
+  print("RESULT: $result");
+  // Return null if error
+  if (result == null) return null;
+  // Parse result
+  var decodedResult = int.parse(json.decode(result));
+  return decodedResult;
+}
+
 // API Calls
 
 Future<String?> callChatGPT(futureMessages, functions) async {

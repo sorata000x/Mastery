@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:skillborn/main_state.dart';
 import 'package:skillborn/services/models.dart';
 import 'package:skillborn/skills/explore/explore_skill_card/explore_skill_summary.dart';
+import 'package:skillborn/skills/explore/explore_skill_card/get_skill_button.dart';
 import 'package:skillborn/skills/skill_icon.dart';
 
 class ExploreSkillDetail extends StatelessWidget {
@@ -128,33 +129,48 @@ class ExploreSkillDetail extends StatelessWidget {
               padding: EdgeInsets.all(10),
               child: Center(
                 child: Container(
-                  width: 200,
-                  decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 100, 100, 100),
-                      borderRadius: BorderRadius.circular(10)),
-                  child: TextButton(
-                      onPressed: () {
-                        mainState.setSkill(UserSkill.fromSkill(globalSkill, 0, 0, 1));
-                        // Return to skill page
-                        Navigator.pop(context);
-                        Navigator.pop(context);
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Get Skill (',
-                            style: TextStyle(fontSize: 16),
-                          ),
-                          Icon(
-                            Icons.emergency,
-                            size: 16,
-                          ),
-                          Text('${rank?['cost']})',
-                              style: TextStyle(fontSize: 16)),
-                        ],
-                      )),
-                ),
+                    width: 200,
+                    decoration: BoxDecoration(
+                        color: mainState.karma < rank?['cost']
+                            ? const Color.fromARGB(255, 70, 70, 70)
+                            : const Color.fromARGB(255, 100, 100, 100),
+                        borderRadius: BorderRadius.circular(10)),
+                    child: TextButton(
+                        onPressed: () {
+                          if (mainState.karma < rank?['cost']) return;
+                          int cost = rank?['cost'];
+                          mainState.setKarma(mainState.karma - cost);
+                          mainState.setSkill(
+                              UserSkill.fromSkill(globalSkill, 0, 0, 1));
+                          // Return to skill page
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Get Skill (',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: mainState.karma < rank?['cost']
+                                      ? const Color.fromARGB(255, 170, 170, 170)
+                                      : Colors.white),
+                            ),
+                            Icon(Icons.emergency,
+                                size: 16,
+                                color: mainState.karma < rank?['cost']
+                                    ? const Color.fromARGB(255, 170, 170, 170)
+                                    : Colors.white),
+                            Text('${rank?['cost']})',
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    color: mainState.karma < rank?['cost']
+                                        ? const Color.fromARGB(
+                                            255, 170, 170, 170)
+                                        : Colors.white)),
+                          ],
+                        ))),
               ),
             )
           ],

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:skillborn/main_state.dart';
 import 'package:skillborn/profile/profile_field.dart';
 import 'package:skillborn/services/auth.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -11,6 +13,7 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final state = Provider.of<MainState>(context);
     return Scaffold(
         appBar: AppBar(
           title: Text(AppLocalizations.of(context)!.profile),
@@ -31,7 +34,7 @@ class ProfileScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text("Karma"),
-                    Text("10", style: TextStyle(fontSize: 24),),
+                    Text(state.karma.toString(), style: TextStyle(fontSize: 24),),
                   ],
                 ),
               ),

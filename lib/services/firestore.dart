@@ -25,6 +25,30 @@ class FirestoreService {
     _user = FirebaseAuth.instance.currentUser?.uid;
   }
 
+  // User - Karma
+
+  Future<int> getKarma() async {
+    print("GET KARMA");
+    var ref = _db
+        .collection('users')
+        .doc(user);
+    var snapshot = await ref.get();
+    var karma = snapshot.get('karma');
+    return karma;
+  }
+
+  Future setKarma(int newKarma) {
+    print("SET KARMA");
+
+    var ref = _db
+        .collection('users')
+        .doc(user);
+
+    return ref.update({
+      'karma': newKarma
+    });
+  }
+
   // User - Task
 
   Future<List<Task>> getTasks() async {
@@ -216,6 +240,21 @@ class FirestoreService {
 }
 
 const funcs = [
+  {
+    "name": "generateTaskExperience",
+    "parameters": {
+      "type": "object",
+      "description":
+          "Give user experience point from completing task",
+      "properties": {
+        "exp": {
+          "types": "number",
+          "description":
+              "A integer of experience point",
+        }
+      }
+    }
+  },
   {
     "name": "generateSkillExpFromTask",
     "parameters": {

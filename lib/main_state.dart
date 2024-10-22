@@ -12,6 +12,7 @@ class MainState with ChangeNotifier {
   int _page = 0; // Index to navigate between pages
   // USER
   String? _user; // user id
+  int _karma = 0;
   List<Task> _tasks = []; // List of user tasks
   List<UserSkill> _skills = []; // List of user skills
   List<Skill> _createdSkills = []; // List of skills user created in Explore
@@ -30,11 +31,12 @@ class MainState with ChangeNotifier {
   List<Skill> _globalSkills = [];
 
   int get page => _page;
+  String? get user => _user;
+  int get karma => _karma;
   List<Task> get tasks => _tasks;
   List<UserSkill> get skills => _skills;
   List<Skill> get createdSkills => _createdSkills;
   Map<String, List<Map>> get taskSkillExps => _taskSkillExps;
-  String? get user => _user;
   List<dynamic> get functions => _functions;
   List<String> get evaluatingTasks => _evaluatingTasks;
   Queue<String> get hintMessages => _hintMessages;
@@ -58,6 +60,25 @@ class MainState with ChangeNotifier {
 
   void updateUser() {
     _user = FirebaseAuth.instance.currentUser?.uid;
+    notifyListeners();
+  }
+
+  // User - Karma
+
+  void initKarma() async {
+    _karma = await FirestoreService().getKarma();
+    notifyListeners();
+  }
+
+  void setKarma(int newKarma) async {
+    _karma = newKarma;
+    await FirestoreService().setKarma(newKarma);
+    notifyListeners();
+  }
+
+  void addKarma(int add) async {
+    _karma += add;
+    await FirestoreService().setKarma(_karma + add);
     notifyListeners();
   }
 

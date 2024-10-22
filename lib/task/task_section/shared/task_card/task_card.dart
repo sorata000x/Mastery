@@ -155,11 +155,43 @@ class TaskCard extends StatelessWidget {
       }
     }
 
+    Future giveKarma() async {
+      var messages = [];
+      var taskKarma = task.karma;
+      if (taskKarma == null) {
+        taskKarma = await generateTaskExperience(state, task.title) ?? null;
+        if (taskKarma != null) {
+          state.setTask(Task(
+              id: task.id,
+              title: task.id,
+              note: task.id,
+              skillExps: task.skillExps,
+              karma: taskKarma,
+              index: task.index,
+              isCompleted: task.isCompleted));
+        } else {
+          // Give temporary karma if error generating task karma
+          taskKarma = 100;
+        }
+      }
+      state.addKarma(taskKarma);
+      messages.add("+ $taskKarma Karma");
+      // Display gained karma messages
+      for (var message in messages) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          state.addHintMessage(message);
+        });
+        // Add a delay of 0.2 seconds
+        await Future.delayed(const Duration(milliseconds: 500));
+      }
+    }
+
     void onTaskComplete(task) async {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         state.addEvaluatingTask(task.id);
       });
       await levelUpSkills();
+      await giveKarma();
       await drawSkill();
       WidgetsBinding.instance.addPostFrameCallback((_) {
         state.removeEvaluatingTask(task.id);
