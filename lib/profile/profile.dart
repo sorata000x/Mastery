@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:skillborn/main_state.dart';
 import 'package:skillborn/profile/profile_field.dart';
+import 'package:skillborn/profile/user_rank.dart';
 import 'package:skillborn/services/auth.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:skillborn/skills/user_rank.dart';
 
 class ProfileScreen extends StatelessWidget {
   ProfileScreen({super.key});

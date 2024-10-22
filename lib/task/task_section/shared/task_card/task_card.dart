@@ -43,6 +43,7 @@ class TaskCard extends StatelessWidget {
       for (var skillExp in skillExps) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           state.levelUpSkillById(skillExp["skillId"], skillExp["exp"]);
+          state.addExp(skillExp["exp"]);
         });
         var skill = state.skills.firstWhere((s) => s.id == skillExp["skillId"]);
         messages.add("${skill.name} + ${skillExp["exp"]}");

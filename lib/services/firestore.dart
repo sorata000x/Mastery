@@ -25,6 +25,30 @@ class FirestoreService {
     _user = FirebaseAuth.instance.currentUser?.uid;
   }
 
+  // User - Exp
+
+  Future<int> getExp() async {
+    print("GET EXP");
+    var ref = _db
+        .collection('users')
+        .doc(user);
+    var snapshot = await ref.get();
+    var exp = snapshot.get('exp');
+    return exp;
+  }
+
+  Future setExp(int newExp) {
+    print("SET EXP");
+
+    var ref = _db
+        .collection('users')
+        .doc(user);
+
+    return ref.update({
+      'exp': newExp,
+    });
+  }
+
   // User - Karma
 
   Future<int> getKarma() async {

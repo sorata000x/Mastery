@@ -12,6 +12,7 @@ class MainState with ChangeNotifier {
   int _page = 0; // Index to navigate between pages
   // USER
   String? _user; // user id
+  int _exp = 0;
   int _karma = 0;
   List<Task> _tasks = []; // List of user tasks
   List<UserSkill> _skills = []; // List of user skills
@@ -32,6 +33,7 @@ class MainState with ChangeNotifier {
 
   int get page => _page;
   String? get user => _user;
+  int get exp => _exp;
   int get karma => _karma;
   List<Task> get tasks => _tasks;
   List<UserSkill> get skills => _skills;
@@ -61,6 +63,110 @@ class MainState with ChangeNotifier {
   void updateUser() {
     _user = FirebaseAuth.instance.currentUser?.uid;
     notifyListeners();
+  }
+
+  // User - Exp
+
+  void initExp() async {
+    _exp = await FirestoreService().getExp();
+    notifyListeners();
+  }
+
+  void setExp(int newExp) async {
+    _exp = newExp;
+    await FirestoreService().setExp(newExp);
+    notifyListeners();
+  }
+
+  void addExp(int add) async {
+    _exp += add;
+    await FirestoreService().setExp(_exp + add);
+    notifyListeners();
+  }
+
+  String getNextRank() {
+    if (exp < 1000) {
+      return "Novice";
+    }
+    if (exp < 10000) {
+      return "Intermediate";
+    }
+    if (exp < 100000) {
+      return "Professional";
+    }
+    if (exp < 1000000) {
+      return "Expert";
+    }
+    return "Master";
+  }
+
+  String getRank() {
+    if (exp < 1000) {
+      return "Beginner";
+    }
+    if (exp < 10000) {
+      return "Novice";
+    }
+    if (exp < 100000) {
+      return "Intermediate";
+    }
+    if (exp < 1000000) {
+      return "Professional";
+    }
+    if (exp < 10000000) {
+      return "Expert";
+    }
+    return "Master";
+  }
+
+  int getMaxExp() {
+    if (exp < 1000) {
+      // Beginner
+      return 1000 - exp;
+    }
+    if (exp < 10000) {
+      // Novice
+      return 10000 - exp;
+    }
+    if (exp < 100000) {
+      // Intermediate
+      return 100000 - exp;
+    }
+    if (exp < 1000000) {
+      // Professional
+      return 1000000 - exp;
+    }
+    if (exp < 10000000) {
+      // Expert
+      return 10000000 - exp;
+    }
+    // Master
+    return 100000000 - exp;
+  }
+
+  int getMaxSkillsNum() {
+    if (exp < 1000) {
+      // Beginner
+      return 5;
+    }
+    if (exp < 10000) {
+      // Novice
+      return 10;
+    }
+    if (exp < 100000) {
+      // Intermediate
+      return 15;
+    }
+    if (exp < 1000000) {
+      // Professional
+      return 20;
+    }
+    if (exp < 10000000) {
+      // Expert
+      return 25;
+    }
+    // Master
+    return 30;
   }
 
   // User - Karma
