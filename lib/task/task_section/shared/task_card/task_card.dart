@@ -122,7 +122,7 @@ class TaskCard extends StatelessWidget {
           });
           // Generate tasks' skillExps for new skill
           var exps = await generateSkillExpForTasks(
-              state, UserSkill.fromSkill(skill, 0, 0, 1));
+              state, UserSkill.fromSkill(skill, 0, 0, 1), state.tasks);
           if (exps != null) {
             for (var i = 0; i < exps.length; i++) {
               if (exps[i] > 0) {
@@ -156,7 +156,9 @@ class TaskCard extends StatelessWidget {
     }
 
     void onTaskComplete(task) async {
-      state.addEvaluatingTask(task.id);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        state.addEvaluatingTask(task.id);
+      });
       await levelUpSkills();
       await drawSkill();
       WidgetsBinding.instance.addPostFrameCallback((_) {

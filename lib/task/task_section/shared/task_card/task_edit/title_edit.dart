@@ -25,8 +25,6 @@ class _TitleEditState extends State<TitleEdit> {
   Widget build(BuildContext context) {
     final state = Provider.of<MainState>(context);
 
-    state.setTitleEditText(widget.task.title);
-
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 6, 6, 0),
       child: Row(

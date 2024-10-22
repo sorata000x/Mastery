@@ -47,7 +47,7 @@ Future<List<Map>?> generateSkillExpFromTask(state, task) async {
 
 /// Generate skill exp with OpenAI API
 /// Call when new skills added
-Future<List<int>?> generateSkillExpForTasks(state, skill) async {
+Future<List<int>?> generateSkillExpForTasks(state, skill, tasks) async {
   print("generateSkillExpForTasks");
   var messages = [
     {
@@ -62,7 +62,7 @@ Future<List<int>?> generateSkillExpForTasks(state, skill) async {
         description: ${skill.description},
         cultivation: ${skill.cultivation},
       }
-      , Tasks: ${state.tasks.map((t) => t.title)}"""
+      , Tasks: ${tasks.map((t) => t.title)}"""
     }
   ];
   var functions = state.functions
@@ -201,7 +201,9 @@ Set<String> generateSkillMessage(
   var messages = <String>{};
 
   if (!newSkill.isEmpty && !state.containSkillTitle(newSkill)) {
-    state.addSkill(newSkill);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      state.addSkill(newSkill);
+    });
     messages.add("New Skill Acquired: $newSkill");
   }
 
@@ -218,7 +220,9 @@ Set<String> generateSkillMessage(
       newLevel++;
       cap = (100 * (newLevel * newLevel)).toInt();
     }
-    state.setSkill(skill.id, name, newExp, newLevel);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      state.setSkill(skill.id, name, newExp, newLevel);
+    });
     messages.add("$name + $exp");
   }
 

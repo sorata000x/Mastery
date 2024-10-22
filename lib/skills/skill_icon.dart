@@ -82,8 +82,12 @@ class SkillIcon extends StatelessWidget {
     if (type == 'design') {
       iconName = 'design';
     }
+    var padding = 4.0;
+    if (size > 30) {
+      padding = 10.0;
+    }
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: EdgeInsets.all(padding),
       decoration: BoxDecoration(
         color: const Color.fromARGB(120, 0, 0, 0),
         shape: BoxShape.circle,

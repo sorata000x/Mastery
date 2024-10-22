@@ -11,9 +11,8 @@ Task _$TaskFromJson(Map<String, dynamic> json) => Task(
       title: json['title'] as String? ?? '',
       note: json['note'] as String? ?? '',
       skillExps: (json['skillExps'] as List<dynamic>?)
-              ?.map((e) => e as Map<String, dynamic>)
-              .toList() ??
-          const [],
+          ?.map((e) => e as Map<String, dynamic>)
+          .toList(),
       index: (json['index'] as num?)?.toInt() ?? 0,
       isCompleted: json['isCompleted'] as bool? ?? false,
     );
