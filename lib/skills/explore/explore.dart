@@ -15,6 +15,12 @@ class Explore extends StatelessWidget {
     final mainState = Provider.of<MainState>(context);
     final exploreState = Provider.of<ExploreState>(context);
     var category = exploreState.allCategories[exploreState.selected];
+    var skills = category == 'My Skills'
+        ? mainState.createdSkills
+        : mainState.globalSkills;
+    skills = skills
+        .where((s) => (category == s.category) || (category == 'Top Picks'))
+        .toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -36,44 +42,17 @@ class Explore extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 18),
                   child: (ListView.builder(
-                      itemCount: category == 'My Skills'
-                          ? mainState.createdSkills.length
-                          : mainState.globalSkills.length,
+                      itemCount: skills.length,
                       itemBuilder: (context, index) {
-                        if (category == 'My Skills') {
-                          return Column(
-                            children: [
-                              ExploreSkillCard(
-                                  globalSkill: mainState.createdSkills[index]),
-                              SizedBox(
-                                height: 6,
-                              )
-                            ],
-                          );
-                        } else if (category == 'Top Picks') {
-                          return Column(
-                            children: [
-                              ExploreSkillCard(
-                                  globalSkill: mainState.globalSkills[index]),
-                              SizedBox(
-                                height: 6,
-                              )
-                            ],
-                          );
-                        } else if (category ==
-                            mainState.globalSkills[index].category) {
-                          return Column(
-                            children: [
-                              ExploreSkillCard(
-                                  globalSkill: mainState.globalSkills[index]),
-                              SizedBox(
-                                height: 6,
-                              )
-                            ],
-                          );
-                        } else {
-                          return null;
-                        }
+                        return Column(
+                          children: [
+                            ExploreSkillCard(globalSkill: skills[index]),
+                            SizedBox(
+                              height: 6,
+                            )
+                          ],
+                        );
+                        
                       })),
                 ),
               )

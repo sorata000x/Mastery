@@ -4,8 +4,6 @@ import 'package:skillborn/main_state.dart';
 import 'package:skillborn/skills/explore/explore_skill_button.dart';
 import 'package:skillborn/skills/skill_card/skill_card.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:skillborn/skills/user_rank.dart';
 
 class SkillsScreen extends StatelessWidget {
   const SkillsScreen({super.key});

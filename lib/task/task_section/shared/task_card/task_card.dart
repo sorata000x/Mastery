@@ -90,6 +90,7 @@ class TaskCard extends StatelessWidget {
             author: "Skillborn GPT",
             rank: "Common",
           );
+        
           WidgetsBinding.instance.addPostFrameCallback((_) {
             state.setGlobalSkill(newGlobalSkill);
           });

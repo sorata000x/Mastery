@@ -261,6 +261,15 @@ class FirestoreService {
     CollectionReference functions = db.collection('global'); // User collection
     return functions.doc('functions').set({'functions': funcs});
   }
+
+  // Categories
+
+  Future<List<String>> getCategories() async {
+    var ref = _db.collection('global').doc('categories'); // User collection
+    var snapshot = await ref.get();
+    var categories = snapshot.get('categories');
+    return categories;
+  }
 }
 
 const funcs = [
@@ -360,19 +369,27 @@ const funcs = [
                   ]
                 """
               },
+              "category": {
+                "type": "string",
+                "description": """
+                  Choose one from the following list:[ 
+                  'Core', 'Professional', 'Social', 'Stoic', 'Other'
+                  ]
+                """
+              }
             }
           },
           "description": """
             For the completed task, give a list of skills name, description, effect, 
-            cultivation, type that user gained. Skills should be broad and practical. 
+            cultivation, type, category that user gained. Skills should be broad and practical. 
             Return empty if user's task doesn't associate with any skill. 
             Example skill: { 
               “name”: "Skill Name", 
               "description": “Explain what the skill does”, 
               “effect”: “The benefits”, 
               “cultivation”: “The methods”, 
+              "type": "other",
               “category”: “Other”, 
-              "type": "other" 
             }
           """,
         }
