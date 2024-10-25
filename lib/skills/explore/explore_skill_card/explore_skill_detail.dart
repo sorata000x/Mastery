@@ -62,7 +62,7 @@ class ExploreSkillDetail extends StatelessWidget {
                     SizedBox(
                       height: 8,
                     ),
-                    globalSkill.path == '' ? Text(globalSkill.path, style: TextStyle(color: Colors.grey, fontSize: 18, fontWeight: FontWeight.w500)) : SizedBox(),
+                    globalSkill.path == '' ? SizedBox() : Text(globalSkill.path, style: TextStyle(color: Colors.grey, fontSize: 18, fontWeight: FontWeight.w500)),
                     Text(
                       globalSkill.name,
                       style:
@@ -127,7 +127,7 @@ class ExploreSkillDetail extends StatelessWidget {
             Container(
               color: Colors.black,
               width: double.infinity,
-              padding: EdgeInsets.all(10),
+              padding: EdgeInsets.all(30),
               child: Center(
                 child: Container(
                     width: 200,

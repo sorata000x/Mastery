@@ -58,7 +58,7 @@ class Explore extends StatelessWidget {
           Positioned(
               left: 0,
               right: 0,
-              bottom: 20,
+              bottom: 30,
               child: Center(
                 child: Container(
                   padding: EdgeInsets.all(6),
