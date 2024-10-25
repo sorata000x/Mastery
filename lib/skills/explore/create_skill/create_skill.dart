@@ -16,6 +16,7 @@ class CreateSkill extends StatefulWidget {
 
 class _CreateSkillState extends State<CreateSkill> {
   String _name = '';
+  String _path = '';
   String _description = '';
   String _effect = '';
   String _cultivation = '';
@@ -26,21 +27,20 @@ class _CreateSkillState extends State<CreateSkill> {
 
     void _submitForm(_publishing, _category) {
       final createdSkill = Skill(
-        id: const Uuid().v4(),
-        name: _name,
-        description: _description,
-        effect: _effect,
-        cultivation: _cultivation,
-        type: 'other',
-        category: _category,
-        author: 'Unknown',
-        rank: 'Common'
-      );
+          id: const Uuid().v4(),
+          name: _name,
+          path: _path,
+          description: _description,
+          effect: _effect,
+          cultivation: _cultivation,
+          type: 'other',
+          category: _category,
+          author: 'Unknown',
+          rank: 'Common');
+      state.setSkill(UserSkill.fromSkill(createdSkill, 0, 0, 1));
       state.addCreatedSkill(createdSkill);
       if (_publishing) {
-        state.publishSkill(
-          createdSkill
-        );
+        state.publishSkill(createdSkill);
       }
       // Complete create
       Navigator.pop(context);
@@ -70,16 +70,29 @@ class _CreateSkillState extends State<CreateSkill> {
                 height: 10,
               ),
               InputField(
+                label: "Path",
+                onChanged: (value) => {setState(() => _path = value)},
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              InputField(
                 label: "Description",
                 maxLines: 10,
                 height: 149,
                 onChanged: (value) => {setState(() => _description = value)},
+              ),
+              SizedBox(
+                height: 10,
               ),
               InputField(
                 label: "Effect",
                 maxLines: 10,
                 height: 98,
                 onChanged: (value) => {setState(() => _effect = value)},
+              ),
+              SizedBox(
+                height: 10,
               ),
               InputField(
                 label: "Cultivation",

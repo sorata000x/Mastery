@@ -82,6 +82,7 @@ class TaskCard extends StatelessWidget {
           var newGlobalSkill = Skill(
             id: id,
             name: skill["name"] ?? "Unknown",
+            path: '',
             description: skill["description"] ?? "",
             effect: skill["effect"] ?? "",
             cultivation: skill["cultivation"] ?? "",

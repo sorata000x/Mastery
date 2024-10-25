@@ -28,6 +28,7 @@ class Task {
 class Skill {
   String id;
   String name;
+  String path;
   String description;
   String effect;
   String cultivation;
@@ -39,6 +40,7 @@ class Skill {
   Skill({
     this.id = '',
     this.name = 'Unknown',
+    this.path = '',
     this.description = '',
     this.effect = '',
     this.cultivation = '',
@@ -59,6 +61,7 @@ class UserSkill extends Skill {
   UserSkill(
       {super.id,
       super.name,
+      super.path,
       super.description,
       super.effect,
       super.cultivation,
@@ -74,6 +77,7 @@ class UserSkill extends Skill {
     return UserSkill(
       id: skill.id,
       name: skill.name,
+      path: skill.path,
       description: skill.description,
       effect: skill.effect,
       cultivation: skill.cultivation,

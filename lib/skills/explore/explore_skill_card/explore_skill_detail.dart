@@ -62,6 +62,7 @@ class ExploreSkillDetail extends StatelessWidget {
                     SizedBox(
                       height: 8,
                     ),
+                    globalSkill.path == '' ? Text(globalSkill.path, style: TextStyle(color: Colors.grey, fontSize: 18, fontWeight: FontWeight.w500)) : SizedBox(),
                     Text(
                       globalSkill.name,
                       style:

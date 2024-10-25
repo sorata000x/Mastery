@@ -17,9 +17,7 @@ class Explore extends StatelessWidget {
     var category = exploreState.allCategories[exploreState.selected];
     var skills = category == 'My Skills'
         ? mainState.createdSkills
-        : mainState.globalSkills;
-    skills = skills
-        .where((s) => (category == s.category) || (category == 'Top Picks'))
+        : mainState.globalSkills.where((s) => (category == s.category) || (category == 'Top Picks'))
         .toList();
 
     return Scaffold(
@@ -52,7 +50,6 @@ class Explore extends StatelessWidget {
                             )
                           ],
                         );
-                        
                       })),
                 ),
               )
