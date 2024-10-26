@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:skillborn/main.dart';
+import 'package:skillborn/main_state.dart';
 import 'package:skillborn/services/auth.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
@@ -67,6 +69,7 @@ class LoginButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final state = Provider.of<MainState>(context);
     return Container(
         margin: const EdgeInsets.only(bottom: 10),
         child: ElevatedButton.icon(
@@ -79,9 +82,12 @@ class LoginButton extends StatelessWidget {
             padding: const EdgeInsets.all(24),
             backgroundColor: color,
           ),
-          onPressed: () {
-            loginMethod();
-            App.restartApp(context);
+          onPressed: () async {
+            await loginMethod();
+            state.initTask();   // load default tasks
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              App.restartApp(context);
+            });
           },
           label: Text(
             text,

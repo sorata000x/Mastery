@@ -8,7 +8,7 @@ class Task {
   String id;
   String title;
   String note;
-  List<Map>? skillExps;
+  List<Map>? skillExps; // {skillExp}
   int? karma;
   int index;
   bool isCompleted;

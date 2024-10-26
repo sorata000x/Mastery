@@ -191,7 +191,9 @@ class MainState with ChangeNotifier {
   // User - Task
 
   void initTask() async {
+    print('initTask');
     _tasks = await FirestoreService().getTasks();
+    print("DEBUG: ${_tasks.length}");
     _tasks.sort((a, b) => a.index.compareTo(b.index));
     // Ensure reordering will work
     for (int i = 0; i < _tasks.length; i++) {
