@@ -33,7 +33,7 @@ class AddTaskInput extends StatelessWidget {
                   maxLines: null,
                   textInputAction: TextInputAction.done,
                   onSubmitted: (value) {
-                    state.addTask(state.taskController.text);
+                    state.addTask(state.selectedList!.id, state.taskController.text);
                     state.taskController.clear();
                   },
                   autofocus:

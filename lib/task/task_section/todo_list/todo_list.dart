@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:skillborn/main_state.dart';
+import 'package:skillborn/services/models.dart';
 import 'package:skillborn/task/task_section/shared/task_card/task_card.dart';
 import 'package:skillborn/task/task_section/shared/task_evaluration_card.dart';
 
 class TodoList extends StatelessWidget {
-  const TodoList({super.key});
+  final List<Task> todos;
+
+  const TodoList({super.key, required this.todos});
 
   @override
   Widget build(BuildContext context) {
     final state = Provider.of<MainState>(context);
-    var todos = state.tasks.where((task) => !task.isCompleted).toList();
 
     return ReorderableListView.builder(
         shrinkWrap: true,

@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:skillborn/main_state.dart';
+import 'package:skillborn/services/models.dart';
 import 'package:skillborn/task/task_section/shared/task_card/task_card.dart';
 import 'package:skillborn/task/task_section/shared/task_evaluration_card.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CompletedList extends StatelessWidget {
-  const CompletedList({super.key});
+  final List<Task> completed;
+
+  const CompletedList({super.key, required this.completed});
 
   @override
   Widget build(BuildContext context) {

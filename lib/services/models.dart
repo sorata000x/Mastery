@@ -6,6 +6,7 @@ part 'models.g.dart';
 @JsonSerializable()
 class Task {
   String id;
+  String list;
   String title;
   String note;
   List<Map>? skillExps; // {skillExp}
@@ -14,6 +15,7 @@ class Task {
   bool isCompleted;
   Task(
       {this.id = '',
+      this.list = '',
       this.title = '',
       this.note = '',
       this.skillExps,
@@ -127,4 +129,16 @@ class APIFunction {
   factory APIFunction.fromJson(Map<String, dynamic> json) =>
       _$APIFunctionFromJson(json);
   Map<String, dynamic> toJson() => _$APIFunctionToJson(this);
+}
+
+@JsonSerializable()
+class TaskList {
+  String id;
+  int index;
+  String title;
+
+  TaskList({this.id = '', this.index = 0, this.title = ''});
+  factory TaskList.fromJson(Map<String, dynamic> json) =>
+      _$TaskListFromJson(json);
+  Map<String, dynamic> toJson() => _$TaskListToJson(this);
 }

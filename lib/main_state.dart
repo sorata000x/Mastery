@@ -15,6 +15,7 @@ class MainState with ChangeNotifier {
   int _exp = 0;
   int _karma = 0;
   List<Task> _tasks = []; // List of user tasks
+  List<TaskList> _lists = [];
   List<UserSkill> _skills = []; // List of user skills
   List<Skill> _createdSkills = []; // List of skills user created in Explore
   Map<String, List<Map>> _taskSkillExps =
@@ -22,6 +23,8 @@ class MainState with ChangeNotifier {
   // API: ChatGPT
   List<dynamic> _functions = []; // List of functions for function call
   // Task Page
+  TaskList? _selectedList = null;
+  TextEditingController listTitleController = TextEditingController();
   final List<String> _evaluatingTasks =
       []; // List of tasks that are currently getting responses from api request
   TextEditingController taskController =
@@ -36,10 +39,12 @@ class MainState with ChangeNotifier {
   int get exp => _exp;
   int get karma => _karma;
   List<Task> get tasks => _tasks;
+  List<TaskList> get lists => _lists;
   List<UserSkill> get skills => _skills;
   List<Skill> get createdSkills => _createdSkills;
   Map<String, List<Map>> get taskSkillExps => _taskSkillExps;
   List<dynamic> get functions => _functions;
+  TaskList? get selectedList => _selectedList;
   List<String> get evaluatingTasks => _evaluatingTasks;
   Queue<String> get hintMessages => _hintMessages;
   String get titleEditText => _titleEditText;
@@ -47,10 +52,12 @@ class MainState with ChangeNotifier {
 
   MainState() {
     initTask();
+    initLists();
     initSkill();
     initCreatedSkills();
     initFunctions();
     initGlobalSkills();
+    initSelectedList();
     updateUser();
     FirebaseAuth.instance.authStateChanges().listen((User? currentUser) {
       _user = currentUser?.uid;
@@ -207,6 +214,7 @@ class MainState with ChangeNotifier {
       if (task.id == newTask.id) {
         task.id = newTask.id;
         task.title = newTask.title;
+        task.list = newTask.list;
         task.note = newTask.note;
         task.skillExps = newTask.skillExps;
         task.index = newTask.index;
@@ -217,10 +225,11 @@ class MainState with ChangeNotifier {
     notifyListeners();
   }
 
-  void addTask(String title) async {
+  void addTask(String listId, String title) async {
     final newTask = Task(
       id: const Uuid().v4(),
       title: title,
+      list: listId,
       note: '',
       skillExps: null,
       index: 0,
@@ -246,6 +255,7 @@ class MainState with ChangeNotifier {
     FirestoreService().setTask(Task(
       id: target.id,
       title: target.title,
+      list: target.list,
       note: target.note,
       skillExps: target.skillExps,
       index: target.index,
@@ -264,6 +274,54 @@ class MainState with ChangeNotifier {
       _tasks[i].index = i;
     }
     FirestoreService().setTasks(_tasks);
+    notifyListeners();
+  }
+
+  // User - List
+
+  void initLists() async {
+    print('initLists');
+    _lists = await FirestoreService().getLists();
+    _lists.sort((a, b) => a.index.compareTo(b.index));
+    notifyListeners();
+  }
+
+  void setList(TaskList newList) {
+    for (var list in lists) {
+      if (list.id == newList.id) {
+        list.id = newList.id;
+        list.title = newList.title;
+        list.index = newList.index;
+      }
+    }
+    FirestoreService().setList(newList);
+    notifyListeners();
+  }
+
+  void addList() async {
+    final newList =
+        TaskList(id: const Uuid().v4(), title: '', index: lists.length);
+    _lists.add(newList);
+    for (int i = 0; i < _lists.length; i++) {
+      _lists[i].index = i;
+    }
+    FirestoreService().setLists(_lists);
+    notifyListeners();
+  }
+
+  void removeList(TaskList list) {
+    lists.remove(list);
+    FirestoreService().deleteTask(list.id);
+    notifyListeners();
+  }
+
+  void reorderList(int oldIndex, int newIndex) {
+    final TaskList list = _lists.removeAt(oldIndex);
+    _lists.insert(newIndex, list);
+    for (int i = 0; i < _lists.length; i++) {
+      _lists[i].index = i;
+    }
+    FirestoreService().setLists(_lists);
     notifyListeners();
   }
 
@@ -429,6 +487,19 @@ class MainState with ChangeNotifier {
   }
 
   // System - Task Page
+
+  // System - Task Page - Selected List
+
+  void initSelectedList() {
+    if (_lists.length > 0) {
+      _selectedList = _lists[0];
+    }
+  }
+
+  void setSelectedList(TaskList list) {
+    _selectedList = list;
+    notifyListeners();
+  }
 
   // System - Task Page - Evaluating Task
 

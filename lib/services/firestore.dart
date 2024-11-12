@@ -129,6 +129,61 @@ class FirestoreService {
     await tasks.doc(taskId).delete();
   }
 
+  // User - List
+
+  Future<List<TaskList>> getLists() async {
+    print("GET LISTS");
+    var ref = _db
+        .collection('users')
+        .doc(user)
+        .collection('lists');
+    var snapshot = await ref.get();
+    var data = snapshot.docs.map((s) => s.data());
+    var lists = data.map((d) => TaskList.fromJson(d));
+    return lists.toList();
+  }
+
+  Future setList(TaskList list) {
+    print("SET LIST");
+
+    CollectionReference lists = _db
+        .collection('users')
+        .doc(user)
+        .collection('lists');
+
+    return lists
+        .doc(list.id)
+        .set(list.toJson())
+        .then((value) => print("List Set"))
+        .catchError((error) => print("Failed to set list: $error"));
+  }
+
+  Future setLists(List<TaskList> newLists) async {
+    print("SET LISTS");
+    CollectionReference lists =
+        _db.collection('users').doc(user).collection('lists');
+    try {
+      // Replace all tasks with new tasks
+      for (var list in newLists) {
+        await lists
+            .doc(list.id)
+            .set(list.toJson())
+            .then((value) => print("List Set"))
+            .catchError((error) => print("Failed to set list: $error"));
+      }
+      print("Lists collection successfully replaced.");
+    } catch (e) {
+      print("Error replacing lists collection: $e");
+    }
+  }
+
+  Future<void> deleteList(String listId) async {
+    print("DELETE LIST");
+    CollectionReference lists =
+        _db.collection('users').doc(user).collection('lists');
+    await lists.doc(listId).delete();
+  }
+
   // User - Skills
 
   Future<List<UserSkill>> getSkills() async {

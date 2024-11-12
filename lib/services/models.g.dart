@@ -8,6 +8,7 @@ part of 'models.dart';
 
 Task _$TaskFromJson(Map<String, dynamic> json) => Task(
       id: json['id'] as String? ?? '',
+      list: json['list'] as String? ?? '',
       title: json['title'] as String? ?? '',
       note: json['note'] as String? ?? '',
       skillExps: (json['skillExps'] as List<dynamic>?)
@@ -20,6 +21,7 @@ Task _$TaskFromJson(Map<String, dynamic> json) => Task(
 
 Map<String, dynamic> _$TaskToJson(Task instance) => <String, dynamic>{
       'id': instance.id,
+      'list': instance.list,
       'title': instance.title,
       'note': instance.note,
       'skillExps': instance.skillExps,
@@ -31,6 +33,7 @@ Map<String, dynamic> _$TaskToJson(Task instance) => <String, dynamic>{
 Skill _$SkillFromJson(Map<String, dynamic> json) => Skill(
       id: json['id'] as String? ?? '',
       name: json['name'] as String? ?? 'Unknown',
+      path: json['path'] as String? ?? '',
       description: json['description'] as String? ?? '',
       effect: json['effect'] as String? ?? '',
       cultivation: json['cultivation'] as String? ?? '',
@@ -43,6 +46,7 @@ Skill _$SkillFromJson(Map<String, dynamic> json) => Skill(
 Map<String, dynamic> _$SkillToJson(Skill instance) => <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
+      'path': instance.path,
       'description': instance.description,
       'effect': instance.effect,
       'cultivation': instance.cultivation,
@@ -55,6 +59,7 @@ Map<String, dynamic> _$SkillToJson(Skill instance) => <String, dynamic>{
 UserSkill _$UserSkillFromJson(Map<String, dynamic> json) => UserSkill(
       id: json['id'] as String? ?? '',
       name: json['name'] as String? ?? 'Unknown',
+      path: json['path'] as String? ?? '',
       description: json['description'] as String? ?? '',
       effect: json['effect'] as String? ?? '',
       cultivation: json['cultivation'] as String? ?? '',
@@ -70,6 +75,7 @@ UserSkill _$UserSkillFromJson(Map<String, dynamic> json) => UserSkill(
 Map<String, dynamic> _$UserSkillToJson(UserSkill instance) => <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
+      'path': instance.path,
       'description': instance.description,
       'effect': instance.effect,
       'cultivation': instance.cultivation,
@@ -115,4 +121,16 @@ Map<String, dynamic> _$APIFunctionToJson(APIFunction instance) =>
     <String, dynamic>{
       'name': instance.name,
       'parameter': instance.parameter,
+    };
+
+TaskList _$TaskListFromJson(Map<String, dynamic> json) => TaskList(
+      id: json['id'] as String? ?? '',
+      index: (json['index'] as num?)?.toInt() ?? 0,
+      title: json['title'] as String? ?? '',
+    );
+
+Map<String, dynamic> _$TaskListToJson(TaskList instance) => <String, dynamic>{
+      'id': instance.id,
+      'index': instance.index,
+      'title': instance.title,
     };
