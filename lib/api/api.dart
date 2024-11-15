@@ -31,7 +31,7 @@ Future<List<Map>?> generateSkillExpFromTask(state, task) async {
   var functions = state.functions
       .where((f) => f["name"] == "generateSkillExpFromTask")
       .toList();
-  var result = await callChatGPT(messages, functions);
+  var result = await callChatGPT(messages, functions: functions);
   if (result == null) return null;
   print(json.decode(result));
   List<int> exps =
@@ -68,7 +68,7 @@ Future<List<int>?> generateSkillExpForTasks(state, skill, tasks) async {
   var functions = state.functions
       .where((f) => f["name"] == "generateSkillExpForTasks")
       .toList();
-  var result = await callChatGPT(messages, functions);
+  var result = await callChatGPT(messages, functions: functions);
   if (result == null) return null;
   print(json.decode(result));
   List<int> exps =
@@ -88,7 +88,7 @@ Future<List<Map<String, dynamic>>?> generateNewSkills(state, taskTitle) async {
   ];
   var functions =
       state.functions.where((f) => f["name"] == "generateNewSkills").toList();
-  var result = await callChatGPT(messages, functions);
+  var result = await callChatGPT(messages, functions: functions);
   print("RESULT: $result");
   // Return null if error
   if (result == null) return null;
@@ -107,9 +107,10 @@ Future<int?> generateTaskExperience(state, taskTitle) async {
     },
     {"role": "user", "content": "Task: $taskTitle"}
   ];
-  var functions =
-      state.functions.where((f) => f["name"] == "generateTaskExperience").toList();
-  var result = await callChatGPT(messages, functions);
+  var functions = state.functions
+      .where((f) => f["name"] == "generateTaskExperience")
+      .toList();
+  var result = await callChatGPT(messages, functions: functions);
   print("RESULT: $result");
   // Return null if error
   if (result == null) return null;
@@ -120,7 +121,7 @@ Future<int?> generateTaskExperience(state, taskTitle) async {
 
 // API Calls
 
-Future<String?> callChatGPT(futureMessages, functions) async {
+Future<String?> callChatGPT(futureMessages, {functions, stream = false}) async {
   try {
     final messages = await futureMessages;
     HttpsCallable callable =
@@ -128,6 +129,7 @@ Future<String?> callChatGPT(futureMessages, functions) async {
     final result = await callable.call(<String, dynamic>{
       'messages': messages,
       'functions': functions,
+      'stream': stream
     });
     final responseData = result.data;
 
@@ -179,6 +181,7 @@ String? handleResponse(Map<String, dynamic> responseData) {
       // Handle regular assistant messages
       final String content = message['content'];
       print('Assistant: $content');
+      return content;
     }
   }
   return null;

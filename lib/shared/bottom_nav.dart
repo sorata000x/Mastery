@@ -19,6 +19,15 @@ class BottomNavBar extends StatelessWidget {
         BottomNavigationBarItem(
           icon: Icon(
             state.page == 0
+                ? FontAwesomeIcons.solidMessage // Filled icon
+                : FontAwesomeIcons.message, // Lined icon
+            size: 20,
+          ),
+          label: AppLocalizations.of(context)!.todos,
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(
+            state.page == 1
                 ? FontAwesomeIcons.solidCircleCheck // Filled icon
                 : FontAwesomeIcons.circleCheck, // Lined icon
             size: 20,
@@ -27,7 +36,7 @@ class BottomNavBar extends StatelessWidget {
         ),
         BottomNavigationBarItem(
           icon: Icon(
-            state.page == 1
+            state.page == 2
                 ? FontAwesomeIcons.bolt // Filled icon
                 : FontAwesomeIcons.bolt, // Lined icon
             size: 20,
@@ -36,7 +45,7 @@ class BottomNavBar extends StatelessWidget {
         ),
         BottomNavigationBarItem(
           icon: Icon(
-            state.page == 2
+            state.page == 3
                 ? FontAwesomeIcons.solidCircleUser // Filled icon
                 : FontAwesomeIcons.circleUser, // Lined icon
             size: 20,

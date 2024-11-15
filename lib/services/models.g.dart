@@ -134,3 +134,33 @@ Map<String, dynamic> _$TaskListToJson(TaskList instance) => <String, dynamic>{
       'index': instance.index,
       'title': instance.title,
     };
+
+Message _$MessageFromJson(Map<String, dynamic> json) => Message(
+      timeStamp: json['timeStamp'] as String? ?? '',
+      role: json['role'] as String? ?? '',
+      content: json['content'] as String? ?? '',
+    );
+
+Map<String, dynamic> _$MessageToJson(Message instance) => <String, dynamic>{
+      'timeStamp': instance.timeStamp,
+      'role': instance.role,
+      'content': instance.content,
+    };
+
+Conversation _$ConversationFromJson(Map<String, dynamic> json) => Conversation(
+      id: json['id'] as String? ?? '',
+      timeStamp: json['timeStamp'] as String? ?? '',
+      title: json['title'] as String? ?? '',
+      messages: (json['messages'] as List<dynamic>?)
+              ?.map((e) => e as Map<String, dynamic>)
+              .toList() ??
+          const [],
+    );
+
+Map<String, dynamic> _$ConversationToJson(Conversation instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'timeStamp': instance.timeStamp,
+      'title': instance.title,
+      'messages': instance.messages,
+    };

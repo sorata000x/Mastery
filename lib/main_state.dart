@@ -20,6 +20,7 @@ class MainState with ChangeNotifier {
   List<Skill> _createdSkills = []; // List of skills user created in Explore
   Map<String, List<Map>> _taskSkillExps =
       {}; // List of task to skillId and exp pair
+  List<Conversation> _conversations = [];
   // API: ChatGPT
   List<dynamic> _functions = []; // List of functions for function call
   // Task Page
@@ -33,6 +34,8 @@ class MainState with ChangeNotifier {
   String _titleEditText = "";
   // Explore Page
   List<Skill> _globalSkills = [];
+  // Chat (Assistant) Page
+  Conversation? _currentConversation = null;
 
   int get page => _page;
   String? get user => _user;
@@ -43,12 +46,14 @@ class MainState with ChangeNotifier {
   List<UserSkill> get skills => _skills;
   List<Skill> get createdSkills => _createdSkills;
   Map<String, List<Map>> get taskSkillExps => _taskSkillExps;
+  List<Conversation> get conversations => _conversations;
   List<dynamic> get functions => _functions;
   TaskList? get selectedList => _selectedList;
   List<String> get evaluatingTasks => _evaluatingTasks;
   Queue<String> get hintMessages => _hintMessages;
   String get titleEditText => _titleEditText;
   List<Skill> get globalSkills => _globalSkills;
+  Conversation? get currentConversation => _currentConversation;
 
   MainState() {
     initTask();
@@ -446,6 +451,57 @@ class MainState with ChangeNotifier {
     notifyListeners();
   }
 
+  // User - Messages
+
+  void addMessage(String role, String context, String conversationId) async {
+    Message newMessage = Message(
+        timeStamp: DateTime.now().toString(), role: role, content: context);
+    List<Conversation> newConversations = conversations;
+    for (var conversation in newConversations) {
+      if (conversation.id == conversationId) {
+        conversation.messages.add(newMessage.toJson());
+        print('test');
+        currentConversation = conversation;
+      }
+    }
+    conversations = [...newConversations];
+    FirestoreService().addMessage(conversationId, newMessage);
+    notifyListeners();
+  }
+
+  // User - Conversation
+
+  set conversations(List<Conversation> value) {
+    _conversations = value;
+    notifyListeners();
+  }
+
+  void setConversationTitle(String id, String title) {
+    List<Conversation> newConversations = _conversations;
+    for (var conversation in newConversations) {
+      if (conversation.id == id) {
+        conversation.title = title;
+      }
+    }
+    conversations = newConversations;
+    notifyListeners();
+  }
+
+  Conversation addConversation(String title) {
+    var id = Uuid().v4();
+    Conversation conversation = Conversation(
+        id: id,
+        timeStamp: DateTime.now().toString(),
+        title: title,
+        messages: []);
+    List<Conversation> newConversations = _conversations;
+    newConversations.add(conversation);
+    _conversations = [...newConversations];
+    FirestoreService().setConversation(conversation);
+    notifyListeners();
+    return conversation;
+  }
+
   /* Global */
 
   // Global - Skills
@@ -529,6 +585,13 @@ class MainState with ChangeNotifier {
 
   void setTitleEditText(value) {
     _titleEditText = value;
+    notifyListeners();
+  }
+
+  // System - Chat Page - Conversation
+
+  set currentConversation(Conversation? conversation) {
+    _currentConversation = conversation;
     notifyListeners();
   }
 }

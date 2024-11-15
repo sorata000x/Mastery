@@ -142,3 +142,31 @@ class TaskList {
       _$TaskListFromJson(json);
   Map<String, dynamic> toJson() => _$TaskListToJson(this);
 }
+
+@JsonSerializable()
+class Message {
+  String timeStamp;
+  String role;
+  String content;
+
+  Message(
+      {this.timeStamp = '',
+      this.role = '',
+      this.content = ''});
+  factory Message.fromJson(Map<String, dynamic> json) =>
+      _$MessageFromJson(json);
+  Map<String, dynamic> toJson() => _$MessageToJson(this);
+}
+
+@JsonSerializable()
+class Conversation {
+  String id;
+  String timeStamp;
+  String title;
+  List<Map<String, dynamic>> messages;
+
+  Conversation({this.id = '', this.timeStamp = '', this.title = '', this.messages = const []});
+  factory Conversation.fromJson(Map<String, dynamic> json) =>
+      _$ConversationFromJson(json);
+  Map<String, dynamic> toJson() => _$ConversationToJson(this);
+}

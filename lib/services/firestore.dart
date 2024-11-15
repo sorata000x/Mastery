@@ -29,9 +29,7 @@ class FirestoreService {
 
   Future<int> getExp() async {
     print("GET EXP");
-    var ref = _db
-        .collection('users')
-        .doc(user);
+    var ref = _db.collection('users').doc(user);
     var snapshot = await ref.get();
     var exp = snapshot.get('exp');
     return exp;
@@ -40,9 +38,7 @@ class FirestoreService {
   Future setExp(int newExp) {
     print("SET EXP");
 
-    var ref = _db
-        .collection('users')
-        .doc(user);
+    var ref = _db.collection('users').doc(user);
 
     return ref.update({
       'exp': newExp,
@@ -53,9 +49,7 @@ class FirestoreService {
 
   Future<int> getKarma() async {
     print("GET KARMA");
-    var ref = _db
-        .collection('users')
-        .doc(user);
+    var ref = _db.collection('users').doc(user);
     var snapshot = await ref.get();
     var karma = snapshot.get('karma');
     return karma;
@@ -64,13 +58,9 @@ class FirestoreService {
   Future setKarma(int newKarma) {
     print("SET KARMA");
 
-    var ref = _db
-        .collection('users')
-        .doc(user);
+    var ref = _db.collection('users').doc(user);
 
-    return ref.update({
-      'karma': newKarma
-    });
+    return ref.update({'karma': newKarma});
   }
 
   // User - Task
@@ -133,10 +123,7 @@ class FirestoreService {
 
   Future<List<TaskList>> getLists() async {
     print("GET LISTS");
-    var ref = _db
-        .collection('users')
-        .doc(user)
-        .collection('lists');
+    var ref = _db.collection('users').doc(user).collection('lists');
     var snapshot = await ref.get();
     var data = snapshot.docs.map((s) => s.data());
     var lists = data.map((d) => TaskList.fromJson(d));
@@ -146,10 +133,8 @@ class FirestoreService {
   Future setList(TaskList list) {
     print("SET LIST");
 
-    CollectionReference lists = _db
-        .collection('users')
-        .doc(user)
-        .collection('lists');
+    CollectionReference lists =
+        _db.collection('users').doc(user).collection('lists');
 
     return lists
         .doc(list.id)
@@ -268,6 +253,60 @@ class FirestoreService {
         .catchError((error) => print("Failed to set global skill: $error"));
   }
 
+  // User - Messages
+
+  Future<void> addMessage(
+      String conversationId, Message message) async {
+    var ref = _db
+        .collection('conversations')
+        .doc(conversationId)
+        .collection('messages');
+    await ref.add(message.toJson());
+  }
+
+  Future<void> deleteMessage(String messageId, String conversationId) async {
+    print("DELETE MESSAGE");
+    var ref = _db
+        .collection('conversations')
+        .doc(conversationId)
+        .collection('messages');
+    await ref.doc(messageId).delete();
+  }
+
+  // User - Conversations
+
+  Future<List<Conversation>> getConversations() async {
+    print("GET CONVERSATIONS");
+    var ref = _db
+        .collection('users')
+        .doc(user)
+        .collection('conversations')
+        .orderBy('timeStamp');
+    var snapshot = await ref.get();
+    var data = snapshot.docs.map((s) => s.data());
+    var conversations = data.map((d) => Conversation.fromJson(d));
+    return conversations.toList();
+  }
+
+  Future setConversation(Conversation conversation) {
+    print("SET CONVERSATION");
+
+    var ref = _db.collection('users').doc(user).collection('conversations');
+
+    // Set data with a custom ID
+    return ref
+        .doc(conversation.id)
+        .set(conversation.toJson())
+        .then((value) => print("Message Set"))
+        .catchError((error) => print("Failed to set message: $error"));
+  }
+
+  Future<void> deleteConversation(String id) async {
+    print("DELETE CONVERSATION");
+    var ref = _db.collection('users').doc(user).collection('conversations');
+    await ref.doc(id).delete();
+  }
+
   /* Global - TaskSkill */
 
   // Data: {taskTitle, skillsId}
@@ -332,13 +371,11 @@ const funcs = [
     "name": "generateTaskExperience",
     "parameters": {
       "type": "object",
-      "description":
-          "Give user experience point from completing task",
+      "description": "Give user experience point from completing task",
       "properties": {
         "exp": {
           "types": "number",
-          "description":
-              "A integer of experience point",
+          "description": "A integer of experience point",
         }
       }
     }

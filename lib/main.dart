@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 // Import the firebase_core plugin
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
+import 'package:skillborn/assistant/assistant.dart';
 import 'package:skillborn/login/login.dart';
 import 'package:skillborn/main_state.dart';
 import 'package:skillborn/profile/profile.dart';
@@ -111,10 +112,12 @@ class MainContentBody extends StatelessWidget {
     var page = state.page;
 
     if (page == 0) {
-      return const TaskScreen();
+      return const AssistantScreen();
     } else if (page == 1) {
+      return const TaskScreen();
+    } else if (page == 3) {
       return const SkillsScreen();
-    } else if (page == 2) {
+    } else if (page == 4) {
       return ProfileScreen();
     }
 
