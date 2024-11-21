@@ -124,6 +124,7 @@ Future<int?> generateTaskExperience(state, taskTitle) async {
 Future<String?> callChatGPT(futureMessages, {functions, stream = false}) async {
   try {
     final messages = await futureMessages;
+    print("127: messages: $messages");
     HttpsCallable callable =
         FirebaseFunctions.instance.httpsCallable('callOpenAI');
     final result = await callable.call(<String, dynamic>{
@@ -162,7 +163,6 @@ String? handleResponse(Map<String, dynamic> responseData) {
       final String functionName = functionCall['name'];
       final Map<String, dynamic> arguments =
           Map<String, dynamic>.from(json.decode(functionCall['arguments']));
-      print("functionName: $functionName");
       // Execute the corresponding function
       if (functionName == "generateNewSkills") {
         String skills = jsonEncode(arguments["skills"]);
@@ -176,6 +176,11 @@ String? handleResponse(Map<String, dynamic> responseData) {
         String exps = jsonEncode(arguments['exps']);
         print("EXP: $exps");
         return exps;
+      } else if (functionName == "next") {
+        print("REASON: ${jsonEncode(arguments['reason'])}");
+        return functionName;
+      } else if (functionName.isNotEmpty) {
+        return jsonEncode(functionCall);
       }
     } else {
       // Handle regular assistant messages

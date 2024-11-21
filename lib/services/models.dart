@@ -149,10 +149,7 @@ class Message {
   String role;
   String content;
 
-  Message(
-      {this.timeStamp = '',
-      this.role = '',
-      this.content = ''});
+  Message({this.timeStamp = '', this.role = '', this.content = ''});
   factory Message.fromJson(Map<String, dynamic> json) =>
       _$MessageFromJson(json);
   Map<String, dynamic> toJson() => _$MessageToJson(this);
@@ -163,9 +160,15 @@ class Conversation {
   String id;
   String timeStamp;
   String title;
+  List<Map<String, String>> agentQueue;
   List<Map<String, dynamic>> messages;
 
-  Conversation({this.id = '', this.timeStamp = '', this.title = '', this.messages = const []});
+  Conversation(
+      {this.id = '',
+      this.timeStamp = '',
+      this.title = '',
+      this.agentQueue = const [],
+      this.messages = const []});
   factory Conversation.fromJson(Map<String, dynamic> json) =>
       _$ConversationFromJson(json);
   Map<String, dynamic> toJson() => _$ConversationToJson(this);

@@ -255,8 +255,7 @@ class FirestoreService {
 
   // User - Messages
 
-  Future<void> addMessage(
-      String conversationId, Message message) async {
+  Future<void> addMessage(String conversationId, Message message) async {
     var ref = _db
         .collection('conversations')
         .doc(conversationId)
@@ -367,6 +366,58 @@ class FirestoreService {
 }
 
 const funcs = [
+  {
+    "name": "createPlan",
+    "parameters": {
+      "type": "object",
+      "description": "Start action to create plan for user",
+      "properties": {
+        "exp": {
+          "types": "number",
+          "description": "A integer of experience point",
+        }
+      }
+    }
+  },
+  {
+    "name": "planQuestions",
+    "parameters": {
+      "type": "object",
+      "description": """
+        Ask questions to tailor the plan to the user.
+        """,
+      "properties": {
+        "questions": {
+          "types": "list",
+          "items": {
+            "type": "object",
+            "description": """
+              The question need to:
+                - Define the goal
+                - Make goal clear and specific
+                - Set time constrain
+              Example:
+              {
+                prompt: "What does financial freedom mean to you personally?",
+                options: [
+                  "Having enough savings, investments, and passive income to cover my living expenses without depending on a job.",
+                  "Being debt-free and not worrying about monthly bills.",
+                  "Having the freedom to make choices based on my interests rather than financial needs."
+                ]
+              }
+            """,
+            "properties": {
+              "prompt": {"type": "string"},
+              "options": {
+                "type": "list",
+                "items": {"type": "string"}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
   {
     "name": "generateTaskExperience",
     "parameters": {

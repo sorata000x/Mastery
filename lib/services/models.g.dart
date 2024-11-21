@@ -151,6 +151,10 @@ Conversation _$ConversationFromJson(Map<String, dynamic> json) => Conversation(
       id: json['id'] as String? ?? '',
       timeStamp: json['timeStamp'] as String? ?? '',
       title: json['title'] as String? ?? '',
+      agentQueue: (json['agentQueue'] as List<dynamic>?)
+              ?.map((e) => Map<String, String>.from(e as Map))
+              .toList() ??
+          const [],
       messages: (json['messages'] as List<dynamic>?)
               ?.map((e) => e as Map<String, dynamic>)
               .toList() ??
@@ -162,5 +166,6 @@ Map<String, dynamic> _$ConversationToJson(Conversation instance) =>
       'id': instance.id,
       'timeStamp': instance.timeStamp,
       'title': instance.title,
+      'agentQueue': instance.agentQueue,
       'messages': instance.messages,
     };

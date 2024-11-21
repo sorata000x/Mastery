@@ -453,7 +453,7 @@ class MainState with ChangeNotifier {
 
   // User - Messages
 
-  void addMessage(String role, String context, String conversationId) async {
+  Message addMessage(String role, String context, String conversationId) {
     Message newMessage = Message(
         timeStamp: DateTime.now().toString(), role: role, content: context);
     List<Conversation> newConversations = conversations;
@@ -467,6 +467,7 @@ class MainState with ChangeNotifier {
     conversations = [...newConversations];
     FirestoreService().addMessage(conversationId, newMessage);
     notifyListeners();
+    return newMessage;
   }
 
   // User - Conversation
@@ -476,11 +477,19 @@ class MainState with ChangeNotifier {
     notifyListeners();
   }
 
-  void setConversationTitle(String id, String title) {
+  void setConversation(id,
+      {String? timeStamp,
+      String? title,
+      String? agent,
+      List<Map<String, String>>? agentQueue,
+      List<Map<String, dynamic>>? messages}) {
     List<Conversation> newConversations = _conversations;
     for (var conversation in newConversations) {
       if (conversation.id == id) {
-        conversation.title = title;
+        conversation.timeStamp = timeStamp ?? conversation.timeStamp;
+        conversation.title = title ?? conversation.title;
+        conversation.agentQueue = agentQueue ?? conversation.agentQueue;
+        conversation.messages = messages ?? conversation.messages;
       }
     }
     conversations = newConversations;
