@@ -15,18 +15,28 @@ Future<List<Map>?> generateSkillExpFromTask(state, task) async {
   var messages = [
     {
       "role": "system",
-      "content": "Response language: ${WidgetsBinding.instance.window.locale}"
+      "content": """
+        The user is performing a task and has defined the following skills they want to prioritize: 
+        [${state.skills.map((s) => """
+        {
+          name: ${s.name},
+          description: ${s.description},
+        }
+        """)}]. 
+        Assign experience points (XP) to each skill based on its relevance to the task. Skills not relevant to the task must be assigned 0 XP. 
+        Distribute the total XP across relevant skills.
+
+        Task: Learn Python programming
+        User's Skills: Problem-Solving, Debugging, Time Management
+        Relevant EXP Allocation:
+        - Problem-Solving: 50
+        - Debugging: 40
+        - Time Management: 0
+
+        Response language: ${WidgetsBinding.instance.window.locale}
+      """
     },
-    {
-      "role": "user",
-      "content": "Task: ${task.title}, Skills: ${state.skills.map((s) => """
-      {
-        name: ${s.name},
-        description: ${s.description},
-        cultivation: ${s.cultivation},
-      }
-      """)}"
-    }
+    {"role": "user", "content": "Task: ${task.title}, Skills: "}
   ];
   var functions = state.functions
       .where((f) => f["name"] == "generateSkillExpFromTask")
@@ -114,9 +124,7 @@ Future<int?> generateTaskExperience(state, taskTitle) async {
   print("RESULT: $result");
   // Return null if error
   if (result == null) return null;
-  // Parse result
-  var decodedResult = int.parse(json.decode(result));
-  return decodedResult;
+  return json.decode(result);
 }
 
 // API Calls
@@ -124,7 +132,6 @@ Future<int?> generateTaskExperience(state, taskTitle) async {
 Future<String?> callChatGPT(futureMessages, {functions, stream = false}) async {
   try {
     final messages = await futureMessages;
-    print("127: messages: $messages");
     HttpsCallable callable =
         FirebaseFunctions.instance.httpsCallable('callOpenAI');
     final result = await callable.call(<String, dynamic>{
@@ -135,25 +142,44 @@ Future<String?> callChatGPT(futureMessages, {functions, stream = false}) async {
     final responseData = result.data;
 
     // Print the response data for debugging
-    print('Response data: $responseData');
+    debugPrint('Response data: $responseData');
 
     return handleResponse(responseData);
   } catch (e) {
     if (e is FirebaseFunctionsException) {
-      print('Firebase Functions error: ${e.code} - ${e.message}');
-      print('Error details: ${e.details}');
+      debugPrint('Firebase Functions error: ${e.code} - ${e.message}');
+      debugPrint('Error details: ${e.details}');
     } else {
-      print('Unexpected error: $e');
+      debugPrint('Unexpected error: $e');
     }
     return null;
   }
 }
 
+Map<String, dynamic>? getArgumentsFromResponse(
+    Map<String, dynamic> responseData) {
+  final List<dynamic> choices = responseData['choices'];
+  if (choices.isNotEmpty) {
+    final Map<String, dynamic> message =
+        Map<String, dynamic>.from(choices[0]['message']);
+    if (message.containsKey('function_call')) {
+      final Map<String, dynamic> functionCall =
+          Map<String, dynamic>.from(message['function_call']);
+      final String functionName = functionCall['name'];
+      debugPrint("Getting arguments from $functionName");
+      final Map<String, dynamic> arguments =
+          Map<String, dynamic>.from(json.decode(functionCall['arguments']));
+      try {
+        return arguments;
+      } catch (e) {
+        return null;
+      }
+    }
+  }
+}
+
 String? handleResponse(Map<String, dynamic> responseData) {
   final List<dynamic> choices = responseData['choices'];
-  print(responseData['choices'].runtimeType);
-  print(choices.isNotEmpty);
-  print(responseData['usage']);
   if (choices.isNotEmpty) {
     final Map<String, dynamic> message =
         Map<String, dynamic>.from(choices[0]['message']);
@@ -166,26 +192,22 @@ String? handleResponse(Map<String, dynamic> responseData) {
       // Execute the corresponding function
       if (functionName == "generateNewSkills") {
         String skills = jsonEncode(arguments["skills"]);
-        print(skills);
         return skills;
       } else if (functionName == "generateSkillExpFromTask") {
         String exps = jsonEncode(arguments['exps']);
-        print("EXP: $exps");
         return exps;
       } else if (functionName == "generateSkillExpForTasks") {
         String exps = jsonEncode(arguments['exps']);
-        print("EXP: $exps");
         return exps;
-      } else if (functionName == "next") {
-        print("REASON: ${jsonEncode(arguments['reason'])}");
-        return functionName;
+      } else if (functionName == "generateTaskExperience") {
+        String exp = jsonEncode(arguments['exp']);
+        return exp;
       } else if (functionName.isNotEmpty) {
         return jsonEncode(functionCall);
       }
     } else {
       // Handle regular assistant messages
       final String content = message['content'];
-      print('Assistant: $content');
       return content;
     }
   }

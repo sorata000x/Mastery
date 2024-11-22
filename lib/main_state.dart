@@ -24,7 +24,7 @@ class MainState with ChangeNotifier {
   // API: ChatGPT
   List<dynamic> _functions = []; // List of functions for function call
   // Task Page
-  TaskList? _selectedList = null;
+  TaskList? _selectedList = TaskList(id: 'inbox', index: -1, title: 'inbox');
   TextEditingController listTitleController = TextEditingController();
   final List<String> _evaluatingTasks =
       []; // List of tasks that are currently getting responses from api request
@@ -62,7 +62,6 @@ class MainState with ChangeNotifier {
     initCreatedSkills();
     initFunctions();
     initGlobalSkills();
-    initSelectedList();
     updateUser();
     FirebaseAuth.instance.authStateChanges().listen((User? currentUser) {
       _user = currentUser?.uid;
@@ -203,9 +202,7 @@ class MainState with ChangeNotifier {
   // User - Task
 
   void initTask() async {
-    print('initTask');
     _tasks = await FirestoreService().getTasks();
-    print("DEBUG: ${_tasks.length}");
     _tasks.sort((a, b) => a.index.compareTo(b.index));
     // Ensure reordering will work
     for (int i = 0; i < _tasks.length; i++) {
@@ -214,19 +211,27 @@ class MainState with ChangeNotifier {
     notifyListeners();
   }
 
-  void setTask(Task newTask) {
+  void setTask(id, {title, list, note, skillExps, index, karma, isCompleted}) {
     for (var task in tasks) {
-      if (task.id == newTask.id) {
-        task.id = newTask.id;
-        task.title = newTask.title;
-        task.list = newTask.list;
-        task.note = newTask.note;
-        task.skillExps = newTask.skillExps;
-        task.index = newTask.index;
-        task.isCompleted = newTask.isCompleted;
+      if (task.id == id) {
+        task.title = title ?? task.title;
+        task.list = list ?? task.list;
+        task.note = note ?? task.note;
+        task.skillExps = skillExps ?? task.skillExps;
+        task.index = index ?? task.index;
+        task.isCompleted = isCompleted ?? task.isCompleted;
+        FirestoreService().setTask(Task(
+          id: task.id,
+          title: task.title,
+          list: task.list,
+          note: task.note, 
+          skillExps: task.skillExps,
+          karma: task.karma,
+          index: task.index,
+          isCompleted: task.isCompleted
+        ));
       }
     }
-    FirestoreService().setTask(newTask);
     notifyListeners();
   }
 
@@ -285,9 +290,9 @@ class MainState with ChangeNotifier {
   // User - List
 
   void initLists() async {
-    print('initLists');
-    _lists = await FirestoreService().getLists();
-    _lists.sort((a, b) => a.index.compareTo(b.index));
+    var data = await FirestoreService().getLists();
+    data.sort((a, b) => a.index.compareTo(b.index));
+    _lists = [..._lists, ...data];
     notifyListeners();
   }
 
@@ -460,7 +465,6 @@ class MainState with ChangeNotifier {
     for (var conversation in newConversations) {
       if (conversation.id == conversationId) {
         conversation.messages.add(newMessage.toJson());
-        print('test');
         currentConversation = conversation;
       }
     }
@@ -554,12 +558,6 @@ class MainState with ChangeNotifier {
   // System - Task Page
 
   // System - Task Page - Selected List
-
-  void initSelectedList() {
-    if (_lists.length > 0) {
-      _selectedList = _lists[0];
-    }
-  }
 
   void setSelectedList(TaskList list) {
     _selectedList = list;

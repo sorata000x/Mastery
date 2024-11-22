@@ -36,17 +36,13 @@ class SkillsListCard extends StatelessWidget {
                     onPressed: () {
                       Navigator.pop(context);
                       WidgetsBinding.instance.addPostFrameCallback((_) {
-                        state.setTask(Task(
-                          id: task.id,
-                          title: task.title,
-                          note: task.note,
+                        state.setTask(
+                          task.id,
                           skillExps: [
                             ...?task.skillExps
                                 ?.where((s) => s['skillId'] != skill.id)
                           ],
-                          index: task.index,
-                          isCompleted: task.isCompleted,
-                        ));
+                        );
                       });
                     },
                     child: Text('Remove'),

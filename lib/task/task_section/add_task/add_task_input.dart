@@ -3,8 +3,21 @@ import 'package:provider/provider.dart';
 import 'package:skillborn/main_state.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class AddTaskInput extends StatelessWidget {
+class AddTaskInput extends StatefulWidget {
   const AddTaskInput({super.key});
+
+  @override
+  State<AddTaskInput> createState() => _AddTaskInputState();
+}
+
+class _AddTaskInputState extends State<AddTaskInput> {
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose(); // Properly dispose of FocusNode
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +46,8 @@ class AddTaskInput extends StatelessWidget {
                   maxLines: null,
                   textInputAction: TextInputAction.done,
                   onSubmitted: (value) {
-                    state.addTask(state.selectedList!.id, state.taskController.text);
+                    state.addTask(
+                        state.selectedList!.id, state.taskController.text);
                     state.taskController.clear();
                   },
                   autofocus:

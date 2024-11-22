@@ -28,7 +28,7 @@ class FirestoreService {
   // User - Exp
 
   Future<int> getExp() async {
-    print("GET EXP");
+    debugPrint("(firestore.dart) GET EXP");
     var ref = _db.collection('users').doc(user);
     var snapshot = await ref.get();
     var exp = snapshot.get('exp');
@@ -36,7 +36,7 @@ class FirestoreService {
   }
 
   Future setExp(int newExp) {
-    print("SET EXP");
+    debugPrint("(firestore.dart) SET EXP");
 
     var ref = _db.collection('users').doc(user);
 
@@ -48,7 +48,7 @@ class FirestoreService {
   // User - Karma
 
   Future<int> getKarma() async {
-    print("GET KARMA");
+    debugPrint("(firestore.dart) GET KARMA");
     var ref = _db.collection('users').doc(user);
     var snapshot = await ref.get();
     var karma = snapshot.get('karma');
@@ -56,7 +56,7 @@ class FirestoreService {
   }
 
   Future setKarma(int newKarma) {
-    print("SET KARMA");
+    debugPrint("(firestore.dart) SET KARMA");
 
     var ref = _db.collection('users').doc(user);
 
@@ -66,7 +66,7 @@ class FirestoreService {
   // User - Task
 
   Future<List<Task>> getTasks() async {
-    print("GET TASK");
+    debugPrint("(firestore.dart) GET TASK");
     var ref = _db
         .collection('users') // User collection
         .doc(user) // Specific user document
@@ -78,7 +78,7 @@ class FirestoreService {
   }
 
   Future setTask(Task task) {
-    print("SET TASK");
+    debugPrint("(firestore.dart) SET TASK");
 
     CollectionReference tasks = _db
         .collection('users') // User collection
@@ -89,12 +89,12 @@ class FirestoreService {
     return tasks
         .doc(task.id)
         .set(task.toJson())
-        .then((value) => print("Task Set"))
-        .catchError((error) => print("Failed to set task: $error"));
+        .then((value) => debugPrint("(firestore.dart) Task Set"))
+        .catchError((error) => debugPrint("(firestore.dart) Failed to set task: $error"));
   }
 
   Future setTasks(List<Task> newTasks) async {
-    print("SET TASKS");
+    debugPrint("(firestore.dart) SET TASKS");
     CollectionReference tasks =
         _db.collection('users').doc(user).collection('tasks');
     try {
@@ -103,17 +103,17 @@ class FirestoreService {
         await tasks
             .doc(task.id)
             .set(task.toJson())
-            .then((value) => print("Task Set"))
-            .catchError((error) => print("Failed to set task: $error"));
+            .then((value) => debugPrint("(firestore.dart) Task Set"))
+            .catchError((error) => debugPrint("(firestore.dart) Failed to set task: $error"));
       }
-      print("Tasks collection successfully replaced.");
+      debugPrint("(firestore.dart) Tasks collection successfully replaced.");
     } catch (e) {
-      print("Error replacing tasks collection: $e");
+      debugPrint("(firestore.dart) Error replacing tasks collection: $e");
     }
   }
 
   Future<void> deleteTask(String taskId) async {
-    print("DELETE TASK");
+    debugPrint("(firestore.dart) DELETE TASK");
     CollectionReference tasks =
         _db.collection('users').doc(user).collection('tasks');
     await tasks.doc(taskId).delete();
@@ -122,7 +122,7 @@ class FirestoreService {
   // User - List
 
   Future<List<TaskList>> getLists() async {
-    print("GET LISTS");
+    debugPrint("(firestore.dart) GET LISTS");
     var ref = _db.collection('users').doc(user).collection('lists');
     var snapshot = await ref.get();
     var data = snapshot.docs.map((s) => s.data());
@@ -131,7 +131,7 @@ class FirestoreService {
   }
 
   Future setList(TaskList list) {
-    print("SET LIST");
+    debugPrint("(firestore.dart) SET LIST");
 
     CollectionReference lists =
         _db.collection('users').doc(user).collection('lists');
@@ -139,12 +139,12 @@ class FirestoreService {
     return lists
         .doc(list.id)
         .set(list.toJson())
-        .then((value) => print("List Set"))
-        .catchError((error) => print("Failed to set list: $error"));
+        .then((value) => debugPrint("(firestore.dart) List Set"))
+        .catchError((error) => debugPrint("(firestore.dart) Failed to set list: $error"));
   }
 
   Future setLists(List<TaskList> newLists) async {
-    print("SET LISTS");
+    debugPrint("(firestore.dart) SET LISTS");
     CollectionReference lists =
         _db.collection('users').doc(user).collection('lists');
     try {
@@ -153,17 +153,17 @@ class FirestoreService {
         await lists
             .doc(list.id)
             .set(list.toJson())
-            .then((value) => print("List Set"))
-            .catchError((error) => print("Failed to set list: $error"));
+            .then((value) => debugPrint("(firestore.dart) List Set"))
+            .catchError((error) => debugPrint("(firestore.dart) Failed to set list: $error"));
       }
-      print("Lists collection successfully replaced.");
+      debugPrint("(firestore.dart) Lists collection successfully replaced.");
     } catch (e) {
-      print("Error replacing lists collection: $e");
+      debugPrint("(firestore.dart) Error replacing lists collection: $e");
     }
   }
 
   Future<void> deleteList(String listId) async {
-    print("DELETE LIST");
+    debugPrint("(firestore.dart) DELETE LIST");
     CollectionReference lists =
         _db.collection('users').doc(user).collection('lists');
     await lists.doc(listId).delete();
@@ -186,8 +186,8 @@ class FirestoreService {
     return skills
         .doc(skill.id)
         .set(skill.toJson())
-        .then((value) => print("Skill Set"))
-        .catchError((error) => print("Failed to set skill: $error"));
+        .then((value) => debugPrint("(firestore.dart) Skill Set"))
+        .catchError((error) => debugPrint("(firestore.dart) Failed to set skill: $error"));
   }
 
   Future setSkills(List<UserSkill> newSkills) async {
@@ -199,12 +199,12 @@ class FirestoreService {
         await skills
             .doc(skill.id)
             .set(skill.toJson())
-            .then((value) => print("Skill Set"))
-            .catchError((error) => print("Failed to set skill: $error"));
+            .then((value) => debugPrint("(firestore.dart) Skill Set"))
+            .catchError((error) => debugPrint("(firestore.dart) Failed to set skill: $error"));
       }
-      print("Skills collection successfully replaced.");
+      debugPrint("(firestore.dart) Skills collection successfully replaced.");
     } catch (e) {
-      print("Error replacing skills collection: $e");
+      debugPrint("(firestore.dart) Error replacing skills collection: $e");
     }
   }
 
@@ -226,8 +226,8 @@ class FirestoreService {
     return createdSkills
         .doc(createdSkill.id)
         .set(createdSkill.toJson())
-        .then((value) => print("Created Skills Set"))
-        .catchError((error) => print("Failed to set created skill: $error"));
+        .then((value) => debugPrint("(firestore.dart) Created Skills Set"))
+        .catchError((error) => debugPrint("(firestore.dart) Failed to set created skill: $error"));
   }
 
   /* Global */
@@ -249,8 +249,8 @@ class FirestoreService {
     return globalSkills
         .doc(createdSkill.id)
         .set(createdSkill.toJson())
-        .then((value) => print("Global Skills Set"))
-        .catchError((error) => print("Failed to set global skill: $error"));
+        .then((value) => debugPrint("(firestore.dart) Global Skills Set"))
+        .catchError((error) => debugPrint("(firestore.dart) Failed to set global skill: $error"));
   }
 
   // User - Messages
@@ -264,7 +264,7 @@ class FirestoreService {
   }
 
   Future<void> deleteMessage(String messageId, String conversationId) async {
-    print("DELETE MESSAGE");
+    debugPrint("(firestore.dart) DELETE MESSAGE");
     var ref = _db
         .collection('conversations')
         .doc(conversationId)
@@ -275,7 +275,7 @@ class FirestoreService {
   // User - Conversations
 
   Future<List<Conversation>> getConversations() async {
-    print("GET CONVERSATIONS");
+    debugPrint("(firestore.dart) GET CONVERSATIONS");
     var ref = _db
         .collection('users')
         .doc(user)
@@ -288,7 +288,7 @@ class FirestoreService {
   }
 
   Future setConversation(Conversation conversation) {
-    print("SET CONVERSATION");
+    debugPrint("(firestore.dart) SET CONVERSATION");
 
     var ref = _db.collection('users').doc(user).collection('conversations');
 
@@ -296,12 +296,12 @@ class FirestoreService {
     return ref
         .doc(conversation.id)
         .set(conversation.toJson())
-        .then((value) => print("Message Set"))
-        .catchError((error) => print("Failed to set message: $error"));
+        .then((value) => debugPrint("(firestore.dart) Message Set"))
+        .catchError((error) => debugPrint("(firestore.dart) Failed to set message: $error"));
   }
 
   Future<void> deleteConversation(String id) async {
-    print("DELETE CONVERSATION");
+    debugPrint("(firestore.dart) DELETE CONVERSATION");
     var ref = _db.collection('users').doc(user).collection('conversations');
     await ref.doc(id).delete();
   }
@@ -332,8 +332,8 @@ class FirestoreService {
     return taskSkills
         .doc(taskTitle)
         .set({'skillsId': skillsId})
-        .then((value) => print("Task-Skills Set"))
-        .catchError((error) => print("Failed to set Task-Skills: $error"));
+        .then((value) => debugPrint("(firestore.dart) Task-Skills Set"))
+        .catchError((error) => debugPrint("(firestore.dart) Failed to set Task-Skills: $error"));
   }
 
   // Functions
@@ -342,10 +342,8 @@ class FirestoreService {
     var ref = _db.collection('global').doc('functions'); // User collection
     var snapshot = await ref.get();
     var data = snapshot.data();
-    print("DATA: $data");
     if (data == null) return [];
     List<dynamic> functions = data['functions'];
-    print("FUNCTIONS: ${functions.toString()}");
     return functions;
   }
 
@@ -436,7 +434,7 @@ const funcs = [
     "parameters": {
       "type": "object",
       "description":
-          "Experience for skills from completed task. 0 exp if skill not highly relevant to the task. Example exps: [10, 30, 50, 100, 0]",
+          "Experience points for skills from completed task. 0 exp if skill not relevant to the task. Example exps: [10, 30, 50, 100, 0]",
       "properties": {
         "exps": {
           "types": "array",

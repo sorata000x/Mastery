@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:skillborn/main_state.dart';
+import 'package:skillborn/services/models.dart';
 import 'package:skillborn/task/system_messages/system_messages.dart';
 import 'package:skillborn/task/task_section/task_section.dart';
 
@@ -63,6 +64,20 @@ class _TaskScreenState extends State<TaskScreen> {
                               horizontal: 16,
                               vertical: 12), // Adjust padding if needed
                         ),
+                      ),
+                      ListTile(
+                        key: ValueKey('inbox'),
+                        title: Text('Inbox'),
+                        onTap: () {
+                          state.setSelectedList(TaskList(
+                            id: 'inbox',
+                            index: -1,
+                            title: 'Inbox'
+                          ));
+                          state.listTitleController.text =
+                              'Inbox';
+                          Navigator.pop(context);
+                        },
                       ),
                       ReorderableListView.builder(
                           shrinkWrap: true,

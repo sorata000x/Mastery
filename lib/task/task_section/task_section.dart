@@ -17,7 +17,6 @@ class _TaskSectionState extends State<TaskSection> {
   @override
   Widget build(BuildContext context) {
     final state = Provider.of<MainState>(context);
-    if (state.selectedList == null) return SizedBox();
     return Column(
       children: [
         Expanded(

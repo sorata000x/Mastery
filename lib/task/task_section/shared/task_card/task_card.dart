@@ -30,13 +30,7 @@ class TaskCard extends StatelessWidget {
       if (skillExps == null) {
         skillExps = await generateSkillExpFromTask(state, task) ?? [];
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          state.setTask(Task(
-              id: task.id,
-              title: task.title,
-              note: task.note,
-              skillExps: skillExps,
-              index: task.index,
-              isCompleted: task.isCompleted));
+          state.setTask(task.id, skillExps: skillExps);
         });
       }
       // Level up skills
@@ -91,7 +85,7 @@ class TaskCard extends StatelessWidget {
             author: "Skillborn GPT",
             rank: "Common",
           );
-        
+
           WidgetsBinding.instance.addPostFrameCallback((_) {
             state.setGlobalSkill(newGlobalSkill);
           });
@@ -100,23 +94,18 @@ class TaskCard extends StatelessWidget {
         }
         FirestoreService().setGlobalTaskSkills(task.title, skillsId);
       }
-      print("skillsId: $skillsId");
       // Filter out skills user already have
       var userSkillIds = state.skills.map((s) => s.id);
-      print("userSkillIds: $userSkillIds");
       skillsId = skillsId.where((s) => !userSkillIds.contains(s)).toSet();
       // Find corresponding global skills
-      print("skillsId: $skillsId");
       List<Skill> skills =
           state.globalSkills.where((s) => skillsId.contains(s.id)).toList();
-      print("skills: $skills");
       if (skills.isEmpty) return;
       // Randomly get a skill (low probability)
       final random = Random();
       for (var skill in skills) {
         var rank = skill.rank;
         var probability = probabilities[rank] ?? 0;
-        print("probability: $probability");
         if (random.nextDouble() < (probability / skills.length)) {
           // TODO: Prompt to ask if user want to add the skill
           // Add new skill
@@ -131,16 +120,12 @@ class TaskCard extends StatelessWidget {
               if (exps[i] > 0) {
                 var skillExps = state.tasks[i].skillExps ?? [];
                 WidgetsBinding.instance.addPostFrameCallback((_) {
-                  state.setTask(Task(
-                      id: state.tasks[i].id,
-                      title: state.tasks[i].title,
-                      note: state.tasks[i].note,
-                      skillExps: [
-                        ...skillExps,
-                        {"skillId": skill.id, "exp": exps[i]}
-                      ],
-                      index: state.tasks[i].index,
-                      isCompleted: state.tasks[i].isCompleted));
+                  state.setTask(
+                    state.tasks[i].id,
+                    skillExps: [
+                      ...skillExps,
+                      {"skillId": skill.id, "exp": exps[i]}
+                    ],);
                 });
               }
             }
@@ -162,16 +147,11 @@ class TaskCard extends StatelessWidget {
       var messages = [];
       var taskKarma = task.karma;
       if (taskKarma == null) {
-        taskKarma = await generateTaskExperience(state, task.title) ?? null;
+        taskKarma = await generateTaskExperience(state, task.title);
         if (taskKarma != null) {
-          state.setTask(Task(
-              id: task.id,
-              title: task.id,
-              note: task.id,
-              skillExps: task.skillExps,
-              karma: taskKarma,
-              index: task.index,
-              isCompleted: task.isCompleted));
+          state.setTask(
+            task.id,
+            karma: taskKarma);
         } else {
           // Give temporary karma if error generating task karma
           taskKarma = 100;

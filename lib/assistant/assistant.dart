@@ -116,8 +116,6 @@ class _AssistantScreenState extends State<AssistantScreen> {
       var content = '';
 
       void displayOutline(outline) {
-        print("createOutline");
-        print(outline);
         state.addMessage('assistant', outline.map((e) => e.toString()).join('\n'), state.currentConversation!.id);
         callAgent({
           "role": "system",
@@ -158,7 +156,6 @@ class _AssistantScreenState extends State<AssistantScreen> {
         },
         agent
       ];
-      print("bessages: $messages");
       var result = await callChatGPT(messages, functions: [
         {
           "name": "displayOutline",
@@ -304,7 +301,7 @@ class _AssistantScreenState extends State<AssistantScreen> {
 
     void createPlan() async {
       if (state.currentConversation == null) {
-        print("ERROR: No current conversation");
+        debugPrint("ERROR: No current conversation");
         return;
       }
       List messages;

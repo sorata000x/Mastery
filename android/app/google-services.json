@@ -2,7 +2,7 @@
   "project_info": {
     "project_number": "1001934211196",
     "project_id": "skillcraft-flutter",
-    "storage_bucket": "skillcraft-flutter.appspot.com"
+    "storage_bucket": "skillcraft-flutter.firebasestorage.app"
   },
   "client": [
     {
@@ -19,14 +19,6 @@
           "android_info": {
             "package_name": "io.amorfati.skillborn",
             "certificate_hash": "75d47aafa53fa8e46b6249f187cc720b57e200cb"
-          }
-        },
-        {
-          "client_id": "1001934211196-vgmbp3p0qcude9lr7ohi5nt0tj6skq98.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "io.amorfati.skillborn",
-            "certificate_hash": "64573a101e71df4880d9e99b0d8a0aef69387a54"
           }
         },
         {

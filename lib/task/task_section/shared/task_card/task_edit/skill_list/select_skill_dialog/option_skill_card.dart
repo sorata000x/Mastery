@@ -30,14 +30,10 @@ class OptionSkillCard extends StatelessWidget {
         };
         WidgetsBinding.instance.addPostFrameCallback((_) {
           // Use call back for async function
-          state.setTask(Task(
-            id: task.id,
-            title: task.title,
-            note: task.note,
+          state.setTask(
+            task.id,
             skillExps: [...?task.skillExps, newSkillExp],
-            index: task.index,
-            isCompleted: task.isCompleted,
-          ));
+          );
         });
         Navigator.pop(context);
       },

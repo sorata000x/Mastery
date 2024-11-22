@@ -115,9 +115,9 @@ class MainContentBody extends StatelessWidget {
       return const AssistantScreen();
     } else if (page == 1) {
       return const TaskScreen();
-    } else if (page == 3) {
+    } else if (page == 2) {
       return const SkillsScreen();
-    } else if (page == 4) {
+    } else if (page == 3) {
       return ProfileScreen();
     }
 

@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:convert';
 import 'dart:math';
 import 'package:crypto/crypto.dart';
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -34,9 +35,9 @@ class AuthService {
 
       // Initialize the tasks subcollection with default tasks
       await _initializeDefaultTasks(userRef);
-      print('Default data initialized for new user: ${user.uid}');
+      debugPrint('(auth.dart) Default data initialized for new user: ${user.uid}');
     } else {
-      print('User data already exists for: ${user.uid}');
+      debugPrint('(auth.dart) User data already exists for: ${user.uid}');
     }
   }
 

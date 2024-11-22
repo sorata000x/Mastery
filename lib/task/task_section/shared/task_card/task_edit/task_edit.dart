@@ -27,14 +27,7 @@ class _TaskEditState extends State<TaskEdit> {
           onPressed: () {
             Navigator.pop(context);
             if (state.titleEditText != "") {
-              var newTask = Task(
-                id: widget.task.id,
-                title: state.titleEditText,
-                note: widget.task.note,
-                index: widget.task.index,
-                isCompleted: widget.task.isCompleted,
-              );
-              state.setTask(newTask);
+              state.setTask(widget.task.id, title: state.titleEditText);
             }
           },
         ),
