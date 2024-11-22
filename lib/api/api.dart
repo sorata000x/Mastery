@@ -43,7 +43,6 @@ Future<List<Map>?> generateSkillExpFromTask(state, task) async {
       .toList();
   var result = await callChatGPT(messages, functions: functions);
   if (result == null) return null;
-  print(json.decode(result));
   List<int> exps =
       (json.decode(result) as List<dynamic>).map((e) => e as int).toList();
   List<Map> skillExps = [];
@@ -58,7 +57,6 @@ Future<List<Map>?> generateSkillExpFromTask(state, task) async {
 /// Generate skill exp with OpenAI API
 /// Call when new skills added
 Future<List<int>?> generateSkillExpForTasks(state, skill, tasks) async {
-  print("generateSkillExpForTasks");
   var messages = [
     {
       "role": "system",
@@ -80,7 +78,6 @@ Future<List<int>?> generateSkillExpForTasks(state, skill, tasks) async {
       .toList();
   var result = await callChatGPT(messages, functions: functions);
   if (result == null) return null;
-  print(json.decode(result));
   List<int> exps =
       (json.decode(result) as List<dynamic>).map((e) => e as int).toList();
   return exps;
@@ -99,7 +96,6 @@ Future<List<Map<String, dynamic>>?> generateNewSkills(state, taskTitle) async {
   var functions =
       state.functions.where((f) => f["name"] == "generateNewSkills").toList();
   var result = await callChatGPT(messages, functions: functions);
-  print("RESULT: $result");
   // Return null if error
   if (result == null) return null;
   // Parse result
@@ -121,7 +117,6 @@ Future<int?> generateTaskExperience(state, taskTitle) async {
       .where((f) => f["name"] == "generateTaskExperience")
       .toList();
   var result = await callChatGPT(messages, functions: functions);
-  print("RESULT: $result");
   // Return null if error
   if (result == null) return null;
   return json.decode(result);

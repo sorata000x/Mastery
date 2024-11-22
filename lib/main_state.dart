@@ -25,7 +25,7 @@ class MainState with ChangeNotifier {
   List<dynamic> _functions = []; // List of functions for function call
   // Task Page
   TaskList? _selectedList = TaskList(id: 'inbox', index: -1, title: 'inbox');
-  TextEditingController listTitleController = TextEditingController();
+  TextEditingController _listTitleController = TextEditingController();
   final List<String> _evaluatingTasks =
       []; // List of tasks that are currently getting responses from api request
   TextEditingController taskController =
@@ -49,6 +49,7 @@ class MainState with ChangeNotifier {
   List<Conversation> get conversations => _conversations;
   List<dynamic> get functions => _functions;
   TaskList? get selectedList => _selectedList;
+  TextEditingController get listTitleController => _listTitleController;
   List<String> get evaluatingTasks => _evaluatingTasks;
   Queue<String> get hintMessages => _hintMessages;
   String get titleEditText => _titleEditText;
@@ -221,15 +222,14 @@ class MainState with ChangeNotifier {
         task.index = index ?? task.index;
         task.isCompleted = isCompleted ?? task.isCompleted;
         FirestoreService().setTask(Task(
-          id: task.id,
-          title: task.title,
-          list: task.list,
-          note: task.note, 
-          skillExps: task.skillExps,
-          karma: task.karma,
-          index: task.index,
-          isCompleted: task.isCompleted
-        ));
+            id: task.id,
+            title: task.title,
+            list: task.list,
+            note: task.note,
+            skillExps: task.skillExps,
+            karma: task.karma,
+            index: task.index,
+            isCompleted: task.isCompleted));
       }
     }
     notifyListeners();
@@ -293,6 +293,7 @@ class MainState with ChangeNotifier {
     var data = await FirestoreService().getLists();
     data.sort((a, b) => a.index.compareTo(b.index));
     _lists = [..._lists, ...data];
+    _listTitleController.text = 'Inbox';
     notifyListeners();
   }
 

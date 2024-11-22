@@ -31,9 +31,7 @@ class _TaskSectionState extends State<TaskSection> {
                   fontSize: 22, // Set the text size here
                 ),
                 decoration: InputDecoration(
-                  hintText: state.selectedList!.title == ''
-                      ? 'Untitled'
-                      : '',
+                  hintText: 'Untitled',
                   hintStyle: TextStyle(
                     color: const Color.fromARGB(255, 140, 140, 140),
                   ),
