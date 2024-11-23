@@ -208,6 +208,55 @@ class FirestoreService {
     }
   }
 
+  // User - Path
+
+  Future<List<SkillPath>> getPaths() async {
+    debugPrint("(firestore.dart) GET PATHS");
+    var ref = _db.collection('users').doc(user).collection('paths');
+    var snapshot = await ref.get();
+    var data = snapshot.docs.map((s) => s.data());
+    var paths = data.map((d) => SkillPath.fromJson(d));
+    return paths.toList();
+  }
+
+  Future setPath(SkillPath path) {
+    debugPrint("(firestore.dart) SET PATH");
+
+    CollectionReference paths =
+        _db.collection('users').doc(user).collection('paths');
+
+    return paths
+        .doc(path.id)
+        .set(path.toJson())
+        .then((value) => debugPrint("(firestore.dart) Path Set"))
+        .catchError((error) => debugPrint("(firestore.dart) Failed to set path: $error"));
+  }
+
+  Future setPaths(List<SkillPath> newPaths) async {
+    debugPrint("(firestore.dart) SET PATHS");
+    CollectionReference paths =
+        _db.collection('users').doc(user).collection('paths');
+    try {
+      for (var path in newPaths) {
+        await paths
+            .doc(path.id)
+            .set(path.toJson())
+            .then((value) => debugPrint("(firestore.dart) Path Set"))
+            .catchError((error) => debugPrint("(firestore.dart) Failed to set path: $error"));
+      }
+      debugPrint("(firestore.dart) Paths collection successfully replaced.");
+    } catch (e) {
+      debugPrint("(firestore.dart) Error replacing paths collection: $e");
+    }
+  }
+
+  Future<void> deletePath(String pathId) async {
+    debugPrint("(firestore.dart) DELETE PATH");
+    CollectionReference paths =
+        _db.collection('users').doc(user).collection('paths');
+    await paths.doc(pathId).delete();
+  }
+
   // User - Created Skills
 
   Future<List<Skill>?> getCreatedSkills() async {

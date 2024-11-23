@@ -45,8 +45,8 @@ Skill _$SkillFromJson(Map<String, dynamic> json) => Skill(
 
 Map<String, dynamic> _$SkillToJson(Skill instance) => <String, dynamic>{
       'id': instance.id,
-      'name': instance.name,
       'path': instance.path,
+      'name': instance.name,
       'description': instance.description,
       'effect': instance.effect,
       'cultivation': instance.cultivation,
@@ -74,8 +74,8 @@ UserSkill _$UserSkillFromJson(Map<String, dynamic> json) => UserSkill(
 
 Map<String, dynamic> _$UserSkillToJson(UserSkill instance) => <String, dynamic>{
       'id': instance.id,
-      'name': instance.name,
       'path': instance.path,
+      'name': instance.name,
       'description': instance.description,
       'effect': instance.effect,
       'cultivation': instance.cultivation,
@@ -130,6 +130,18 @@ TaskList _$TaskListFromJson(Map<String, dynamic> json) => TaskList(
     );
 
 Map<String, dynamic> _$TaskListToJson(TaskList instance) => <String, dynamic>{
+      'id': instance.id,
+      'index': instance.index,
+      'title': instance.title,
+    };
+
+SkillPath _$SkillPathFromJson(Map<String, dynamic> json) => SkillPath(
+      id: json['id'] as String? ?? '',
+      index: (json['index'] as num?)?.toInt() ?? 0,
+      title: json['title'] as String? ?? '',
+    );
+
+Map<String, dynamic> _$SkillPathToJson(SkillPath instance) => <String, dynamic>{
       'id': instance.id,
       'index': instance.index,
       'title': instance.title,

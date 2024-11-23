@@ -17,6 +17,7 @@ class MainState with ChangeNotifier {
   List<Task> _tasks = []; // List of user tasks
   List<TaskList> _lists = [];
   List<UserSkill> _skills = []; // List of user skills
+  List<SkillPath> _paths = [];
   List<Skill> _createdSkills = []; // List of skills user created in Explore
   Map<String, List<Map>> _taskSkillExps =
       {}; // List of task to skillId and exp pair
@@ -32,6 +33,9 @@ class MainState with ChangeNotifier {
       TextEditingController(); // controller for adding task
   final Queue<String> _hintMessages = Queue();
   String _titleEditText = "";
+  // Skill Page
+  SkillPath _selectedPath = SkillPath(id: 'all', index: -1, title: 'All');
+  TextEditingController _pathTitleController = TextEditingController();
   // Explore Page
   List<Skill> _globalSkills = [];
   // Chat (Assistant) Page
@@ -44,6 +48,7 @@ class MainState with ChangeNotifier {
   List<Task> get tasks => _tasks;
   List<TaskList> get lists => _lists;
   List<UserSkill> get skills => _skills;
+  List<SkillPath> get paths => _paths;
   List<Skill> get createdSkills => _createdSkills;
   Map<String, List<Map>> get taskSkillExps => _taskSkillExps;
   List<Conversation> get conversations => _conversations;
@@ -53,6 +58,8 @@ class MainState with ChangeNotifier {
   List<String> get evaluatingTasks => _evaluatingTasks;
   Queue<String> get hintMessages => _hintMessages;
   String get titleEditText => _titleEditText;
+  SkillPath get selectedPath => _selectedPath;
+  TextEditingController get pathTitleController => _pathTitleController;
   List<Skill> get globalSkills => _globalSkills;
   Conversation? get currentConversation => _currentConversation;
 
@@ -60,6 +67,7 @@ class MainState with ChangeNotifier {
     initTask();
     initLists();
     initSkill();
+    initPaths();
     initCreatedSkills();
     initFunctions();
     initGlobalSkills();
@@ -322,7 +330,7 @@ class MainState with ChangeNotifier {
 
   void removeList(TaskList list) {
     lists.remove(list);
-    FirestoreService().deleteTask(list.id);
+    FirestoreService().deleteList(list.id);
     notifyListeners();
   }
 
@@ -359,11 +367,48 @@ class MainState with ChangeNotifier {
     notifyListeners();
   }
 
-  void setSkill(UserSkill newSkill) async {
+  void setSkill(id,
+      {name,
+      path,
+      description,
+      type,
+      category,
+      author,
+      rank,
+      index,
+      exp,
+      level}) async {
     // Update state
     bool exist = false;
+    UserSkill newSkill = UserSkill(
+      id: id,
+      name: name ?? 'Unknown',
+      path: path,
+      description: description,
+      type: type,
+      category: category,
+      author: author,
+      rank: rank ?? 'Common',
+      index: index,
+      exp: exp ?? 0,
+      level: level ?? 1,
+    );
+
     for (var i = 0; i < skills.length; i++) {
-      if (skills[i].id == newSkill.id) {
+      if (skills[i].id == id) {
+        newSkill = UserSkill(
+          id: id,
+          name: name ?? skills[i].name,
+          path: path ?? skills[i].path,
+          description: description ?? skills[i].description,
+          type: type ?? skills[i].type,
+          category: category ?? skills[i].category,
+          author: author ?? skills[i].author,
+          rank: rank ?? skills[i].rank,
+          index: index ?? skills[i].index,
+          exp: exp ?? skills[i].exp,
+          level: level ?? skills[i].level,
+        );
         skills[i] = newSkill;
         exist = true;
       }
@@ -435,6 +480,55 @@ class MainState with ChangeNotifier {
       _skills[i].index = i;
     }
     FirestoreService().setSkills(_skills);
+    notifyListeners();
+  }
+
+  // User - Path
+
+  void initPaths() async {
+    var data = await FirestoreService().getPaths();
+    data.sort((a, b) => a.index.compareTo(b.index));
+    _paths = [..._paths, ...data];
+    _pathTitleController.text = 'All';
+    notifyListeners();
+  }
+
+  void setPath(SkillPath newPath) {
+    for (var path in paths) {
+      if (path.id == newPath.id) {
+        path.id = newPath.id;
+        path.title = newPath.title;
+        path.index = newPath.index;
+      }
+    }
+    FirestoreService().setPath(newPath);
+    notifyListeners();
+  }
+
+  void addPath() async {
+    final newPath =
+        SkillPath(id: const Uuid().v4(), title: '', index: paths.length);
+    _paths.add(newPath);
+    for (int i = 0; i < _paths.length; i++) {
+      _paths[i].index = i;
+    }
+    FirestoreService().setPaths(_paths);
+    notifyListeners();
+  }
+
+  void removePath(SkillPath path) {
+    paths.remove(path);
+    FirestoreService().deletePath(path.id);
+    notifyListeners();
+  }
+
+  void reorderPath(int oldIndex, int newIndex) {
+    final SkillPath path = _paths.removeAt(oldIndex);
+    _paths.insert(newIndex, path);
+    for (int i = 0; i < _paths.length; i++) {
+      _paths[i].index = i;
+    }
+    FirestoreService().setPaths(_paths);
     notifyListeners();
   }
 
@@ -593,6 +687,15 @@ class MainState with ChangeNotifier {
 
   void setTitleEditText(value) {
     _titleEditText = value;
+    notifyListeners();
+  }
+
+  // System - Skill Page
+
+  // System - Skill Page - Selected List
+
+  void setSelectedPath(SkillPath path) {
+    _selectedPath = path;
     notifyListeners();
   }
 

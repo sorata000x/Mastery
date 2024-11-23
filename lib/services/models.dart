@@ -29,8 +29,8 @@ class Task {
 @JsonSerializable()
 class Skill {
   String id;
-  String name;
   String path;
+  String name;
   String description;
   String effect;
   String cultivation;
@@ -141,6 +141,18 @@ class TaskList {
   factory TaskList.fromJson(Map<String, dynamic> json) =>
       _$TaskListFromJson(json);
   Map<String, dynamic> toJson() => _$TaskListToJson(this);
+}
+
+@JsonSerializable()
+class SkillPath {
+  String id;
+  int index;
+  String title;
+
+  SkillPath({this.id = '', this.index = 0, this.title = ''});
+  factory SkillPath.fromJson(Map<String, dynamic> json) =>
+      _$SkillPathFromJson(json);
+  Map<String, dynamic> toJson() => _$SkillPathToJson(this);
 }
 
 @JsonSerializable()

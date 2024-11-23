@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:skillborn/main_state.dart';
-import 'package:skillborn/skills/explore/explore_skill_button.dart';
-import 'package:skillborn/skills/skill_card/skill_card.dart';
+import 'package:skillborn/skills/skill_body/explore/explore_skill_button.dart';
+import 'package:skillborn/skills/skill_body/skill_body.dart';
+import 'package:skillborn/skills/skill_body/skill_card/skill_card.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:skillborn/skills/skills_drawer.dart';
 
 class SkillsScreen extends StatelessWidget {
   const SkillsScreen({super.key});
@@ -16,33 +18,11 @@ class SkillsScreen extends StatelessWidget {
         appBar: AppBar(
           title: Text(AppLocalizations.of(context)!.skills),
         ),
-        body: buildSkillSection(state, state.skills));
-  }
-
-  Widget buildSkillSection(state, List skills) {
-    return Column(
-      children: [
-        ExploreSkillButton(),
-        Expanded(
-          child: (ReorderableListView.builder(
-              itemCount: skills.length,
-              onReorder: state.reorderSkill,
-              itemBuilder: (context, index) {
-                return Container(
-                    key: ValueKey(skills[index].id),
-                    child: Column(
-                      children: [
-                        SkillCard(skill: skills[index]),
-                        const Divider(
-                          height: 5,
-                          thickness: 5,
-                          color: Colors.transparent,
-                        ),
-                      ],
-                    ));
-              })),
-        ),
-      ],
-    );
+        drawer: SkillsDrawer(),
+        body: SkillBody( skills:
+            state.skills
+                .where((s) =>
+                    s.path == state.selectedPath.id || state.selectedPath.id == 'all')
+                .toList()));
   }
 }
