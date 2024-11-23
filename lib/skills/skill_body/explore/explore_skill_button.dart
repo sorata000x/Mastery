@@ -25,7 +25,7 @@ class ExploreSkillButton extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(14, 0, 14, 10),
         child: Container(
           decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 55, 55, 55), // Background color
+            color: Theme.of(context).colorScheme.primaryContainer,
             borderRadius: BorderRadius.circular(10), // Circular border radius
           ),
           child: Row(

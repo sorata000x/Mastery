@@ -23,16 +23,16 @@ var appTheme = ThemeData(
       headlineLarge: TextStyle(
         fontWeight: FontWeight.bold,
       ),
-      titleMedium: TextStyle(
-        color: Colors.grey,
-      ),
     ),
     colorScheme: const ColorScheme(
       brightness: Brightness.dark,  // Set brightness here
       primary: Colors.white,
       onPrimary: Colors.white,
-      secondary: Color.fromARGB(255, 50, 50, 50),
+      primaryContainer: Color.fromARGB(255, 45, 52, 60),
+      secondary: Color.fromARGB(255, 26, 30, 35),
       onSecondary: Colors.white,
+      tertiary: Color.fromARGB(255, 34, 39, 45),
+      onTertiary: Colors.white,
       error: Colors.red,
       onError: Colors.white,
       surface: Colors.black,

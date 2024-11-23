@@ -305,6 +305,7 @@ class FirestoreService {
   // User - Messages
 
   Future<void> addMessage(String conversationId, Message message) async {
+    debugPrint("(firestore.dart) ADD MESSAGE");
     var ref = _db
         .collection('conversations')
         .doc(conversationId)

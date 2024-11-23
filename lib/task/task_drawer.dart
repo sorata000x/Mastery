@@ -21,8 +21,13 @@ class TaskDrawer extends StatelessWidget {
             clipBehavior: Clip.antiAlias,
             child: ListTile(
               key: ValueKey('inbox'),
-              title: Text('Inbox'),
-              selectedTileColor: const Color.fromARGB(255, 60, 60, 60),
+              title: Text(
+                'Inbox',
+                style: TextStyle(
+                  color: Colors.white
+                ),  
+              ),
+              selectedTileColor: Theme.of(context).colorScheme.tertiary,
               selected: state.selectedList?.id == 'inbox',
               onTap: () {
                 state.setSelectedList(
@@ -60,11 +65,14 @@ class TaskDrawer extends StatelessWidget {
                     clipBehavior: Clip.antiAlias,
                     child: ListTile(
                       selected: state.selectedList?.id == state.lists[index].id,
-                      selectedTileColor: const Color.fromARGB(255, 60, 60, 60),
+                      selectedTileColor: Theme.of(context).colorScheme.tertiary,
                       title: Text(
                         state.lists[index].title == ''
                             ? 'Untitled'
                             : state.lists[index].title,
+                        style: TextStyle(
+                          color: Colors.white
+                        ),  
                       ),
                       onTap: () {
                         state.setSelectedList(state.lists[index]);

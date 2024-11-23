@@ -28,13 +28,11 @@ class TodoList extends StatelessWidget {
           return Container(
               padding: const EdgeInsets.symmetric(vertical: 2.0),
               key: ValueKey(todos[index].id),
-              child: Column(
-                children: [
-                  state.evaluatingTasks.contains(todos[index].id)
-                      ? const TaskEvalurationCard()
-                      : TaskCard(task: todos[index]),
-                ],
-              ));
+              child: 
+                state.evaluatingTasks.contains(todos[index].id)
+                    ? const TaskEvalurationCard()
+                    : TaskCard(task: todos[index])
+              );
         });
   }
 }

@@ -15,7 +15,7 @@ class ExploreSkillSummary extends StatelessWidget {
           Container(
             padding: const EdgeInsets.fromLTRB(10, 10, 20, 10),
             decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 40, 40, 40),
+              color: Theme.of(context).colorScheme.primaryContainer,
               borderRadius: BorderRadius.circular(8),
             ),
             child: Row(
@@ -33,6 +33,8 @@ class ExploreSkillSummary extends StatelessWidget {
                       Text(
                         globalSkill.description,
                         style: TextStyle(fontSize: 14),
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
                         ),
                       Text(
                         "by ${globalSkill.author}",

@@ -71,6 +71,7 @@ class MainState with ChangeNotifier {
     initCreatedSkills();
     initFunctions();
     initGlobalSkills();
+    initConversations();
     updateUser();
     FirebaseAuth.instance.authStateChanges().listen((User? currentUser) {
       _user = currentUser?.uid;
@@ -576,6 +577,16 @@ class MainState with ChangeNotifier {
     notifyListeners();
   }
 
+  void initConversations() async {
+    var data = await FirestoreService().getConversations();
+    _conversations = data;
+    if (data.isNotEmpty) {
+      print("data: ${data[0].toJson()}");
+      _currentConversation = data[0];
+    }
+    notifyListeners();
+  }
+
   void setConversation(id,
       {String? timeStamp,
       String? title,
@@ -589,6 +600,7 @@ class MainState with ChangeNotifier {
         conversation.title = title ?? conversation.title;
         conversation.agentQueue = agentQueue ?? conversation.agentQueue;
         conversation.messages = messages ?? conversation.messages;
+        FirestoreService().setConversation(conversation);
       }
     }
     conversations = newConversations;

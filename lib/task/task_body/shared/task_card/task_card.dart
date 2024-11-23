@@ -133,7 +133,8 @@ class TaskCard extends StatelessWidget {
                     skillExps: [
                       ...skillExps,
                       {"skillId": skill.id, "exp": exps[i]}
-                    ],);
+                    ],
+                  );
                 });
               }
             }
@@ -157,9 +158,7 @@ class TaskCard extends StatelessWidget {
       if (taskKarma == null) {
         taskKarma = await generateTaskExperience(state, task.title);
         if (taskKarma != null) {
-          state.setTask(
-            task.id,
-            karma: taskKarma);
+          state.setTask(task.id, karma: taskKarma);
         } else {
           // Give temporary karma if error generating task karma
           taskKarma = 100;
@@ -226,8 +225,10 @@ class TaskCard extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             color: task.isCompleted
-                ? const Color.fromARGB(255, 42, 35, 35)
-                : const Color.fromARGB(255, 32, 27, 27), // Background color
+                ? Theme.of(context).colorScheme.secondary
+                : Theme.of(context)
+                    .colorScheme
+                    .primaryContainer, // Background color
             borderRadius: BorderRadius.circular(5), // Circular radius
           ),
           alignment: Alignment.center,

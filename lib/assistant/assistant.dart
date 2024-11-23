@@ -116,7 +116,10 @@ class _AssistantScreenState extends State<AssistantScreen> {
       var content = '';
 
       void displayOutline(outline) {
-        state.addMessage('assistant', outline.map((e) => e.toString()).join('\n'), state.currentConversation!.id);
+        state.addMessage(
+            'assistant',
+            outline.map((e) => e.toString()).join('\n'),
+            state.currentConversation!.id);
         callAgent({
           "role": "system",
           "content": """
@@ -136,7 +139,8 @@ class _AssistantScreenState extends State<AssistantScreen> {
       }
 
       void displayTasks(tasks) {
-        state.addMessage('assistant', tasks.map((e) => e.toString()).join('\n'), state.currentConversation!.id);
+        state.addMessage('assistant', tasks.map((e) => e.toString()).join('\n'),
+            state.currentConversation!.id);
       }
 
       for (var m in state.currentConversation!.messages) {
@@ -293,87 +297,11 @@ class _AssistantScreenState extends State<AssistantScreen> {
           ];
           result = await callChatGPT(messages);
           if (result == null) return;
-          currentConversation.title = result!;
+          result = result.replaceAll(RegExp(r'^"|"$'), '');
+          currentConversation.title = result;
+          state.setConversation(currentConversation.id, title: result);
         }
-        state.setConversation(currentConversation);
       }
-    }
-
-    void createPlan() async {
-      if (state.currentConversation == null) {
-        debugPrint("ERROR: No current conversation");
-        return;
-      }
-      List messages;
-      String? result;
-      Message message;
-      var haveQuestion = true;
-      Conversation conversation = state.currentConversation!;
-      // Send introduction
-      messages = [...conversation.messages, agents['plan']!['introduction']];
-      result = await callChatGPT(messages);
-      if (result == null) return;
-      message = state.addMessage('assistant', result, conversation.id);
-      conversation.messages.add(message.toJson());
-      // Generate Questions
-      messages = [...conversation.messages, agents['plan']!['questions']];
-      result = await callChatGPT(messages);
-      if (result == null) return null;
-      var decodedResult = List<Map<String, dynamic>>.from(json.decode(result));
-      for (var question in decodedResult) {
-        // TODO
-        // Ask question if not answered already
-        //  - check if already answered
-        messages = [
-          ...conversation.messages,
-          agents['plan']!['assess_question']
-        ];
-        result = await callChatGPT(messages);
-        if (result == 'True') continue;
-        // wait for result before asking another
-        // Put "decide for me" if user choose to skip
-      }
-      result = await callChatGPT(messages);
-      if (result == null) return;
-      message = state.addMessage('assistant', result, conversation.id);
-      conversation.messages.add(message.toJson());
-      // Create plan outline
-      messages = [
-        ...conversation.messages,
-        {
-          "role": "system",
-          "content": """
-            You are part of assistant team to help the user to create a plan to achieve their goal.
-            Your job is to create an outline of the plan to achieve the goal.
-            Example:
-              Goal: Get a job
-              Assistant:
-              1. **Revise Resume and Cover Letter**
-              2. **Online Presence Optimization**
-              3. **Expand Job Search**
-              4. **Expand Networking and Connections**
-              5. **Skill Enhancement**
-              6. **Follow-Up on Applications**
-              7. **Interview Preparation**
-              8. **Utilize Job Support Services**
-              9. **Apply for Internships or Volunteer Work**
-              10. **Stay Positive and Adapt**
-          """
-        }
-      ];
-      result = await callChatGPT(messages);
-      if (result == null) return;
-      // Generate detailed, actionable tasks from the goal and outlines
-
-      // Decide the priority of the tasks, how long each task will take, re-occuring tasks
-
-      // Have user to edit the tasks
-
-      // Decide the sequence of the task
-
-      // Confirm plan overview
-
-      // Send plan to todos
     }
 
     return Scaffold(
@@ -407,8 +335,9 @@ class _AssistantScreenState extends State<AssistantScreen> {
                     constraints: BoxConstraints(
                         maxWidth: MediaQuery.of(context).size.width * 0.75),
                     decoration: BoxDecoration(
-                      color:
-                          isUserMessage ? Colors.grey[800] : Colors.transparent,
+                      color: isUserMessage
+                          ? Theme.of(context).colorScheme.primaryContainer
+                          : Colors.transparent,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
@@ -433,7 +362,7 @@ class _AssistantScreenState extends State<AssistantScreen> {
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide.none),
                       filled: true,
-                      fillColor: Colors.grey[800],
+                      fillColor: Theme.of(context).colorScheme.primaryContainer,
                       contentPadding:
                           const EdgeInsets.symmetric(horizontal: 16),
                     ),

@@ -16,7 +16,7 @@ class CategoryButton extends StatelessWidget {
         onPressed: onPressed,
         child: Text(title),
         style: TextButton.styleFrom(
-          backgroundColor: isSelected ? Colors.white : const Color.fromARGB(255, 40, 40, 40), // Set background color
+          backgroundColor: isSelected ? Colors.white : Theme.of(context).colorScheme.tertiary, // Set background color
           foregroundColor: isSelected ? Colors.black : Colors.white,
           textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
           padding: EdgeInsets.fromLTRB(16, 6, 16, 6), // Set padding

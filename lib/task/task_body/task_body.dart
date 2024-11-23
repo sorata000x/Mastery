@@ -24,7 +24,6 @@ class _TaskBodyState extends State<TaskBody> {
           child: ListView(
             padding: const EdgeInsets.all(15),
             children: [
-              
               state.selectedList?.id != 'inbox' ? ListTitle() : SizedBox(),
               TodoList(
                   todos: state.tasks

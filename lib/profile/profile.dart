@@ -53,7 +53,7 @@ class ProfileScreen extends StatelessWidget {
                     },
                     child: Text(AppLocalizations.of(context)!.sign_out),
                     style: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.all<Color>(const Color.fromARGB(255, 70, 70, 70)),
+                      backgroundColor: WidgetStateProperty.all<Color>(Theme.of(context).colorScheme.primaryContainer),
                       shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(6.0), // Set border radius

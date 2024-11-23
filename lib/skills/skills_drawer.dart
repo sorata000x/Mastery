@@ -21,7 +21,7 @@ class SkillsDrawer extends StatelessWidget {
             child: ListTile(
               key: ValueKey('all'),
               title: Text('All'),
-              selectedTileColor: const Color.fromARGB(255, 60, 60, 60),
+              selectedTileColor: Theme.of(context).colorScheme.tertiary,
               selected: state.selectedPath?.id == 'all',
               onTap: () {
                 state.setSelectedPath(
@@ -59,7 +59,7 @@ class SkillsDrawer extends StatelessWidget {
                     clipBehavior: Clip.antiAlias,
                     child: ListTile(
                       selected: state.selectedPath.id == state.paths[index].id,
-                      selectedTileColor: const Color.fromARGB(255, 60, 60, 60),
+                      selectedTileColor: Theme.of(context).colorScheme.tertiary,
                       title: Text(
                         state.paths[index].title == ''
                             ? 'Untitled'
