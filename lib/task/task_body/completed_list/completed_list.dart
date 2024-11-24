@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:skillborn/main_state.dart';
 import 'package:skillborn/services/models.dart';
 import 'package:skillborn/task/task_body/shared/task_card/task_card.dart';
-import 'package:skillborn/task/task_body/shared/task_evaluration_card.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CompletedList extends StatelessWidget {
@@ -47,9 +46,7 @@ class CompletedList extends StatelessWidget {
                 return Container(
                   key: ValueKey(completed[index].id),
                   padding: const EdgeInsets.symmetric(vertical: 2.0),
-                  child: state.evaluatingTasks.contains(completed[index].id)
-                      ? const TaskEvalurationCard()
-                      : TaskCard(task: completed[index]),
+                  child: TaskCard(task: completed[index])
                 );
               })
         ]);

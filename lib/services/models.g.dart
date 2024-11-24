@@ -181,3 +181,15 @@ Map<String, dynamic> _$ConversationToJson(Conversation instance) =>
       'agentQueue': instance.agentQueue,
       'messages': instance.messages,
     };
+
+Agent _$AgentFromJson(Map<String, dynamic> json) => Agent(
+      id: json['id'] as String? ?? '',
+      role: json['role'] as String? ?? '',
+      content: json['content'] as String? ?? '',
+    );
+
+Map<String, dynamic> _$AgentToJson(Agent instance) => <String, dynamic>{
+      'id': instance.id,
+      'role': instance.role,
+      'content': instance.content,
+    };

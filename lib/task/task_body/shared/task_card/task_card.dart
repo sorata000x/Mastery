@@ -23,9 +23,9 @@ class TaskCard extends StatelessWidget {
     var localizations =
         Localizations.of<AppLocalizations>(context, AppLocalizations);
 
-    Future levelUpSkills() async {
-      var messages = [];
-      if (state.skills.isEmpty) return null;
+    Future<List<String>> levelUpSkills() async {
+      List<String> messages = [];
+      if (state.skills.isEmpty) return [];
       var skillExps = task.skillExps;
       if (skillExps == null) {
         skillExps = await generateSkillExpFromTask(state, task) ?? [];
@@ -42,18 +42,11 @@ class TaskCard extends StatelessWidget {
         var skill = state.skills.firstWhere((s) => s.id == skillExp["skillId"]);
         messages.add("${skill.name} + ${skillExp["exp"]}");
       }
-      // Display level up messages
-      for (var message in messages) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          state.addHintMessage(message);
-        });
-        // Add a delay of 0.2 seconds
-        await Future.delayed(const Duration(milliseconds: 500));
-      }
+      return messages;
     }
 
-    Future drawSkill() async {
-      var messages = [];
+    Future<List<String>> drawSkill() async {
+      List<String> messages = [];
       const probabilities = {
         "Common": 0.1,
         "Uncommon": 0.05,
@@ -100,7 +93,7 @@ class TaskCard extends StatelessWidget {
       // Find corresponding global skills
       List<Skill> skills =
           state.globalSkills.where((s) => skillsId.contains(s.id)).toList();
-      if (skills.isEmpty) return;
+      if (skills.isEmpty) return [];
       // Randomly get a skill (low probability)
       final random = Random();
       for (var skill in skills) {
@@ -142,18 +135,11 @@ class TaskCard extends StatelessWidget {
           messages.add("${localizations!.new_skill}: ${skill.name}");
         }
       }
-      // Display new skill messages
-      for (var message in messages) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          state.addHintMessage(message);
-        });
-        // Add a delay of 0.2 seconds
-        await Future.delayed(const Duration(milliseconds: 500));
-      }
+      return messages;
     }
 
-    Future giveKarma() async {
-      var messages = [];
+    Future<List<String>> giveKarma() async {
+      List<String> messages = [];
       var taskKarma = task.karma;
       if (taskKarma == null) {
         taskKarma = await generateTaskExperience(state, task.title);
@@ -166,27 +152,17 @@ class TaskCard extends StatelessWidget {
       }
       state.addKarma(taskKarma);
       messages.add("+ $taskKarma Karma");
-      // Display gained karma messages
-      for (var message in messages) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          state.addHintMessage(message);
-        });
-        // Add a delay of 0.2 seconds
-        await Future.delayed(const Duration(milliseconds: 500));
-      }
+      return messages;
     }
 
     void onTaskComplete(task) async {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        state.addEvaluatingTask(task.id);
-      });
-      await levelUpSkills();
-      await giveKarma();
-      await drawSkill();
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        state.removeEvaluatingTask(task.id);
-        state.toggleTask(task);
-      });
+      state.toggleTask(task);
+      List<String> messages = [];
+      messages = [...await giveKarma(), ...await levelUpSkills()];
+      //await drawSkill();
+      state.addMessage(
+          'assistant',
+          "[System Message]\nCompleted Task: ${task.title} \n${messages.join('\n')}");
     }
 
     return Slidable(

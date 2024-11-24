@@ -45,7 +45,8 @@ class _CreateSkillState extends State<CreateSkill> {
         type: 'other',
         category: _category,
         author: 'Unknown',
-        rank: 'Common'
+        rank: 'Common',
+        index: 0,
       );
       state.addCreatedSkill(createdSkill);
       if (_publishing) {

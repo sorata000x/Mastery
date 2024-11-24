@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:skillborn/api/api.dart';
-import 'package:skillborn/assistant/assistant_drawer.dart';
+import 'package:skillborn/assistant/message_block.dart';
 import 'package:skillborn/main_state.dart';
 import 'package:skillborn/services/models.dart';
 import 'package:uuid/uuid.dart';
@@ -103,23 +103,11 @@ class _AssistantScreenState extends State<AssistantScreen> {
   @override
   Widget build(BuildContext context) {
     final state = Provider.of<MainState>(context);
-    var messages = state.currentConversation?.messages != null
-        ? state.currentConversation!.messages
-        : [
-            {
-              'sender': 'user',
-              'text': 'test',
-            }
-          ];
 
     Future callAgent(agent) async {
-      var content = '';
-
       void displayOutline(outline) {
         state.addMessage(
-            'assistant',
-            outline.map((e) => e.toString()).join('\n'),
-            state.currentConversation!.id);
+            'assistant', outline.map((e) => e.toString()).join('\n'));
         callAgent({
           "role": "system",
           "content": """
@@ -139,15 +127,12 @@ class _AssistantScreenState extends State<AssistantScreen> {
       }
 
       void displayTasks(tasks) {
-        state.addMessage('assistant', tasks.map((e) => e.toString()).join('\n'),
-            state.currentConversation!.id);
+        state.addMessage(
+            'assistant', tasks.map((e) => e.toString()).join('\n'));
       }
 
-      for (var m in state.currentConversation!.messages) {
-        content += m['content'];
-      }
-      messages = [
-        ...state.currentConversation!.messages,
+      var messages = [
+        state.conversation.map((m) => m.content).join('\n'),
         {
           "role": "system",
           "content":
@@ -158,8 +143,9 @@ class _AssistantScreenState extends State<AssistantScreen> {
           "content":
               "You are part of assistant team to help the user to create a quest line."
         },
-        agent
+        agent.toString()
       ];
+
       var result = await callChatGPT(messages, functions: [
         {
           "name": "displayOutline",
@@ -210,13 +196,11 @@ class _AssistantScreenState extends State<AssistantScreen> {
           functionCall['name'] == 'displayTasks') {
         displayTasks(jsonDecode(functionCall['arguments'])['tasks']);
       } else {
-        state.addMessage('assistant', result!, state.currentConversation!.id);
+        state.addMessage('assistant', result);
       }
     }
 
     void startCreatingQuestLine() {
-      if (state.currentConversation == null) return;
-      var cid = state.currentConversation!.id;
       var newAgentQueue = [
         agents['ql_introduction']!,
         ...qlPreliminary.map((d) => {
@@ -238,31 +222,28 @@ class _AssistantScreenState extends State<AssistantScreen> {
             }),
         agents['ql_outline']!
       ];
-      state.setConversation(cid, agentQueue: newAgentQueue);
-      state.currentConversation!.agentQueue = newAgentQueue;
-      callAgent(state.currentConversation!.agentQueue.removeAt(0));
+      state.setAgentQueue(newAgentQueue.map((a) => Agent.fromJson(a)).toList());
+      callAgent(state.agentQueue.removeAt(0));
     }
 
     void _sendMessage() async {
       if (_controller.text.isNotEmpty) {
         var input = _controller.text;
-        var currentConversation = state.currentConversation;
         _controller.clear();
-        currentConversation ??= state.addConversation('');
-        state.addMessage('user', input, currentConversation.id);
+        state.addMessage('user', input);
 
         // Instruction
         List messages;
         String? result;
 
-        if (currentConversation.agentQueue.isNotEmpty) {
-          callAgent(currentConversation.agentQueue.removeAt(0));
+        if (state.agentQueue.isNotEmpty) {
+          callAgent(state.agentQueue.removeAt(0));
           return;
         }
 
         messages = [
           agents['default'],
-          ...currentConversation.messages,
+          ...state.conversation.map((m) => m.toJson()),
           {"role": "user", "content": input}
         ];
         result = await callChatGPT(messages, functions: [
@@ -287,65 +268,37 @@ class _AssistantScreenState extends State<AssistantScreen> {
         if (decoded != null && decoded['name'] == "startCreatingQuestLine") {
           startCreatingQuestLine();
         } else {
-          state.addMessage('assistant', result!, currentConversation.id);
-          messages = [
-            {
-              "role": "system",
-              "content":
-                  "Give short title for conversation from user input: ${input}"
-            },
-          ];
-          result = await callChatGPT(messages);
-          if (result == null) return;
-          result = result.replaceAll(RegExp(r'^"|"$'), '');
-          currentConversation.title = result;
-          state.setConversation(currentConversation.id, title: result);
+          state.addMessage('assistant', result);
         }
       }
     }
 
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          IconButton(
-            icon: const Icon(FontAwesomeIcons.penToSquare),
-            onPressed: () {
-              state.currentConversation = null;
-            },
-          ),
-        ],
+        actions: [],
       ),
-      drawer: AssistantDrawer(),
       body: Column(
         children: [
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.all(8.0),
-              itemCount: messages.length,
+              itemCount: state.conversation.length,
               itemBuilder: (context, index) {
-                final message = messages[index];
-                final isUserMessage = message['role'] == 'user';
-                return Align(
-                  alignment: isUserMessage
-                      ? Alignment.centerRight
-                      : Alignment.centerLeft,
-                  child: Container(
-                    padding: const EdgeInsets.all(12),
-                    margin: const EdgeInsets.symmetric(vertical: 4),
-                    constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 0.75),
-                    decoration: BoxDecoration(
-                      color: isUserMessage
-                          ? Theme.of(context).colorScheme.primaryContainer
-                          : Colors.transparent,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      message['content'] ?? '',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                );
+                final message = state.conversation[index];
+                final isUserMessage = message.role == 'user';
+                if (isUserMessage) {
+                  return Align(
+                    alignment: Alignment.centerRight,
+                    child: MessageBlock(message: message),
+                  );
+                }
+                if (!message.content.startsWith('[System Message]')) {
+                  return Align(
+                    alignment: Alignment.centerLeft,
+                    child: MessageBlock(message: message),
+                  );
+                }
+                return MessageBlock(message: message);
               },
             ),
           ),

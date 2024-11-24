@@ -19,27 +19,21 @@ class MainState with ChangeNotifier {
   List<UserSkill> _skills = []; // List of user skills
   List<SkillPath> _paths = [];
   List<Skill> _createdSkills = []; // List of skills user created in Explore
-  Map<String, List<Map>> _taskSkillExps =
-      {}; // List of task to skillId and exp pair
-  List<Conversation> _conversations = [];
+  List<Message> _conversation = [];
+  List<Agent> _agentQueue = [];
   // API: ChatGPT
   List<dynamic> _functions = []; // List of functions for function call
   // Task Page
   TaskList? _selectedList = TaskList(id: 'inbox', index: -1, title: 'inbox');
   TextEditingController _listTitleController = TextEditingController();
-  final List<String> _evaluatingTasks =
-      []; // List of tasks that are currently getting responses from api request
   TextEditingController taskController =
       TextEditingController(); // controller for adding task
-  final Queue<String> _hintMessages = Queue();
   String _titleEditText = "";
   // Skill Page
   SkillPath _selectedPath = SkillPath(id: 'all', index: -1, title: 'All');
   TextEditingController _pathTitleController = TextEditingController();
   // Explore Page
   List<Skill> _globalSkills = [];
-  // Chat (Assistant) Page
-  Conversation? _currentConversation = null;
 
   int get page => _page;
   String? get user => _user;
@@ -50,18 +44,15 @@ class MainState with ChangeNotifier {
   List<UserSkill> get skills => _skills;
   List<SkillPath> get paths => _paths;
   List<Skill> get createdSkills => _createdSkills;
-  Map<String, List<Map>> get taskSkillExps => _taskSkillExps;
-  List<Conversation> get conversations => _conversations;
+  List<Message> get conversation => _conversation;
+  List<Agent> get agentQueue => _agentQueue;
   List<dynamic> get functions => _functions;
   TaskList? get selectedList => _selectedList;
   TextEditingController get listTitleController => _listTitleController;
-  List<String> get evaluatingTasks => _evaluatingTasks;
-  Queue<String> get hintMessages => _hintMessages;
   String get titleEditText => _titleEditText;
   SkillPath get selectedPath => _selectedPath;
   TextEditingController get pathTitleController => _pathTitleController;
   List<Skill> get globalSkills => _globalSkills;
-  Conversation? get currentConversation => _currentConversation;
 
   MainState() {
     initTask();
@@ -72,6 +63,7 @@ class MainState with ChangeNotifier {
     initFunctions();
     initGlobalSkills();
     initConversations();
+    initAgentQueue();
     updateUser();
     FirebaseAuth.instance.authStateChanges().listen((User? currentUser) {
       _user = currentUser?.uid;
@@ -390,7 +382,7 @@ class MainState with ChangeNotifier {
       category: category,
       author: author,
       rank: rank ?? 'Common',
-      index: index,
+      index: index ?? 0,
       exp: exp ?? 0,
       level: level ?? 1,
     );
@@ -416,7 +408,10 @@ class MainState with ChangeNotifier {
     }
     // Add new skill if doesn't exist
     if (exist == false) {
-      skills.add(newSkill);
+      _skills.insert(0, newSkill);
+      for (int i = 0; i < _skills.length; i++) {
+        _skills[i].index = i;
+      }
     }
     // Update firestore
     FirestoreService().setSkill(newSkill);
@@ -552,74 +547,45 @@ class MainState with ChangeNotifier {
     notifyListeners();
   }
 
-  // User - Messages
-
-  Message addMessage(String role, String context, String conversationId) {
-    Message newMessage = Message(
-        timeStamp: DateTime.now().toString(), role: role, content: context);
-    List<Conversation> newConversations = conversations;
-    for (var conversation in newConversations) {
-      if (conversation.id == conversationId) {
-        conversation.messages.add(newMessage.toJson());
-        currentConversation = conversation;
-      }
-    }
-    conversations = [...newConversations];
-    FirestoreService().addMessage(conversationId, newMessage);
-    notifyListeners();
-    return newMessage;
-  }
-
   // User - Conversation
 
-  set conversations(List<Conversation> value) {
-    _conversations = value;
+  set conversation(List<Message> value) {
+    _conversation = value;
     notifyListeners();
   }
 
   void initConversations() async {
-    var data = await FirestoreService().getConversations();
-    _conversations = data;
-    if (data.isNotEmpty) {
-      print("data: ${data[0].toJson()}");
-      _currentConversation = data[0];
-    }
+    var data = await FirestoreService().getConversation();
+    _conversation = data;
     notifyListeners();
   }
 
-  void setConversation(id,
-      {String? timeStamp,
-      String? title,
-      String? agent,
-      List<Map<String, String>>? agentQueue,
-      List<Map<String, dynamic>>? messages}) {
-    List<Conversation> newConversations = _conversations;
-    for (var conversation in newConversations) {
-      if (conversation.id == id) {
-        conversation.timeStamp = timeStamp ?? conversation.timeStamp;
-        conversation.title = title ?? conversation.title;
-        conversation.agentQueue = agentQueue ?? conversation.agentQueue;
-        conversation.messages = messages ?? conversation.messages;
-        FirestoreService().setConversation(conversation);
-      }
-    }
-    conversations = newConversations;
+  Message addMessage(String role, String context) {
+    Message newMessage = Message(
+        timeStamp: DateTime.now().toIso8601String(), role: role, content: context);
+    conversation.add(newMessage);
+    FirestoreService().addMessage(newMessage);
+    notifyListeners();
+    return newMessage;
+  }
+
+  // User - AgentQueue
+
+  set agentQueue(List<Agent> value) {
+    _agentQueue = value;
     notifyListeners();
   }
 
-  Conversation addConversation(String title) {
-    var id = Uuid().v4();
-    Conversation conversation = Conversation(
-        id: id,
-        timeStamp: DateTime.now().toString(),
-        title: title,
-        messages: []);
-    List<Conversation> newConversations = _conversations;
-    newConversations.add(conversation);
-    _conversations = [...newConversations];
-    FirestoreService().setConversation(conversation);
+  void initAgentQueue() async {
+    var data = await FirestoreService().getAgentQueue();
+    _agentQueue = data;
     notifyListeners();
-    return conversation;
+  }
+
+  void setAgentQueue(List<Agent> newAgentQueue) {
+    _agentQueue = newAgentQueue;
+    FirestoreService().setAgentQueue(newAgentQueue);
+    notifyListeners();
   }
 
   /* Global */
@@ -671,30 +637,6 @@ class MainState with ChangeNotifier {
     notifyListeners();
   }
 
-  // System - Task Page - Evaluating Task
-
-  void addEvaluatingTask(String taskId) {
-    _evaluatingTasks.add(taskId);
-    notifyListeners();
-  }
-
-  void removeEvaluatingTask(String taskId) {
-    _evaluatingTasks.remove(taskId);
-    notifyListeners();
-  }
-
-  // System - Task Page - Hint Messages
-
-  void addHintMessage(message) {
-    if (_hintMessages.length == 3) _hintMessages.removeFirst();
-    _hintMessages.add(message);
-    notifyListeners();
-    Future.delayed(const Duration(seconds: 3), () {
-      _hintMessages.remove(message);
-      notifyListeners();
-    });
-  }
-
   // System - Task Page - Title Edit Text
 
   void setTitleEditText(value) {
@@ -708,13 +650,6 @@ class MainState with ChangeNotifier {
 
   void setSelectedPath(SkillPath path) {
     _selectedPath = path;
-    notifyListeners();
-  }
-
-  // System - Chat Page - Conversation
-
-  set currentConversation(Conversation? conversation) {
-    _currentConversation = conversation;
     notifyListeners();
   }
 }

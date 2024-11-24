@@ -185,3 +185,15 @@ class Conversation {
       _$ConversationFromJson(json);
   Map<String, dynamic> toJson() => _$ConversationToJson(this);
 }
+
+@JsonSerializable()
+class Agent {
+  String id;
+  String role;
+  String content;
+
+  Agent({this.id = '', this.role = '', this.content = ''});
+  factory Agent.fromJson(Map<String, dynamic> json) =>
+      _$AgentFromJson(json);
+  Map<String, dynamic> toJson() => _$AgentToJson(this);
+}

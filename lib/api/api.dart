@@ -25,7 +25,8 @@ Future<List<Map>?> generateSkillExpFromTask(state, task) async {
         """)}]. 
         Assign experience points (XP) to each skill based on its relevance to the task. Skills not relevant to the task must be assigned 0 XP. 
         Distribute the total XP across relevant skills.
-
+        
+        Example:
         Task: Learn Python programming
         User's Skills: Problem-Solving, Debugging, Time Management
         Relevant EXP Allocation:
@@ -38,19 +39,34 @@ Future<List<Map>?> generateSkillExpFromTask(state, task) async {
     },
     {"role": "user", "content": "Task: ${task.title}, Skills: "}
   ];
-  var functions = state.functions
-      .where((f) => f["name"] == "generateSkillExpFromTask")
-      .toList();
+  var properties = {};
+  for (var skill in state.skills) {
+    properties[skill.name] = {
+      "type": "number",
+      "description": skill.description
+    };
+  }
+  var functions = [
+    {
+      "name": "generateSkillExpFromTask",
+      "parameters": {
+        "type": "object",
+        "description":
+            "Experience points for skills from completed task. 0 exp if skill not relevant to the task. Example exps: [10, 30, 50, 100, 0]",
+        "properties": properties
+      }
+    }
+  ];
   var result = await callChatGPT(messages, functions: functions);
   if (result == null) return null;
-  List<int> exps =
-      (json.decode(result) as List<dynamic>).map((e) => e as int).toList();
+  final Map<String, dynamic> arguments =
+      Map<String, dynamic>.from(json.decode(json.decode(result)['arguments']));
   List<Map> skillExps = [];
-  for (var i = 0; i < exps.length; i++) {
-    if (exps[i] > 0) {
-      skillExps.add({"skillId": state.skills[i].id, "exp": exps[i]});
-    }
+
+  for(var skill in state.skills) {
+    skillExps.add({"skillId": skill.id, "exp": arguments[skill.name]});
   }
+
   return skillExps;
 }
 
@@ -188,9 +204,6 @@ String? handleResponse(Map<String, dynamic> responseData) {
       if (functionName == "generateNewSkills") {
         String skills = jsonEncode(arguments["skills"]);
         return skills;
-      } else if (functionName == "generateSkillExpFromTask") {
-        String exps = jsonEncode(arguments['exps']);
-        return exps;
       } else if (functionName == "generateSkillExpForTasks") {
         String exps = jsonEncode(arguments['exps']);
         return exps;

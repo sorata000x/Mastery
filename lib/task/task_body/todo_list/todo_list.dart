@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:skillborn/main_state.dart';
 import 'package:skillborn/services/models.dart';
 import 'package:skillborn/task/task_body/shared/task_card/task_card.dart';
-import 'package:skillborn/task/task_body/shared/task_evaluration_card.dart';
 
 class TodoList extends StatelessWidget {
   final List<Task> todos;
@@ -28,10 +27,7 @@ class TodoList extends StatelessWidget {
           return Container(
               padding: const EdgeInsets.symmetric(vertical: 2.0),
               key: ValueKey(todos[index].id),
-              child: 
-                state.evaluatingTasks.contains(todos[index].id)
-                    ? const TaskEvalurationCard()
-                    : TaskCard(task: todos[index])
+              child: TaskCard(task: todos[index])
               );
         });
   }
