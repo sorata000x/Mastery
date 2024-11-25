@@ -2,27 +2,78 @@ import 'package:flutter/material.dart';
 import 'package:skillborn/services/models.dart';
 import 'package:skillborn/skills/skill_body/skill_card/skill_detail.dart';
 import 'package:skillborn/skills/skill_body/skill_card/skill_summary.dart';
+import 'package:skillborn/skills/skill_icon.dart';
 
 class SkillCard extends StatelessWidget {
   final UserSkill skill;
+  final bool isExpanding;
+  final void Function(bool) setExpanding;
 
-  const SkillCard({super.key, required this.skill});
+  const SkillCard({super.key, required this.skill, required this.isExpanding, required this.setExpanding});
 
   @override
   Widget build(BuildContext context) {
     var cap = 100 * (skill.level * skill.level);
     var percentage = skill.exp / (cap == 0 ? 1 : cap);
 
-    return GestureDetector(
-      onTap: () => {
-        Navigator.push(
-          context, 
-          MaterialPageRoute(builder: (context) => 
-            SkillDetail(skill: skill)
+    return Material(
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 300), // Animation duration
+                curve: Curves.easeInOut, // Animation curve
+        padding: const EdgeInsets.fromLTRB(10, 4, 20, 4),
+        child: Column(children: [
+          GestureDetector(
+            onTap: () => {
+              setExpanding(!isExpanding)
+            },
+            child: Row(
+              children: [
+                SkillIcon(type: skill.type),
+                const SizedBox(width: 5),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(skill.name,
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.w500)),
+                          const Spacer(),
+                          Text(
+                            "LV ${skill.level}",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w500),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 6,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 3, bottom: 4),
+                        child: LinearProgressIndicator(
+                          color: Colors.blueGrey,
+                          value: percentage,
+                          minHeight: 5,
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
-        )
-      },
-      child: SkillSummary(skill: skill),
+          if (isExpanding)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(skill.description != ''
+                  ? skill.description
+                  : '(No Description)'),
+            )
+        ]),
+      ),
     );
   }
 }

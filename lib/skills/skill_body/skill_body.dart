@@ -16,6 +16,8 @@ class SkillBody extends StatefulWidget {
 }
 
 class _SkillBodyState extends State<SkillBody> {
+  var expandingSkill;
+
   @override
   Widget build(BuildContext context) {
     final state = Provider.of<MainState>(context);
@@ -27,13 +29,26 @@ class _SkillBodyState extends State<SkillBody> {
         Expanded(
           child: (ReorderableListView.builder(
               itemCount: widget.skills.length,
-              onReorder: state.reorderSkill,
+              onReorder: (int oldIndex, int newIndex) {
+                state.reorderSkill(oldIndex, newIndex);
+                setState(() {
+                  expandingSkill = null;
+                });
+              },
               itemBuilder: (context, index) {
                 return Container(
                     key: ValueKey(widget.skills[index].id),
                     child: Column(
                       children: [
-                        SkillCard(skill: widget.skills[index]),
+                        SkillCard(
+                            skill: widget.skills[index],
+                            isExpanding: expandingSkill == index,
+                            setExpanding: (expanding) => setState(() {
+                              if (expanding)
+                                expandingSkill = index;
+                              else
+                                expandingSkill = null;
+                            })),
                         const Divider(
                           height: 5,
                           thickness: 5,
