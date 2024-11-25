@@ -21,6 +21,7 @@ class MainState with ChangeNotifier {
   List<Skill> _createdSkills = []; // List of skills user created in Explore
   List<Message> _conversation = [];
   List<Agent> _agentQueue = [];
+  List<Option> _options = []; // Options to reply to assistant
   // API: ChatGPT
   List<dynamic> _functions = []; // List of functions for function call
   // Task Page
@@ -46,6 +47,7 @@ class MainState with ChangeNotifier {
   List<Skill> get createdSkills => _createdSkills;
   List<Message> get conversation => _conversation;
   List<Agent> get agentQueue => _agentQueue;
+  List<Option> get options => _options;
   List<dynamic> get functions => _functions;
   TaskList? get selectedList => _selectedList;
   TextEditingController get listTitleController => _listTitleController;
@@ -55,6 +57,7 @@ class MainState with ChangeNotifier {
   List<Skill> get globalSkills => _globalSkills;
 
   MainState() {
+    initKarma();
     initTask();
     initLists();
     initSkill();
@@ -62,8 +65,9 @@ class MainState with ChangeNotifier {
     initCreatedSkills();
     initFunctions();
     initGlobalSkills();
-    initConversations();
+    initConversation();
     initAgentQueue();
+    initOptions();
     updateUser();
     FirebaseAuth.instance.authStateChanges().listen((User? currentUser) {
       _user = currentUser?.uid;
@@ -236,6 +240,12 @@ class MainState with ChangeNotifier {
     notifyListeners();
   }
 
+  void setTasks(List<Task> newTasks) {
+    _tasks = newTasks;
+    FirestoreService().setTasks(newTasks);
+    notifyListeners();
+  }
+
   void addTask(String listId, String title) async {
     final newTask = Task(
       id: const Uuid().v4(),
@@ -376,11 +386,11 @@ class MainState with ChangeNotifier {
     UserSkill newSkill = UserSkill(
       id: id,
       name: name ?? 'Unknown',
-      path: path,
-      description: description,
-      type: type,
-      category: category,
-      author: author,
+      path: path ?? '',
+      description: description ?? '',
+      type: type ?? 'other',
+      category: category ?? '',
+      author: author ?? 'Unknown',
       rank: rank ?? 'Common',
       index: index ?? 0,
       exp: exp ?? 0,
@@ -549,22 +559,20 @@ class MainState with ChangeNotifier {
 
   // User - Conversation
 
-  set conversation(List<Message> value) {
-    _conversation = value;
-    notifyListeners();
-  }
-
-  void initConversations() async {
+  void initConversation() async {
     var data = await FirestoreService().getConversation();
+    print("conversation: ${conversation.toString()}");
     _conversation = data;
     notifyListeners();
   }
 
   Message addMessage(String role, String context) {
     Message newMessage = Message(
-        timeStamp: DateTime.now().toIso8601String(), role: role, content: context);
+        timestamp: DateTime.now().toIso8601String(),
+        role: role,
+        content: context);
     conversation.add(newMessage);
-    FirestoreService().addMessage(newMessage);
+    FirestoreService().setMessage(newMessage);
     notifyListeners();
     return newMessage;
   }
@@ -585,6 +593,25 @@ class MainState with ChangeNotifier {
   void setAgentQueue(List<Agent> newAgentQueue) {
     _agentQueue = newAgentQueue;
     FirestoreService().setAgentQueue(newAgentQueue);
+    notifyListeners();
+  }
+
+  // User - Options
+
+  set options(List<Option> value) {
+    _options = value;
+    notifyListeners();
+  }
+
+  void initOptions() async {
+    var data = await FirestoreService().getOptions();
+    _options = data;
+    notifyListeners();
+  }
+
+  void setOptions(List<Option> newOptions) {
+    _options = newOptions;
+    FirestoreService().setOptions(newOptions);
     notifyListeners();
   }
 

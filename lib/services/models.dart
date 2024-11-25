@@ -157,11 +157,11 @@ class SkillPath {
 
 @JsonSerializable()
 class Message {
-  String timeStamp;
+  String timestamp;
   String role;
   String content;
 
-  Message({this.timeStamp = '', this.role = '', this.content = ''});
+  Message({this.timestamp = '', this.role = '', this.content = ''});
   factory Message.fromJson(Map<String, dynamic> json) =>
       _$MessageFromJson(json);
   Map<String, dynamic> toJson() => _$MessageToJson(this);
@@ -170,14 +170,14 @@ class Message {
 @JsonSerializable()
 class Conversation {
   String id;
-  String timeStamp;
+  String timestamp;
   String title;
   List<Map<String, String>> agentQueue;
   List<Map<String, dynamic>> messages;
 
   Conversation(
       {this.id = '',
-      this.timeStamp = '',
+      this.timestamp = '',
       this.title = '',
       this.agentQueue = const [],
       this.messages = const []});
@@ -193,7 +193,16 @@ class Agent {
   String content;
 
   Agent({this.id = '', this.role = '', this.content = ''});
-  factory Agent.fromJson(Map<String, dynamic> json) =>
-      _$AgentFromJson(json);
+  factory Agent.fromJson(Map<String, dynamic> json) => _$AgentFromJson(json);
   Map<String, dynamic> toJson() => _$AgentToJson(this);
+}
+
+@JsonSerializable()
+class Option {
+  String text;
+  String function;
+
+  Option({this.text = '', this.function = ''});
+  factory Option.fromJson(Map<String, dynamic> json) => _$OptionFromJson(json);
+  Map<String, dynamic> toJson() => _$OptionToJson(this);
 }

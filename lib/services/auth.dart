@@ -16,7 +16,8 @@ class AuthService {
   final userStream = FirebaseAuth.instance.authStateChanges();
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  Future<void> initializeUserData(User user) async {
+  Future<void> initializeUserData(
+      User user, void Function() initNewUserData) async {
     final userRef = _db.collection('users').doc(user.uid);
 
     // Check if the user document exists
@@ -33,55 +34,31 @@ class AuthService {
         }
       });
 
-      // Initialize the tasks subcollection with default tasks
-      await _initializeDefaultTasks(userRef);
-      debugPrint('(auth.dart) Default data initialized for new user: ${user.uid}');
+      // Initialize data for new user
+      initNewUserData();
+
+      debugPrint(
+          '(auth.dart) Default data initialized for new user: ${user.uid}');
     } else {
       debugPrint('(auth.dart) User data already exists for: ${user.uid}');
     }
   }
 
-  Future<void> _initializeDefaultTasks(DocumentReference userRef) async {
-    List<Task> defaultTasks = [
-      Task(
-        id: Uuid().v4(),
-        title: "Make a plan for today",
-        note:
-            "Taking a few minutes to plan for the day to boost productivity, reduces stress, and stay focused on what matters most.",
-        skillExps: [],
-        karma: 100,
-        index: 0,
-        isCompleted: false,
-      ),
-      Task(
-        id: Uuid().v4(),
-        title: "Do one thing that scares you",
-        note:
-            "Do something scary to build courage and resilience by pushing beyond your comfort zone.",
-        karma: 100,
-        index: 1,
-        isCompleted: false,
-      ),
-      Task(
-        id: Uuid().v4(),
-        title: "Write down three things you are grateful for today",
-        note:
-            "Cultivates a positive mindset and improves mental resilience by focusing on what's good in life.",
-        karma: 100,
-        index: 2,
-        isCompleted: false,
-      ),
-    ];
-    await FirestoreService().setTasks(defaultTasks);
+  Future<void> _queueTutorialAgent() async {
+    FirestoreService().setAgentQueue([
+      Agent(id: Uuid().v4(), role: 'assistant', content: """
+          Welcome to Mastery, the todo app that turns the tasks you completed into progress towards skill mastery. 
+        """)
+    ]);
   }
 
   // Anonymous Firebase login
-  Future<void> anonLogin() async {
+  Future<User?> anonLogin() async {
     try {
       await FirebaseAuth.instance.signInAnonymously();
       final user = FirebaseAuth.instance.currentUser;
       if (user != null) {
-        await initializeUserData(user);
+        return user;
       }
     } on FirebaseAuthException {
       // handle error
@@ -93,11 +70,11 @@ class AuthService {
   }
 
   // Google sign in
-  Future<void> googleLogin() async {
+  Future<User?> googleLogin() async {
     try {
       final googleUser = await GoogleSignIn().signIn();
 
-      if (googleUser == null) return;
+      if (googleUser == null) return null;
 
       final googleAuth = await googleUser.authentication;
       final authCredential = GoogleAuthProvider.credential(
@@ -107,7 +84,7 @@ class AuthService {
       await FirebaseAuth.instance.signInWithCredential(authCredential);
       final user = FirebaseAuth.instance.currentUser;
       if (user != null) {
-        await initializeUserData(user);
+        return user;
       }
     } on FirebaseAuthException {
       // handle error
@@ -130,7 +107,7 @@ class AuthService {
     return digest.toString();
   }
 
-  Future<void> signInWithApple() async {
+  Future<User?> signInWithApple() async {
     // To prevent replay attacks with the credential returned from Apple, we
     // include a nonce in the credential request. When signing in with
     // Firebase, the nonce in the id token returned by Apple, is expected to
@@ -156,8 +133,8 @@ class AuthService {
     await FirebaseAuth.instance.signInWithCredential(oauthCredential);
 
     final user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        await initializeUserData(user);
-      }
+    if (user != null) {
+      return user;
+    }
   }
 }

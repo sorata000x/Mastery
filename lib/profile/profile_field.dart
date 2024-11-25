@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:skillborn/main_state.dart';
 
 class ProfileField extends StatelessWidget {
   final String label;
+  final String value;
 
-  const ProfileField({super.key, required this.label});
+  const ProfileField({super.key, required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +30,8 @@ class ProfileField extends StatelessWidget {
               borderRadius: BorderRadius.circular(6),
               color: const Color.fromRGBO(45, 45, 45, 1),
             ),
-            child: TextField(
-              decoration: InputDecoration(
-                border: InputBorder.none,
-              ),
+            child: Text(
+              value
             ),
           ),
         ],

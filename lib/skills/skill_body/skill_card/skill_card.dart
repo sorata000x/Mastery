@@ -22,10 +22,7 @@ class SkillCard extends StatelessWidget {
           ),
         )
       },
-      child: Hero(
-        tag: 'skill_card_${skill.id}',
-        child: SkillSummary(skill: skill),
-      ),
+      child: SkillSummary(skill: skill),
     );
   }
 }

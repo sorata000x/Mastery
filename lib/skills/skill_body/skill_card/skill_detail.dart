@@ -27,47 +27,19 @@ class SkillDetail extends StatelessWidget {
               children: [
                 SkillSummary(skill: skill),
                 Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Description",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          Text(skill.description),
-                        ],
+                  width: double.infinity,
+                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Description",
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-                    ),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Effect",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          Text(skill.effect.replaceAll('\\n', '\n')),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Cultivation",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          Text(skill.cultivation),
-                        ],
-                      ),
-                    ),
+                      Text(skill.description),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),

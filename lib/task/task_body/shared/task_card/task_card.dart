@@ -35,12 +35,15 @@ class TaskCard extends StatelessWidget {
       }
       // Level up skills
       for (var skillExp in skillExps) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          state.levelUpSkillById(skillExp["skillId"], skillExp["exp"]);
-          state.addExp(skillExp["exp"]);
-        });
-        var skill = state.skills.firstWhere((s) => s.id == skillExp["skillId"]);
-        messages.add("${skill.name} + ${skillExp["exp"]}");
+        if (skillExp["exp"] > 0) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            state.levelUpSkillById(skillExp["skillId"], skillExp["exp"]);
+            state.addExp(skillExp["exp"]);
+          });
+          var skill =
+              state.skills.firstWhere((s) => s.id == skillExp["skillId"]);
+          messages.add("${skill.name} + ${skillExp["exp"]}");
+        }
       }
       return messages;
     }
@@ -160,8 +163,7 @@ class TaskCard extends StatelessWidget {
       List<String> messages = [];
       messages = [...await giveKarma(), ...await levelUpSkills()];
       //await drawSkill();
-      state.addMessage(
-          'assistant',
+      state.addMessage('assistant',
           "[System Message]\nCompleted Task: ${task.title} \n${messages.join('\n')}");
     }
 

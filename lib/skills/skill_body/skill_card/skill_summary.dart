@@ -37,12 +37,12 @@ class SkillSummary extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(top: 3, bottom: 4),
                     child: LinearProgressIndicator(
+                      color: Colors.blueGrey,
                       value: percentage,
                       minHeight: 5,
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
-                  
                 ],
               ),
             ),

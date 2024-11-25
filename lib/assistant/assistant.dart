@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:skillborn/api/api.dart';
+import 'package:skillborn/assistant/assistant_message.dart';
 import 'package:skillborn/assistant/message_block.dart';
+import 'package:skillborn/assistant/system_message.dart';
+import 'package:skillborn/assistant/user_message.dart';
 import 'package:skillborn/main_state.dart';
 import 'package:skillborn/services/models.dart';
 import 'package:uuid/uuid.dart';
@@ -287,18 +290,12 @@ class _AssistantScreenState extends State<AssistantScreen> {
                 final message = state.conversation[index];
                 final isUserMessage = message.role == 'user';
                 if (isUserMessage) {
-                  return Align(
-                    alignment: Alignment.centerRight,
-                    child: MessageBlock(message: message),
-                  );
+                  return UserMessage(message: message);
                 }
-                if (!message.content.startsWith('[System Message]')) {
-                  return Align(
-                    alignment: Alignment.centerLeft,
-                    child: MessageBlock(message: message),
-                  );
+                if (message.content.startsWith('[System Message]')) {
+                  return SystemMessage(message: message);
                 }
-                return MessageBlock(message: message);
+                return AssistantMessage(message: message, isLast: index == state.conversation.length-1,);
               },
             ),
           ),

@@ -323,22 +323,44 @@ class FirestoreService {
 
   Future<List<Message>> getConversation() async {
     debugPrint("(firestore.dart) GET CONVERSATION");
-    var ref = _db.collection('users').doc(user).collection('conversation');
+    
+    var ref = _db
+      .collection('users')
+      .doc(user)
+      .collection('conversation')
+      .orderBy('timestamp', descending: false);
+
     var snapshot = await ref.get();
     var data = snapshot.docs.map((s) => s.data());
     var conversation = data.map((d) => Message.fromJson(d));
+    
     return conversation.toList();
   }
 
-  Future<void> addMessage(Message message) async {
-    debugPrint("(firestore.dart) ADD MESSAGE");
-    var ref = _db.collection('conversation');
-    await ref.add(message.toJson());
+  Future setMessage(Message message) {
+    debugPrint("(firestore.dart) SET MESSAGE");
+    CollectionReference conversation = 
+      _db
+      .collection('users')
+      .doc(user)
+      .collection('conversation');
+
+    // Set data with a custom ID
+    return conversation
+        .doc()
+        .set(message.toJson())
+        .then((value) => debugPrint("(firestore.dart) Message Set"))
+        .catchError((error) =>
+            debugPrint("(firestore.dart) Failed to set message: $error"));
   }
 
   Future<void> deleteMessage(String messageId) async {
     debugPrint("(firestore.dart) DELETE MESSAGE");
-    var ref = _db.collection('conversations');
+    var ref = 
+      _db
+      .collection('users')
+      .doc(user)
+      .collection('conversation');
     await ref.doc(messageId).delete();
   }
 
@@ -369,6 +391,42 @@ class FirestoreService {
       debugPrint("(firestore.dart) Agent-queue collection successfully replaced.");
     } catch (e) {
       debugPrint("(firestore.dart) Error replacing agent-queue collection: $e");
+    }
+  }
+
+  // User - Options
+
+  Future<List<Option>> getOptions() async {
+    debugPrint("(firestore.dart) GET OPTIONS");
+    var ref = _db.collection('users').doc(user).collection('options');
+    var snapshot = await ref.get();
+    var data = snapshot.docs.map((s) => s.data());
+    var options = data.map((d) => Option.fromJson(d));
+    return options.toList();
+  }
+
+  Future<void> setOptions(List<Option> newOptions) async {
+    debugPrint("(firestore.dart) SET OPTIONS");
+    CollectionReference optionsRef =
+        _db.collection('users').doc(user).collection('options');
+    WriteBatch batch = _db.batch();
+
+    try {
+      // Step 1: Delete all existing documents
+      var snapshot = await optionsRef.get();
+      for (var doc in snapshot.docs) {
+        batch.delete(doc.reference);
+      }
+      // Step 2: Add new documents with auto-generated IDs
+      for (var option in newOptions) {
+        var docRef = optionsRef.doc(); // Auto-generate document ID
+        batch.set(docRef, option.toJson());
+      }
+      // Commit the batch
+      await batch.commit();
+      debugPrint("(firestore.dart) Options collection successfully replaced.");
+    } catch (e) {
+      debugPrint("(firestore.dart) Error replacing options collection: $e");
     }
   }
 

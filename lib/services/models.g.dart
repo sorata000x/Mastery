@@ -148,20 +148,20 @@ Map<String, dynamic> _$SkillPathToJson(SkillPath instance) => <String, dynamic>{
     };
 
 Message _$MessageFromJson(Map<String, dynamic> json) => Message(
-      timeStamp: json['timeStamp'] as String? ?? '',
+      timestamp: json['timestamp'] as String? ?? '',
       role: json['role'] as String? ?? '',
       content: json['content'] as String? ?? '',
     );
 
 Map<String, dynamic> _$MessageToJson(Message instance) => <String, dynamic>{
-      'timeStamp': instance.timeStamp,
+      'timestamp': instance.timestamp,
       'role': instance.role,
       'content': instance.content,
     };
 
 Conversation _$ConversationFromJson(Map<String, dynamic> json) => Conversation(
       id: json['id'] as String? ?? '',
-      timeStamp: json['timeStamp'] as String? ?? '',
+      timestamp: json['timestamp'] as String? ?? '',
       title: json['title'] as String? ?? '',
       agentQueue: (json['agentQueue'] as List<dynamic>?)
               ?.map((e) => Map<String, String>.from(e as Map))
@@ -176,7 +176,7 @@ Conversation _$ConversationFromJson(Map<String, dynamic> json) => Conversation(
 Map<String, dynamic> _$ConversationToJson(Conversation instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'timeStamp': instance.timeStamp,
+      'timestamp': instance.timestamp,
       'title': instance.title,
       'agentQueue': instance.agentQueue,
       'messages': instance.messages,
@@ -192,4 +192,14 @@ Map<String, dynamic> _$AgentToJson(Agent instance) => <String, dynamic>{
       'id': instance.id,
       'role': instance.role,
       'content': instance.content,
+    };
+
+Option _$OptionFromJson(Map<String, dynamic> json) => Option(
+      text: json['text'] as String? ?? '',
+      function: json['function'] as String? ?? '',
+    );
+
+Map<String, dynamic> _$OptionToJson(Option instance) => <String, dynamic>{
+      'text': instance.text,
+      'function': instance.function,
     };
