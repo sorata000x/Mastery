@@ -428,6 +428,12 @@ class MainState with ChangeNotifier {
     notifyListeners();
   }
 
+  void removeSkill(Skill skill) {
+    skills.remove(skill);
+    FirestoreService().deleteSkill(skill.id);
+    notifyListeners();
+  }
+
   void levelUpSkill(UserSkill target, int gain) {
     int cap = (100 * (target.level * target.level)).toInt();
     int exp = (target.exp + gain);

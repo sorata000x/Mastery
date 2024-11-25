@@ -217,6 +217,13 @@ class FirestoreService {
     }
   }
 
+  Future<void> deleteSkill(String skillId) async {
+    debugPrint("(firestore.dart) DELETE SKILL");
+    CollectionReference skills =
+        _db.collection('users').doc(user).collection('skills');
+    await skills.doc(skillId).delete();
+  }
+
   // User - Path
 
   Future<List<SkillPath>> getPaths() async {

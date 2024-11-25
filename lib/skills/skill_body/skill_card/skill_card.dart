@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:skillborn/services/models.dart';
+import 'package:skillborn/skills/skill_body/skill_card/skill_deletion_dialog.dart';
 import 'package:skillborn/skills/skill_body/skill_card/skill_detail.dart';
 import 'package:skillborn/skills/skill_body/skill_card/skill_summary.dart';
 import 'package:skillborn/skills/skill_icon.dart';
@@ -16,7 +18,32 @@ class SkillCard extends StatelessWidget {
     var cap = 100 * (skill.level * skill.level);
     var percentage = skill.exp / (cap == 0 ? 1 : cap);
 
-    return Material(
+    return Slidable(
+      key: Key(skill.id),
+      endActionPane: ActionPane(
+        motion: const DrawerMotion(),
+        extentRatio: 0.15,
+        children: [
+          SlidableAction(
+            onPressed: (context) {
+              // Show a confirmation dialog
+              showDialog(
+                  context: context,
+                  builder: (context) => SkillDeletionDialog(skill: skill));
+            },
+            backgroundColor: Colors.red,
+            foregroundColor: Colors.white,
+            icon: Icons.delete,
+            padding: const EdgeInsets.all(0.0),
+            borderRadius: const BorderRadius.only(
+              topRight:
+                  Radius.circular(5.0), // Apply border radius to top right
+              bottomRight:
+                  Radius.circular(5.0), // Apply border radius to bottom right
+            ),
+          ),
+        ],
+      ),
       child: AnimatedContainer(
         duration: Duration(milliseconds: 300), // Animation duration
                 curve: Curves.easeInOut, // Animation curve
