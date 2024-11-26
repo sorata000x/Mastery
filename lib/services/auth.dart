@@ -46,9 +46,7 @@ class AuthService {
 
   Future<void> _queueTutorialAgent() async {
     FirestoreService().setAgentQueue([
-      Agent(id: Uuid().v4(), role: 'assistant', content: """
-          Welcome to Mastery, the todo app that turns the tasks you completed into progress towards skill mastery. 
-        """)
+      Agent(id: Uuid().v4(), role: 'assistant', content: "Welcome to Mastery, the todo app that turns the tasks you completed into progress towards skill mastery.")
     ]);
   }
 

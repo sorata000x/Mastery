@@ -10,7 +10,7 @@ class SystemMessage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(12),
-      color: const Color.fromARGB(80, 96, 111, 119),
+      color: Colors.transparent,
       child: Text(
         message.content,
         style: TextStyle(

@@ -15,7 +15,7 @@ class UserMessage extends StatelessWidget {
         margin: const EdgeInsets.symmetric(vertical: 4),
         constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primaryContainer,
+          color: const Color.fromARGB(255, 60, 86, 99),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Text(

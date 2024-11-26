@@ -16,7 +16,7 @@ class CreateSkill extends StatefulWidget {
 
 class _CreateSkillState extends State<CreateSkill> {
   String _name = '';
-  String _path = '';
+  String? _path;
   String _description = '';
   String _effect = '';
   String _cultivation = '';
@@ -29,7 +29,7 @@ class _CreateSkillState extends State<CreateSkill> {
       final createdSkill = Skill(
           id: const Uuid().v4(),
           name: _name,
-          path: _path,
+          path: _path ?? '',
           description: _description,
           effect: _effect,
           cultivation: _cultivation,
@@ -79,9 +79,41 @@ class _CreateSkillState extends State<CreateSkill> {
               SizedBox(
                 height: 10,
               ),
-              InputField(
-                label: "Path",
-                onChanged: (value) => {setState(() => _path = value)},
+              Padding(
+                padding: EdgeInsets.only(left: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Text('Path'),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 50, 50, 50),
+                        borderRadius: BorderRadius.circular(6)
+                      ),
+                      child: DropdownButton<String>(
+                        dropdownColor: Theme.of(context).colorScheme.tertiary,
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        value: _path,
+                        hint: Text("Select a Path"),
+                        items: state.paths.map((SkillPath path) {
+                          print('path.id: ${path.id}');
+                          return DropdownMenuItem<String>(
+                            value: path.id,
+                            child: Text(path.title),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            _path = newValue ?? '';
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
               SizedBox(
                 height: 10,
@@ -95,31 +127,18 @@ class _CreateSkillState extends State<CreateSkill> {
               SizedBox(
                 height: 10,
               ),
-              InputField(
-                label: "Effect",
-                maxLines: 10,
-                height: 98,
-                onChanged: (value) => {setState(() => _effect = value)},
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              InputField(
-                label: "Cultivation",
-                maxLines: 10,
-                height: 98,
-                onChanged: (value) => {setState(() => _cultivation = value)},
-              )
             ],
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(60, 30, 60, 30),
-            child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 100, 100, 100),
-                    borderRadius: BorderRadius.circular(5)),
-                child: TextButton(
+            child: TextButton(
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.symmetric(vertical: 12),
+                      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                    ),
                     onPressed: () => {
                           showModalBottomSheet(
                             context: context,
@@ -139,8 +158,8 @@ class _CreateSkillState extends State<CreateSkill> {
                         },
                     child: Text(
                       "Create",
-                      style: TextStyle(fontSize: 16),
-                    ))),
+                      style: TextStyle(fontSize: 16,),
+                    )),
           )
         ],
       ),

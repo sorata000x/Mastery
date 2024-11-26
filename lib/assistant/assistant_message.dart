@@ -52,47 +52,51 @@ class AssistantMessage extends StatelessWidget {
       }
     };
 
-    return Container(
-      padding: const EdgeInsets.all(12),
-      margin: const EdgeInsets.symmetric(vertical: 4),
-      constraints:
-          BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
-      decoration: BoxDecoration(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        children: [
-          Text(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(12),
+          margin: const EdgeInsets.symmetric(vertical: 4),
+          constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width * 0.75),
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(100, 96, 111, 119),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Text(
             message.content,
             style: TextStyle(color: Colors.white),
           ),
-          SizedBox(
-            height: 20,
-          ),
-          if (isLast)
-            ...state.options.map((option) => Align(
-              alignment: Alignment.centerLeft,
-              child: TextButton(
-                  style: TextButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(
-                        180, 96, 125, 139), // Background color
-                    foregroundColor: Colors.white, // Text color
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12), // Padding
-                    shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(8), // Rounded corners
-                    ),
-                  ),
-                  onPressed: () => {
-                        if (functions[option.function] != null)
-                          functions[option.function]!()
-                      },
-                  child: Text(option.text)),
-            ))
-        ],
-      ),
+        ),
+        if (isLast)
+          Column(
+            children: [
+              SizedBox(
+                height: 4,
+              ),
+              ...state.options.map((option) => Align(
+                    alignment: Alignment.centerLeft,
+                    child: TextButton(
+                        style: TextButton.styleFrom(
+                          backgroundColor: const Color.fromARGB(180, 78, 102, 113), // Background color
+                          foregroundColor: Colors.white, // Text color
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12), // Padding
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(8), // Rounded corners
+                          ),
+                        ),
+                        onPressed: () => {
+                              if (functions[option.function] != null)
+                                functions[option.function]!()
+                            },
+                        child: Text(option.text)),
+                  ))
+            ],
+          )
+      ],
     );
   }
 }

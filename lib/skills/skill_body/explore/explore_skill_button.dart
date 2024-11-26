@@ -22,7 +22,7 @@ class ExploreSkillButton extends StatelessWidget {
         )
       },
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(14, 0, 14, 10),
+        padding: const EdgeInsets.fromLTRB(10, 0, 10, 4),
         child: Container(
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.primaryContainer,

@@ -38,9 +38,8 @@ class ProfileScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              ProfileField(label: "Display Name", value: state.user ?? ''),
-              ProfileField(label: "Email", value: '',),
-              SizedBox(height: 28,),
+              ProfileField(label: "ID", value: state.user ?? ''),
+              SizedBox(height: 20,),
               Padding(
                 padding: const EdgeInsets.all(20),
                 child: SizedBox(
