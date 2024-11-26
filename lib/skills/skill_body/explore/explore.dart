@@ -46,7 +46,7 @@ class Explore extends StatelessWidget {
                           children: [
                             ExploreSkillCard(globalSkill: skills[index]),
                             SizedBox(
-                              height: 6,
+                              height: 4,
                             )
                           ],
                         );

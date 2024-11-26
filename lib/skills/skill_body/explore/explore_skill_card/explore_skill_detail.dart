@@ -68,13 +68,13 @@ class ExploreSkillDetail extends StatelessWidget {
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
-                    Text(
-                      globalSkill.rank,
-                      style: TextStyle(
-                          color: rank?['color'], fontWeight: FontWeight.w500),
-                    ),
-                    Text("(Max Level: ${rank?['max-level']})",
-                        style: TextStyle(color: Colors.grey, fontSize: 14)),
+                    //Text(
+                    //  globalSkill.rank,
+                    //  style: TextStyle(
+                    //      color: rank?['color'], fontWeight: FontWeight.w500),
+                    //),
+                    //Text("(Max Level: ${rank?['max-level']})",
+                    //    style: TextStyle(color: Colors.grey, fontSize: 14)),
                     SizedBox(
                       height: 10,
                     ),
@@ -99,14 +99,14 @@ class ExploreSkillDetail extends StatelessWidget {
             Container(
               color: Colors.black,
               width: double.infinity,
-              padding: EdgeInsets.all(30),
+              padding: EdgeInsets.only(bottom: 60),
               child: Center(
                 child: Container(
                     width: 200,
                     decoration: BoxDecoration(
                         color: mainState.karma < rank?['cost']
                             ? const Color.fromARGB(255, 70, 70, 70)
-                            : const Color.fromARGB(255, 100, 100, 100),
+                            : const Color.fromARGB(255, 72, 93, 104),
                         borderRadius: BorderRadius.circular(10)),
                     child: TextButton(
                         onPressed: () {
