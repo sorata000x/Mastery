@@ -93,12 +93,17 @@ class SkillCard extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(10, 4, 10, 4),
         child: Column(children: [
           GestureDetector(
-            onTap: () => {setExpanding(!isExpanding)},
+            onTap: () => {
+              Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SkillDetail(skill: skill)),
+          )
+            },
             child: Container(
               padding: EdgeInsets.all(10),
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.primaryContainer,
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(6),
               ),
               child: Row(
                 children: [
