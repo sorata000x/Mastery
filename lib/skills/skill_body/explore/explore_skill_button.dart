@@ -22,11 +22,11 @@ class ExploreSkillButton extends StatelessWidget {
         )
       },
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(10, 0, 10, 4),
+        padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
         child: Container(
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.primaryContainer,
-            borderRadius: BorderRadius.circular(10), // Circular border radius
+            borderRadius: BorderRadius.circular(6), // Circular border radius
           ),
           child: Row(
             children: [

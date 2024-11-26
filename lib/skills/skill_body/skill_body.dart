@@ -50,7 +50,7 @@ class _SkillBodyState extends State<SkillBody> {
                                 expandingSkill = null;
                             })),
                         const Divider(
-                          height: 1,
+                          height: 4,
                           color: Colors.transparent,
                         ),
                       ],

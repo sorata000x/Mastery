@@ -87,10 +87,8 @@ class SkillCard extends StatelessWidget {
           ),
         ],
       ),
-      child: AnimatedContainer(
-        duration: Duration(milliseconds: 300), // Animation duration
-        curve: Curves.easeInOut, // Animation curve
-        padding: const EdgeInsets.fromLTRB(10, 4, 10, 4),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
         child: Column(children: [
           GestureDetector(
             onTap: () => {
