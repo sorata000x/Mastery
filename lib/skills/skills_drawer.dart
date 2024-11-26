@@ -12,15 +12,25 @@ class SkillsDrawer extends StatelessWidget {
     return Drawer(
       child: Padding(
         padding: EdgeInsets.fromLTRB(10, 50, 10, 10),
-        child: Column(children: [
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
           Card(
+            margin: EdgeInsets.zero,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0), // Set border radius here
+              borderRadius:
+                  BorderRadius.circular(6.0), // Set border radius here
             ),
             clipBehavior: Clip.antiAlias,
             child: ListTile(
               key: ValueKey('all'),
-              title: Text('All'),
+              visualDensity: VisualDensity.compact,
+              title: Text(
+                'All',
+                style: TextStyle(
+                  color: Colors.white
+                ),  
+              ),
               selectedTileColor: Theme.of(context).colorScheme.tertiary,
               selected: state.selectedPath?.id == 'all',
               onTap: () {
@@ -32,14 +42,19 @@ class SkillsDrawer extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.fromLTRB(4, 10, 20, 0),
             child: Text(
               "Path",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+              style: TextStyle(
+                fontSize: 18, 
+                fontWeight: FontWeight.w500,
+                color: const Color.fromARGB(255, 180, 180, 180),
+                ),
             ),
           ),
           Expanded(
             child: ReorderableListView.builder(
+              padding: EdgeInsets.zero,
                 shrinkWrap: true,
                 itemCount: state.paths.length,
                 onReorder: (oldIndex, newIndex) {
@@ -50,27 +65,40 @@ class SkillsDrawer extends StatelessWidget {
                       state.paths[oldIndex].index, state.paths[newIndex].index);
                 },
                 itemBuilder: (context, index) {
-                  return Card(
+                  return Column(
                     key: ValueKey(state.paths[index].id),
-                    shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(10.0), // Set border radius here
-                    ),
-                    clipBehavior: Clip.antiAlias,
-                    child: ListTile(
-                      selected: state.selectedPath.id == state.paths[index].id,
-                      selectedTileColor: Theme.of(context).colorScheme.tertiary,
-                      title: Text(
-                        state.paths[index].title == ''
-                            ? 'Untitled'
-                            : state.paths[index].title,
+                    children: [
+                      Card(
+                        margin: EdgeInsets.zero,
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.circular(6.0), // Set border radius here
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        child: ListTile(
+                          //contentPadding: EdgeInsets.zero,
+                          visualDensity: VisualDensity.compact,
+                          selected: state.selectedPath?.id == state.paths[index].id,
+                          selectedTileColor: Theme.of(context).colorScheme.tertiary,
+                          title: Text(
+                            state.paths[index].title == ''
+                                ? 'Untitled'
+                                : state.paths[index].title,
+                            style: TextStyle(
+                              color: Colors.white
+                            ),  
+                          ),
+                          onTap: () {
+                            state.setSelectedPath(state.paths[index]);
+                            state.pathTitleController.text =
+                                state.paths[index].title;
+                            Navigator.pop(context);
+                          },
+                        ),
                       ),
-                      onTap: () {
-                        state.setSelectedPath(state.paths[index]);
-                        state.pathTitleController.text = state.paths[index].title;
-                        Navigator.pop(context);
-                      },
-                    ),
+                      if (index != state.paths.length - 1)
+                        SizedBox(height: 4),
+                    ],
                   );
                 }),
           ),

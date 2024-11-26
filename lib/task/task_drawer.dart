@@ -12,15 +12,19 @@ class TaskDrawer extends StatelessWidget {
     return Drawer(
       child: Padding(
         padding: EdgeInsets.fromLTRB(10, 50, 10, 10),
-        child: Column(children: [
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
           Card(
+            margin: EdgeInsets.zero,
             shape: RoundedRectangleBorder(
               borderRadius:
-                  BorderRadius.circular(10.0), // Set border radius here
+                  BorderRadius.circular(6.0), // Set border radius here
             ),
             clipBehavior: Clip.antiAlias,
             child: ListTile(
               key: ValueKey('inbox'),
+              visualDensity: VisualDensity.compact,
               title: Text(
                 'Inbox',
                 style: TextStyle(
@@ -38,14 +42,19 @@ class TaskDrawer extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.fromLTRB(4, 10, 20, 0),
             child: Text(
               "List",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+              style: TextStyle(
+                fontSize: 18, 
+                fontWeight: FontWeight.w500,
+                color: const Color.fromARGB(255, 180, 180, 180),
+                ),
             ),
           ),
           Expanded(
             child: ReorderableListView.builder(
+              padding: EdgeInsets.zero,
                 shrinkWrap: true,
                 itemCount: state.lists.length,
                 onReorder: (oldIndex, newIndex) {
@@ -56,31 +65,40 @@ class TaskDrawer extends StatelessWidget {
                       state.lists[oldIndex].index, state.lists[newIndex].index);
                 },
                 itemBuilder: (context, index) {
-                  return Card(
+                  return Column(
                     key: ValueKey(state.lists[index].id),
-                    shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(10.0), // Set border radius here
-                    ),
-                    clipBehavior: Clip.antiAlias,
-                    child: ListTile(
-                      selected: state.selectedList?.id == state.lists[index].id,
-                      selectedTileColor: Theme.of(context).colorScheme.tertiary,
-                      title: Text(
-                        state.lists[index].title == ''
-                            ? 'Untitled'
-                            : state.lists[index].title,
-                        style: TextStyle(
-                          color: Colors.white
-                        ),  
+                    children: [
+                      Card(
+                        margin: EdgeInsets.zero,
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.circular(6.0), // Set border radius here
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        child: ListTile(
+                          //contentPadding: EdgeInsets.zero,
+                          visualDensity: VisualDensity.compact,
+                          selected: state.selectedList?.id == state.lists[index].id,
+                          selectedTileColor: Theme.of(context).colorScheme.tertiary,
+                          title: Text(
+                            state.lists[index].title == ''
+                                ? 'Untitled'
+                                : state.lists[index].title,
+                            style: TextStyle(
+                              color: Colors.white
+                            ),  
+                          ),
+                          onTap: () {
+                            state.setSelectedList(state.lists[index]);
+                            state.listTitleController.text =
+                                state.lists[index].title;
+                            Navigator.pop(context);
+                          },
+                        ),
                       ),
-                      onTap: () {
-                        state.setSelectedList(state.lists[index]);
-                        state.listTitleController.text =
-                            state.lists[index].title;
-                        Navigator.pop(context);
-                      },
-                    ),
+                      if (index != state.lists.length - 1)
+                        SizedBox(height: 4),
+                    ],
                   );
                 }),
           ),
