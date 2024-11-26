@@ -273,17 +273,7 @@ class MainState with ChangeNotifier {
   void toggleTask(Task target) {
     Task? task = tasks.firstWhere((task) => task.id == target.id);
     // Set firestore
-    FirestoreService().setTask(Task(
-      id: target.id,
-      title: target.title,
-      list: target.list,
-      note: target.note,
-      skillExps: target.skillExps,
-      index: target.index,
-      isCompleted: !target.isCompleted,
-    ));
-    // Set local after firestore
-    task.isCompleted = !target.isCompleted;
+    setTask(target.id, isCompleted: !target.isCompleted);
 
     notifyListeners();
   }

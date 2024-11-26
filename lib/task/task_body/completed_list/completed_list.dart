@@ -13,8 +13,6 @@ class CompletedList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = Provider.of<MainState>(context);
-    var completed =
-        state.tasks.where((task) => task.isCompleted == true).toList();
 
     return ExpansionTile(
         title: Text(
