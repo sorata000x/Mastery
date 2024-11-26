@@ -92,34 +92,6 @@ class ExploreSkillDetail extends StatelessWidget {
                         ],
                       ),
                     ),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Effect",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          Text(globalSkill.effect.replaceAll('\\n', '\n')),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Cultivation",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          Text(globalSkill.cultivation),
-                        ],
-                      ),
-                    ),
                   ],
                 ),
               ),

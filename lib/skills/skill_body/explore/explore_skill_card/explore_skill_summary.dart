@@ -20,7 +20,7 @@ class ExploreSkillSummary extends StatelessWidget {
             ),
             child: Row(
               children: [
-                SkillIcon(type: globalSkill.type),
+                SkillIcon(type: globalSkill.type, size: 30,),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Column(
@@ -33,7 +33,7 @@ class ExploreSkillSummary extends StatelessWidget {
                       Text(
                         globalSkill.description,
                         style: TextStyle(fontSize: 14),
-                        maxLines: 3,
+                        maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         ),
                       Text(

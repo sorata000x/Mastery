@@ -5,7 +5,7 @@ class SkillIcon extends StatelessWidget {
   final String type;
   final double size;
 
-  const SkillIcon({super.key, required this.type, this.size = 34});
+  const SkillIcon({super.key, required this.type, this.size = 30});
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +82,7 @@ class SkillIcon extends StatelessWidget {
     if (type == 'design') {
       iconName = 'design';
     }
-    var padding = 4.0;
+    var padding = 6.0;
     if (size > 30) {
       padding = 10.0;
     }

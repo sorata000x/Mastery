@@ -122,7 +122,7 @@ class SkillCard extends StatelessWidget {
                           ],
                         ),
                         SizedBox(
-                          height: 8,
+                          height: 6,
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 3, bottom: 4),
